@@ -974,7 +974,7 @@ const VACT = {
     $("[data-form=vgate] [name=pw]").focus(); },
   vehClose,
   vDev() { if (V.dev) return; openModal("دخول مطور المركبات", `<form data-form="vdev" dir="rtl" class="grid gap-3"><label class="text-sm font-semibold">اسم المستخدم<input class="i" 
-  value="cardeveloper@gcc.local" readonly dir="ltr"></label>
+  value="car@gcc.local" readonly dir="ltr"></label>
       <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة السر"><p class="err hidden text-sm text-red-700"></p><button class="b bp">دخول</button></form>`); },
   vDevOut() { if (vAuth?.currentUser) signOut(vAuth).catch(() => {}); V.dev = false; V.fid = FACTORIES[S.f].id; V.tab = "dash"; VCACHE = {}; vShow(); },
   vTab: id => vShow(id), vRefresh: () => vShow(null, true), vDis(id) { localStorage.setItem("vi.dis." + V.fid, JSON.stringify([...vdis(), id])); vShow(); },
