@@ -52,26 +52,38 @@
   @media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important}}
 </style>
 <style>
-/* vehicle button: the microbus drives off the screen to the right when pressed, and drives back in when the module/prompt closes */
-#vehBtn .vcar{display:flex;will-change:transform}
-#vehBtn.go .vcar{animation:vDriveOut .9s cubic-bezier(.55,0,.85,.35) forwards}
-#vehBtn.back .vcar{animation:vDriveIn .85s cubic-bezier(.2,.8,.3,1) both}
-#vehBtn.go .vwh{animation:vWheel .22s linear infinite;transform-box:fill-box;transform-origin:center}
-#vehBtn .vpuff{opacity:0}#vehBtn.go .vpuff{animation:vPuff .45s ease-out infinite}#vehBtn.go .vpuff.d2{animation-delay:.2s}
-#vehBtn.go .vlab{opacity:0;transition:opacity .25s}
-@keyframes vDriveOut{0%{transform:translateX(0)}14%{transform:translateX(-9px) rotate(-1.5deg)}100%{transform:translateX(115vw)}}
-@keyframes vDriveIn{0%{transform:translateX(-115vw)}82%{transform:translateX(7px)}100%{transform:translateX(0)}}
-@keyframes vWheel{to{transform:rotate(360deg)}}
-@keyframes vPuff{0%{opacity:.8;transform:translateX(0) scale(.6)}100%{opacity:0;transform:translateX(-22px) scale(1.5)}}
-@media (prefers-reduced-motion:reduce){#vehBtn.go .vcar,#vehBtn.back .vcar,#vehBtn.go .vwh,#vehBtn.go .vpuff{animation:none}}
-/* module theme (Fresh red / white / dark; the colour is configurable per factory by the vehicle developer) */
-#veh{--vacc:217 0 0}#veh .vhead{background:linear-gradient(135deg,rgb(var(--vacc)),#6b0000 58%,#1e293b)}
-#veh .bp{background:rgb(var(--vacc))!important;border-color:rgb(var(--vacc))!important;color:#fff!important}
-#veh .b:focus-visible,#veh .i:focus{outline:2px solid rgb(var(--vacc))}#veh .rt th{background:#1e293b!important;color:#fff!important}
-#veh .rt tr[data-act]:hover td{background:rgb(var(--vacc)/.08)}html.dark #veh{background:#0b1220;color:#e2e8f0}
+  body.inveh #side,body.inveh #sideTab{display:none!important}
+  #vehBtn{position:absolute;left:1rem;top:.25rem;z-index:1}
+  #carTrack .smoke{position:absolute;border-radius:50%;background:radial-gradient(circle,#f1f5f9 0%,#94a3b8 75%);opacity:.75;filter:blur(1px);pointer-events:none;z-index:0;animation:puff 1.05s ease-out forwards}
+  @keyframes puff{to{transform:translate(-36px,-26px) scale(2.8);opacity:0}}
 </style>
 </head>
 <body class="bg-slate-100 text-slate-800">
+<div id="intro" style="display:none;position:fixed;inset:0;z-index:120;background:#000;align-items:center;justify-content:center">
+  <video id="introV" muted playsinline preload="auto" style="max-width:100%;max-height:100%"></video>
+  <button id="introSkip" type="button" style="position:absolute;top:16px;inset-inline-end:16px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.22);color:#fff;font-size:14px">تخطّي ⏭</button>
+</div>
+<script>
+/* INTRO CLIP (first launch only): paste the video link in INTRO_URL. INTRO_START = second where "Ehna Fresh w Farafish" begins.
+   Plays at most 3 seconds, then the main interface appears at once. Skip button · a failed / slow link goes straight to the main interface.
+   Replay for testing: open the page with ?intro=1 · or set localStorage "gcc.introUrl" to try another link without editing the file. */
+(function () {
+  var INTRO_URL = "", INTRO_START = 0, MAX_MS = 3000, SLOW_MS = 1500, KEY = "gcc.introSeen";
+  try { INTRO_URL = localStorage.getItem("gcc.introUrl") || INTRO_URL; } catch (e) {}
+  var seen = false; try { seen = !!localStorage.getItem(KEY); } catch (e) {}
+  if (!INTRO_URL || (seen && !/[?&]intro=1/.test(location.search))) return;
+  var box = document.getElementById("intro"), v = document.getElementById("introV"), done = false, played = false, t1, t2;
+  function end() { if (done) return; done = true; clearTimeout(t1); clearTimeout(t2);
+    if (played) try { localStorage.setItem(KEY, "1"); } catch (e) {}              // a failed link is retried next time
+    try { v.pause(); v.removeAttribute("src"); v.load(); } catch (e) {}
+    box.style.transition = "opacity .25s"; box.style.opacity = "0"; setTimeout(function () { box.remove(); }, 260); }
+  box.style.display = "flex"; t1 = setTimeout(end, MAX_MS); t2 = setTimeout(function () { if (!played) end(); }, SLOW_MS);
+  v.addEventListener("error", end); v.addEventListener("playing", function () { played = true; });
+  v.addEventListener("loadedmetadata", function () { try { if (INTRO_START > 0) v.currentTime = INTRO_START; } catch (e) {} });
+  document.getElementById("introSkip").onclick = end; v.src = INTRO_URL;
+  var p = v.play(); if (p && p.catch) p.catch(end);
+})();
+</script>
 
 <!-- ================= LOGIN ================= -->
 <main id="login" class="min-h-screen grid place-items-center p-4">
@@ -112,19 +124,16 @@
       <span id="actBtns" class="contents nodev"></span>
       <button data-act="logout" class="hb">Log out</button>
     </div>
-    <div dir="ltr" class="nodev flex justify-end px-4 pt-3">           <!-- vehicle inspection: microbus-shaped button, always at the far right -->
-      <button id="vehBtn" data-act="veh" class="relative rounded-xl p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" aria-label="فحص المركبات" title="فحص المركبات">
-        <span class="vcar flex-col items-center transition hover:-translate-y-0.5"><svg viewBox="0 0 120 58" class="w-24 h-12 overflow-visible" aria-hidden="true">
-          <g fill="#cbd5e1"><circle class="vpuff" cx="2" cy="44" r="3"/><circle class="vpuff d2" cx="-5" cy="40" r="2.2"/></g>
-          <path d="M6 46V20q0-8 8-8h58q10 0 17 9l15 11q6 4 6 14z" fill="#d90000" stroke="#fff" stroke-width="2"/><path d="M14 17h20v13H14zM38 17h20v13H38zM62 17h14v13H62zM82 17q6 0 12 9v4H82z" fill="#fff" opacity=".92"/><rect x="108" y="36" width="8" height="5" rx="1" fill="#fde047"/>
-          <g fill="#0f172a" stroke="#fff" stroke-width="2"><g class="vwh"><circle cx="30" cy="47" r="8"/><path d="M30 40v14M23 47h14" stroke-width="1.5"/></g><g class="vwh"><circle cx="90" cy="47" r="8"/><path d="M90 40v14M83 47h14" stroke-width="1.5"/></g></g></svg>
-          <span class="vlab text-[11px] font-semibold leading-none mt-0.5">فحص المركبات</span></span></button>
+    <div id="carTrack" dir="ltr" class="nodev relative mt-3 h-20 overflow-hidden">           <!-- vehicle inspection car: starts on the LEFT, drives to the RIGHT with exhaust smoke -->
+      <button id="vehBtn" data-act="veh" class="group flex flex-col items-center rounded-xl p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" aria-label="فحص المركبات" title="فحص المركبات">
+        <svg viewBox="0 0 120 58" class="w-24 h-12" aria-hidden="true"><rect x="0" y="39" width="9" height="4" rx="2" fill="#475569" stroke="#fff" stroke-width="1"/><path d="M6 46V20q0-8 8-8h58q10 0 17 9l15 11q6 4 6 14z" fill="#d90000" stroke="#fff" stroke-width="2"/><path d="M14 17h20v13H14zM38 17h20v13H38zM62 17h14v13H62zM82 17q6 0 12 9v4H82z" fill="#fff" opacity=".92"/><rect x="108" y="36" width="8" height="5" rx="1" fill="#fde047"/><g fill="#0f172a" stroke="#fff" stroke-width="2"><circle cx="30" cy="47" r="8"/><circle cx="90" cy="47" r="8"/></g><g fill="#fff"><circle cx="30" cy="47" r="2.5"/><circle cx="90" cy="47" r="2.5"/></g></svg>
+        <span class="text-[11px] font-semibold leading-none mt-0.5">فحص المركبات</span></button>
     </div>
   </header>
   <div class="flex flex-col md:flex-row flex-1 min-h-0">
     <main class="flex-1 min-w-0 p-3 md:p-4 grid gap-3 content-start">
       <div id="work" class="grid gap-3 content-start nodev">
-      <div class="flex flex-wrap items-center gap-2"><h2 id="deptTitle" class="font-bold text-lg me-auto"></h2><span id="count" class="text-sm text-slate-500"></span>
+      <div class="flex flex-wrap items-center gap-2"><h2 id="deptTitle" class="font-bold text-lg me-auto"></h2><span id="count" class="text-sm text-slate-500"></span><button data-act="regList" class="b">📋 قائمة العمال المسجلين</button>
         <select id="sortSel" class="b" aria-label="Sort"><option value="serial">Sort: default</option><option value="codeA">Code ↑</option><option value="codeD">Code ↓</option><option value="nameA">Name A–Z</option><option value="nameD">Name Z–A</option></select></div>
       <button id="addBtn" data-act="add" class="bp fixed bottom-6 left-4 z-30 w-14 h-14 rounded-xl shadow-lg grid place-items-center" aria-label="Add worker" title="+ Add worker"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <div id="hfBar" class="flex gap-2 overflow-x-auto pb-1" aria-label="Quick filters"></div>
@@ -162,7 +171,7 @@
   <div class="bg-white rounded-xl p-5 max-w-sm w-full shadow-xl"><h3 class="font-bold text-lg">Are you sure?</h3><p id="cfmT" class="text-sm text-slate-600 my-3"></p>
     <div class="flex justify-end gap-2"><button id="cfmNo" data-act="cfmNo" class="b">Cancel</button><button id="cfmYes" data-act="cfmYes" class="b !bg-red-600 !text-white !border-red-600">Delete</button></div></div></div>
 <div id="veh" dir="rtl" lang="ar" class="hidden fixed inset-0 z-[45] bg-slate-100 text-slate-800 overflow-auto">
-  <header class="vhead text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+  <header class="brand text-white px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
     <button data-act="vehClose" class="hb" aria-label="رجوع">→ رجوع</button>
     <div class="me-auto leading-tight"><div class="font-bold">فحص المركبات · HSE</div><div id="vTitle" class="text-xs text-slate-300"></div></div>
     <button id="vDevBtn" data-act="vDev" class="hb">🔧 مطور المركبات</button></header>
@@ -179,7 +188,7 @@
   <div id="aiKeyBox" class="hidden p-3 border-b border-slate-200 grid gap-2"><label class="text-sm font-semibold">Gemini API key<input id="gk" type="password" class="i" autocomplete="off"></label>
     <label class="text-xs flex items-center gap-1"><input type="checkbox" id="aiShare"> Share key with factory devices (needed for image scanning)</label><button data-act="aiKey" class="b bp justify-self-start">Save key</button></div>
   <div id="aiLog" class="flex-1 overflow-auto p-3 grid content-start gap-3"></div>
-  <div class="p-2 border-t border-slate-200 flex gap-2 items-end"><textarea id="aiQ" rows="2" class="i !mt-0 flex-1" placeholder="Describe the change you want"></textarea><button data-act="aiSend" class="b bp">Send</button></div>
+  <div class="p-2 border-t border-slate-200 flex gap-2 items-end"><textarea id="aiQ" rows="2" class="i !mt-0 flex-1" placeholder="Describe the change you want"></textarea><button id="aiSendBtn" data-act="aiSend" class="b bp">Send</button></div>
 </div>
 <div id="pdo" class="hidden fixed inset-0 z-[80] bg-slate-900/60 grid place-items-center p-4"><div class="bg-white rounded-xl p-5 max-w-sm w-full shadow-xl grid gap-2">
   <h3 class="font-bold text-lg">Print or download</h3><button data-act="pdoPrint" class="b bp">🖨 Print / Save as PDF</button><button data-act="pdoDl" class="b">⬇ Download HTML file</button><button data-act="pdoX" class="b">Cancel</button></div></div>
@@ -257,7 +266,7 @@ const can = () => !S.dev && S.ok === S.f;   // developer mode never loads worker
 const col = n => collection(db, "factories", FACTORIES[S.f].id, n);
 const openModal = (t, h, wide) => { $("#mTitle").textContent = t; $("#mBody").innerHTML = h;
   $("#mBox").classList.toggle("max-w-4xl", !!wide); $("#mBox").classList.toggle("max-w-lg", !wide); $("#modal").classList.remove("hidden"); };
-const closeModal = () => { $("#modal").classList.add("hidden"); applyUi(); S.unl = null; pwDone(false); vReturn(); };   // also discards unsaved colour previews
+const closeModal = () => { $("#modal").classList.add("hidden"); applyUi(); S.unl = null; pwDone(false); };   // also discards unsaved colour previews
 let PD = null, pwRes = null, pwFor = null;              // password gate: pending promise + the worker being unlocked
 function pwDone(v) { const r = pwRes; pwRes = null; pwFor = null; r?.(v); }
 const askPw = w => { return new Promise(res => { pwDone(false); pwRes = res; pwFor = w.id;
@@ -286,16 +295,15 @@ const saveSettings = () => setDoc(doc(db, "settings", "system"), { custom: S.cus
   const el = $("#fbStatus"), ok = m => { el.textContent = "✓ " + m; el.className = "text-xs text-center text-emerald-700"; }, bad = m => { el.textContent = "✗ " + m; el.className = "text-xs text-center text-red-700"; };
   try { await Promise.race([getDoc(doc(db, "settings", "system")), new Promise((_, r) => setTimeout(() => r({ code: "timeout" }), 15000))]); ok("Connected to Firebase"); }
   catch (e) { e.code === "permission-denied" ? ok("Connected to Firebase (sign in to continue)")
-    : bad(`Firestore did not answer [${e.code || "error"}] — open diagnose.html to see why. ${(e.message || "").slice(0, 120)}`); }
+    : bad(`Firestore did not answer [${e.code || "error"}] — ${(e.message || "").slice(0, 120)}`); }
 })();
 
 /* ============================ 5) RENDERING ============================ */
-const base = () => S.workers.filter(w => (S.dept === "All" || w.dept === S.dept) && (!S.q || `${w.name}`.toLowerCase().includes(S.q) || `${w.code}`.toLowerCase().includes(S.q)));
+const base = () => S.workers.filter(w => w.listed !== false && (S.dept === "All" || w.dept === S.dept) && (!S.q || `${w.name}`.toLowerCase().includes(S.q) || `${w.code}`.toLowerCase().includes(S.q)));
 const cmp = { serial: (a, b) => (a.serial || 0) - (b.serial || 0), codeA: (a, b) => String(a.code).localeCompare(String(b.code), undefined, { numeric: true }), codeD: (a, b) => cmp.codeA(b, a),
   nameA: (a, b) => String(a.name).localeCompare(String(b.name), LANG), nameD: (a, b) => cmp.nameA(b, a) };
 const vis = () => base().filter(w => S.hf === "all" || health(w) === S.hf).sort(cmp[S.sort] || cmp.serial);
 const COLS = ["serial", "code", "name", "dept", "profession", "hireDate", "medical", "injuries", "chronic", "notes"];
-const HEAD = ["Serial", "Code", "Name", "Department", "Profession", "Hire Date", "Medical History", "Work Injury (إصابة عمل)", "Chronic Diseases", "Notes"];
 
 function renderNav() {
   $("#facNav").innerHTML = FACTORIES.map((f, i) => `<button data-act="fac" data-id="${i}" class="w-full flex items-center gap-2 ps-1 pe-3 py-1.5 rounded-full text-sm ${i === S.f ? "bp text-white font-semibold" : "bg-slate-100 hover:bg-slate-200 text-slate-800"}">${facIcon(f)}<span>${esc(fname(f))}</span>${S.dev || S.ok === i ? "" : "<span>🔒</span>"}</button>`).join("");
@@ -329,7 +337,7 @@ function renderTable() { renderHead();
   $("#count").textContent = `${r.length} ${t("workers")}`;
 }
 const renderAll = () => { renderNav(); renderData(); };
-const renderData = () => { renderTable(); refreshAlerts(); renderForms(); };
+const renderData = () => { renderTable(); refreshAlerts(); renderForms(); renderReg(); };
 
 /* ======================= 6) WORKER CRUD + EXPORT ======================= */
 const AREA = ["medical", "injuries", "chronic", "notes"];
@@ -344,7 +352,7 @@ function workerForm(w = {}) {
       ? `<select name="dept" class="i">${DEPTS.map(d => `<option value="${esc(d)}" ${d === dflt ? "selected" : ""}>${esc(d)}</option>`).join("")}</select>`
       : AREA.includes(k) ? `<textarea name="${k}" rows="2" class="i">${esc(w[k])}</textarea>`
       : `<input name="${k}" type="${k === "hireDate" ? "date" : "text"}" value="${esc(w[k])}" class="i" ${k === "code" || k === "name" ? "required" : ""}>`}${OPT.includes(k) ? fillSel(k) : ""}</label>`).join("")}
-    <button class="b bp sm:col-span-2">Save worker</button></form>`);
+    ${w.id ? "" : `<p class="sm:col-span-2 text-xs text-slate-500">العامل الجديد بيتسجل في «قائمة العمال المسجلين» ومش بيظهر في القائمة العاملة غير لما تفعّله من هناك.</p>`}<button class="b bp sm:col-span-2">Save worker</button></form>`);
 }
 function exportCsv() {                                // current department + search filter → Excel-ready CSV (UTF-8 BOM keeps Arabic intact)
   const rows = vis(); if (!rows.length) return toast("No rows to export in this view.");
@@ -578,6 +586,7 @@ Object.assign(AR, { "Occupational Safety and Health Department (HSE)": "إدار
 Object.assign(AR, { "Password required": "كلمة السر مطلوبة", "Enter the password of this factory:": "أدخل كلمة سر هذا المصنع:", "Verify": "تحقق" });
 Object.assign(AR, { "Current password": "كلمة السر الحالية", "New password (min 6)": "كلمة السر الجديدة (6 أحرف على الأقل)", "Fill only the accounts you want to change. Passwords are checked by Firebase and are never stored in the database.": "املأ الحسابات التي تريد تغييرها فقط. كلمات السر يتحقق منها Firebase ولا تُخزَّن في قاعدة البيانات.",
   "Wrong developer password.": "كلمة سر المطوّر غير صحيحة.", "Too many attempts. Wait a few minutes and try again.": "محاولات كثيرة. انتظر بضع دقائق ثم حاول مجدداً." });
+Object.assign(AR, { "AI model": "نموذج الذكاء الاصطناعي" });
 const AR2EN = Object.fromEntries(Object.entries(AR).map(([k, v]) => [v, k]));
 let LANG = localStorage.getItem("gcc.lang") || "en", DARK = !!localStorage.getItem("gcc.dark");
 const t = s => (LANG === "ar" && AR[s]) || s;
@@ -598,7 +607,7 @@ function start(ok, dev) {
   if (dev) try { sessionStorage.removeItem(SESS); } catch {}                // developer mode is never restored after refresh
   if (ok != null) S.f = ok; else if (FACTORIES[sv?.f]) S.f = sv.f;
   S.dept = sv?.f === S.f ? sv.dept || "All" : "All"; S.hf = "all"; closeModal();
-  $("#login").classList.add("hidden"); $("#app").classList.remove("hidden"); watch();
+  $("#login").classList.add("hidden"); $("#app").classList.remove("hidden"); watch(); if (!dev) vRestore().catch(console.error);
 }
 function leave() {
   unsubs.forEach(u => u()); unsubs = []; try { sessionStorage.removeItem(SESS); } catch {}
@@ -650,22 +659,32 @@ function applyPatches(p) {                              // CSS re-applied every 
   patches = p; let st = document.getElementById("aiCss"); if (!st) { st = document.createElement("style"); st.id = "aiCss"; document.head.append(st); }
   st.textContent = p.map(x => x.css || "").join("\n"); p.slice(appliedN).forEach(x => x.js && runJs(x.js)); appliedN = p.length; }
 const SYS = `You edit a single-page HSE worker-register web app (Tailwind classes; ids #app #side #deptNav #facNav #tbody #cards #addBtn; CSS variables --brand --accent --page --text). Reply ONLY with JSON {"explain":"short reply in the user's language","css":"CSS to append, or empty","js":"safe vanilla JS to run once, or empty"}. Prefer CSS. Never touch Firebase, passwords, storage, network or delete data.`;
-const GEMINI_MODEL = "models/gemini-3.8-flash", GEMINI_FALLBACK = "models/gemini-2.5-flash";
-async function gemPost(key, body) {                    // one place for every Gemini call (AI assistant + image scan)
-  let first;
-  for (const m of [GEMINI_MODEL, GEMINI_FALLBACK]) {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${m}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body) });
-    const j = await r.json().catch(() => ({})); if (r.ok) return j;
-    first ??= new Error(j.error?.message || "Gemini error " + r.status);
-    if (!(r.status === 404 || /not found|not supported|unknown model/i.test(j.error?.message || ""))) throw first;   // real errors (bad key, quota…) are shown as they are
+const AI_DEFAULT = "gemini-3.8-flash", aiModel = () => "models/" + String(S.cfg.sys?.aiModel || AI_DEFAULT).trim().replace(/^models\//, "");   // model name comes from System Settings, never hard-wired
+const aiErr = (st, msg, m) => (st === 400 && /api key/i.test(msg)) || st === 401 || st === 403 ? "مفتاح Gemini غير صحيح أو مش مسموح له. راجع المفتاح من زر 🔑."
+  : st === 404 || /not found|no longer available|not supported/i.test(msg) ? `النموذج ${m.replace("models/", "")} مش متاح دلوقتي. غيّر اسمه من إعدادات النظام (نموذج الذكاء الاصطناعي).`
+  : st === 429 ? "تم تجاوز حد الاستخدام. استنى شوية وجرّب تاني." : st >= 500 ? "خدمة Gemini مشغولة دلوقتي. جرّب تاني بعد لحظات." : `تعذّر تنفيذ الطلب (${st}). ${msg.slice(0, 120)}`;
+const aiBusy = on => { const b = $("#aiSendBtn"), q = $("#aiQ"); if (b) { b.disabled = on; b.classList.toggle("opacity-50", on); } if (q) q.disabled = on; };
+async function gemPost(key, body) {                    // one place for every Gemini call (AI assistant + image scan): timeout, one retry on network / 429 / 5xx, Arabic errors
+  const m = aiModel(); let last;
+  for (let n = 0; n < 2; n++) {
+    const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 40000);
+    try {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${m}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal: ctl.signal });
+      const j = await r.json().catch(() => ({})); if (r.ok) return j;
+      last = new Error(aiErr(r.status, j.error?.message || "", m)); if (!(r.status === 429 || r.status >= 500)) throw last;
+    } catch (e) { if (e === last) throw e; last = new Error(e.name === "AbortError" ? "الطلب أخد وقت طويل. تأكد من الإنترنت وجرّب تاني." : "مفيش اتصال بالإنترنت أو الخدمة مش متاحة. تأكد من الاتصال وجرّب تاني."); }
+    finally { clearTimeout(to); }
+    if (n < 1) await new Promise(r => setTimeout(r, 1500));
   }
-  throw first;
+  throw last;
 }
 async function askAi(text) {
-  const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("Add your Gemini API key first.");
+  const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("ضيف مفتاح Gemini الأول من زر 🔑.");
+  if (!navigator.onLine) throw new Error("مفيش اتصال بالإنترنت. تأكد من الشبكة وجرّب تاني.");
   const hist = tryJ(localStorage.getItem(GH) || "[]"), contents = [...(Array.isArray(hist) ? hist : []), { role: "user", parts: [{ text }] }];
   const j = await gemPost(key, { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { responseMimeType: "application/json" } });
-  const raw = j.candidates?.[0]?.content?.parts?.[0]?.text || "{}"; contents.push({ role: "model", parts: [{ text: raw }] });
+  const raw = j.candidates?.[0]?.content?.parts?.[0]?.text; if (!raw) throw new Error("المساعد رجّع رد فاضي. جرّب تكتب الطلب بصيغة تانية.");
+  contents.push({ role: "model", parts: [{ text: raw }] });
   try { localStorage.setItem(GH, JSON.stringify(contents.slice(-16))); } catch {} setDoc(doc(db, "settings", "aiChat"), { hist: contents.slice(-16) }).catch(() => {});
   return tryJ(raw.replace(/```json|```/g, "").trim()); }
 function renderAiLog() { const el = $("#aiLog"); if (!el) return; const h = tryJ(localStorage.getItem(GH) || "[]"), L = Array.isArray(h) ? h : [];
@@ -673,7 +692,7 @@ function renderAiLog() { const el = $("#aiLog"); if (!el) return; const h = tryJ
   const code = pend && !S.thinking && (pend.css || pend.js) ? `<div class="border border-slate-300 rounded-xl p-3 grid gap-2 text-xs"><pre dir="ltr" class="bg-slate-900 text-slate-100 p-2 rounded overflow-auto max-h-48">${esc((pend.css ? "/* CSS */\n" + pend.css : "") + (pend.js ? "\n// JS\n" + pend.js : ""))}</pre>
     <div class="flex flex-wrap items-center gap-2"><button data-act="aiTry" class="b">Try here</button><button data-act="aiSave" class="b bp">Save & sync to all devices</button><label class="flex items-center gap-1"><input type="checkbox" id="aiJs"> Include JavaScript in synced patch</label></div></div>` : "";
   el.innerHTML = (L.length || S.thinking ? "" : `<div class="m-auto text-center text-slate-500 py-16"><div class="text-5xl mb-2">✨</div><p>Describe the change you want</p></div>`)
-    + L.map(m => m.role === "user" ? u(m.parts[0].text) : a(esc(tryJ(m.parts[0].text).explain || ""))).join("") + (S.thinking ? u(S.thinking) + a("…") : "") + code;
+    + L.map(m => m.role === "user" ? u(m.parts[0].text) : a(esc(tryJ(m.parts[0].text).explain || ""))).join("") + (S.thinking ? u(S.thinking) + a('<span class="inline-flex items-center gap-2"><span class="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></span>جارٍ التفكير…</span>') : "") + code;
   $("#aiCount").textContent = patches.length; el.scrollTop = el.scrollHeight; }
 const savePatches = (p, label) => run("Saving…", label, () => setDoc(doc(db, "settings", "system"), { patches: p }, { merge: true }));
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferredInstall = e; $("#installBtn").classList.remove("hidden"); });
@@ -699,13 +718,13 @@ const imgB64 = file => new Promise((res, rej) => { const img = new Image(), url 
     c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg", .85).split(",")[1]); };
   img.onerror = () => rej(new Error("Could not read this image.")); img.src = url; });
 async function scanImage(file) {                        // photo / scan of a paper note → Gemini → values for the matching HSE form (reviewed by the person before saving)
-  const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("Gemini API key is not set. The developer must add it in AI Assistant and tick 'Share key'.");
+  const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("مفتاح Gemini مش متضاف. المطوّر لازم يضيفه من المساعد ويفعّل مشاركة المفتاح.");
   const b64 = await imgB64(file), spec = Object.fromEntries(Object.entries(TPL).map(([k, v]) => [k, v.map(x => x.split(":")[0])]));
   const j = await gemPost(key, { contents: [{ role: "user", parts: [{ inlineData: { mimeType: "image/jpeg", data: b64 } }, { text: `Read this paper note or log (Arabic or English, handwritten or printed). Pick the best matching form type from this JSON of form types and their field labels: ${JSON.stringify(spec)}. Reply ONLY with JSON {"type":"<exact form type>","values":["one value per field, same order; empty string if not found; dates as YYYY-MM-DD"]}.` }] }], generationConfig: { responseMimeType: "application/json" } });
   const o = tryJ((j.candidates?.[0]?.content?.parts?.[0]?.text || "{}").replace(/```json|```/g, "").trim()), type = TPL[o.type] ? o.type : Object.keys(TPL)[0];
   return { type, values: fields(type).map((_, i) => String(o.values?.[i] ?? "")) }; }
-const scanPicked = inp => { const f = inp.files[0]; inp.value = ""; if (!f) return; guard(async () => { let r; $("#spinT").textContent = "Reading image…"; $("#spin").classList.remove("hidden");
-  try { r = await scanImage(f); } finally { $("#spin").classList.add("hidden"); } hseForm(r.type, { values: r.values }); toast("Form filled from the image — review it, then save.", 1); })(); };
+const scanPicked = inp => { const f = inp.files[0]; inp.value = ""; if (!f || S.scanning) return; S.scanning = true; guard(async () => { let r; $("#spinT").textContent = "جارٍ قراءة الصورة…"; $("#spin").classList.remove("hidden");
+  try { r = await scanImage(f); } finally { $("#spin").classList.add("hidden"); S.scanning = false; } hseForm(r.type, { values: r.values }); toast("Form filled from the image — review it, then save.", 1); })(); };
 
 function officialBlock(a, from, to) {                   // register-style section of the injury report (establishment · case list · rates · signatures)
   const e = S.cfg.est || {}, h = +($("#rH")?.value) || 0, c = x => `<td>${esc(x) || "—"}</td>`, rows = S.workers.flatMap(w => parseDates(w.injuries).filter(d => d >= from && d < to).map(d => ({ d, w }))).sort((p, q) => p.d - q.d);
@@ -723,24 +742,56 @@ const PEL = [["Carbon monoxide", "أول أكسيد الكربون", "25 ppm", "
   ["Acrolein", "أكرولين", "—", "0.1 ppm (Ceiling)"], ["Benzene", "البنزين", "0.5 ppm", "2.5 ppm (STEL)"], ["Toluene", "التولوين", "20 ppm", "—"], ["Xylene", "الزيلين", "100 ppm", "150 ppm (STEL)"],
   ["n-Hexane", "ن-هكسان", "50 ppm", "—"], ["Methanol", "الميثانول", "200 ppm", "250 ppm (STEL)"], ["Styrene", "الستايرين", "20 ppm", "40 ppm (STEL)"], ["Trichloroethylene", "ثلاثي كلورو إيثيلين", "10 ppm", "25 ppm (STEL)"],
   ["Formaldehyde", "الفورمالدهيد", "0.1 ppm", "0.3 ppm (Ceiling)"], ["Hydrochloric acid", "حمض الهيدروكلوريك", "—", "2 ppm (Ceiling)"], ["Sulfuric acid (mist)", "حمض الكبريتيك", "0.2 mg/m³", "—"],
-  ["Sodium hydroxide", "الصودا الكاوية", "—", "2 mg/m³ (Ceiling)"], ["Lead", "الرصاص", "0.05 mg/m³", "—"], ["Silica, respirable crystalline", "السيليكا البلورية", "0.025 mg/m³", "—"], ["Noise", "الضوضاء", "85 dB(A) / 8 h", "—"]];
-const REF = () => `<div class="grid gap-5">
-  <section><h3 class="font-bold text-base mb-1">⚖️ القوانين واللوائح · Legal framework</h3><table class="rt"><tr><th></th><th>القانون القديم · Old code</th><th>القانون الجديد · New code</th></tr>
-    <tr><td>Law</td><td>Labour Law 12/2003 (Book Five: السلامة والصحة المهنية وتأمين بيئة العمل)</td><td>Labour Law 14/2025</td></tr>
-    <tr><td>Dates</td><td>Replaced from 1 Sep 2025</td><td>Published 3 May 2025 · in force 1 Sep 2025 · specialised labour courts from 1 Oct 2025</td></tr>
-    <tr><td>OSH</td><td colspan="2">Check the OSH part of the law in force and the Ministry of Labour implementing decisions (قرارات وزارة العمل).</td></tr></table>
-    <ul class="list-disc ps-5 mt-2 grid gap-1"><li>Environment Law 4/1994 (amended by Law 9/2009) and its Executive Regulation, Decree 338/1995 as amended by Decree 1095/2011 — Annex 8: workplace air-contaminant limits.</li>
-    <li>Social Insurance Law 148/2019 — work injuries and occupational diseases; injuries are notified to the insurance office and the labour directorate.</li></ul></section>
-  <section><h3 class="font-bold text-base mb-1">🦺 التزامات صاحب العمل المعتادة · Typical employer duties</h3><ul class="list-disc ps-5 grid gap-1"><li>Provide a safe workplace, risk assessment and written safety instructions.</li><li>Provide suitable PPE free of charge and train workers on it.</li>
-    <li>Pre-employment and periodic medical examinations; keep medical records.</li><li>Keep a work-injury / occupational-disease register and notify the authorities within the legal deadline.</li><li>Fire-fighting, emergency and evacuation plans; machine guarding; safe storage of hazardous materials.</li>
-    <li>OSH unit / officer and committee according to establishment size; cooperate with labour inspectors.</li></ul><p class="text-xs text-slate-500 mt-1">Orientation only — confirm the exact articles, deadlines and penalties in the official text of the law in force.</p></section>
-  <section><h3 class="font-bold text-base mb-1">☣️ حدود التعرض · Exposure limits</h3><input id="pelQ" type="search" placeholder="Search substance" class="i !mt-0 mb-2">
-    <div class="overflow-auto"><table id="pelT" class="rt"><tr><th>Substance</th><th>المادة</th><th>TWA (8 h)</th><th>STEL / Ceiling</th></tr>${PEL.map(r => `<tr data-r><td>${r[0]}</td><td>${r[1]}</td><td dir="ltr">${r[2]}</td><td dir="ltr">${r[3]}</td></tr>`).join("")}</table></div>
-    <p class="text-xs text-slate-500 mt-1">Indicative ACGIH TLV values for orientation. The legally binding Egyptian limits are in Annex 8 of Decree 338/1995 (as amended) — verify there before using a value in an official report.</p></section></div>`;
+  ["Sodium hydroxide", "الصودا الكاوية", "—", "2 mg/m³ (Ceiling)"], ["Lead", "الرصاص", "0.05 mg/m³", "—"], ["Silica, respirable crystalline", "السيليكا البلورية", "0.025 mg/m³", "—"],
+  ["Ethanol", "الإيثانول (كحول إيثيلي)", "—", "1000 ppm (STEL)"], ["Isopropanol", "الأيزوبروبانول", "200 ppm", "400 ppm (STEL)"], ["Methyl ethyl ketone (MEK)", "ميثيل إيثيل كيتون", "200 ppm", "300 ppm (STEL)"],
+  ["Ethyl acetate", "أسيتات الإيثيل", "400 ppm", "—"], ["Methylene chloride", "كلوريد الميثيلين", "50 ppm", "—"], ["Perchloroethylene", "بيركلورو إيثيلين", "25 ppm", "100 ppm (STEL)"],
+  ["Carbon tetrachloride", "رابع كلوريد الكربون", "5 ppm", "10 ppm (STEL)"], ["Carbon disulfide", "ثاني كبريتيد الكربون", "1 ppm", "—"], ["Phenol", "الفينول", "5 ppm", "—"], ["Vinyl chloride", "كلوريد الفينيل", "1 ppm", "—"],
+  ["Ethylene oxide", "أكسيد الإيثيلين", "1 ppm", "—"], ["Hydrogen peroxide", "فوق أكسيد الهيدروجين", "1 ppm", "—"], ["Nitric acid", "حمض النيتريك", "2 ppm", "4 ppm (STEL)"], ["Phosphoric acid", "حمض الفوسفوريك", "1 mg/m³", "3 mg/m³ (STEL)"],
+  ["Hydrogen fluoride", "فلوريد الهيدروجين", "0.5 ppm", "2 ppm (Ceiling)"], ["Hydrogen cyanide", "سيانيد الهيدروجين", "—", "4.7 ppm (Ceiling)"], ["Glutaraldehyde", "الجلوتارالدهيد", "—", "0.05 ppm (Ceiling)"],
+  ["Bromine", "البروم", "0.1 ppm", "0.2 ppm (STEL)"], ["Phosgene", "الفوسجين", "0.1 ppm", "—"], ["Phosphine", "الفوسفين", "0.05 ppm", "0.15 ppm (STEL)"], ["Ozone", "الأوزون", "0.1 ppm", "—"], ["Nitric oxide", "أكسيد النيتريك", "25 ppm", "—"],
+  ["Toluene diisocyanate (TDI)", "ثنائي إيزوسيانات التولوين", "0.001 ppm", "0.005 ppm (STEL)"], ["Mercury (elemental)", "الزئبق", "0.025 mg/m³", "—"], ["Manganese (respirable)", "المنجنيز", "0.02 mg/m³", "—"],
+  ["Zinc oxide fume", "دخان أكسيد الزنك", "2 mg/m³", "—"], ["Copper fume", "دخان النحاس", "0.2 mg/m³", "—"], ["Oil mist (mineral)", "رذاذ الزيوت المعدنية", "5 mg/m³", "—"], ["Arsenic (inorganic)", "الزرنيخ", "0.01 mg/m³", "—"]];
+const NOISE = [["85", "8 ساعات"], ["88", "4 ساعات"], ["91", "2 ساعة"], ["94", "1 ساعة"], ["97", "30 دقيقة"], ["100", "15 دقيقة"], ["103", "7.5 دقيقة"], ["106", "3.75 دقيقة"], ["109", "حوالي دقيقتين"], ["112", "حوالي 56 ثانية"]];
+const DUST = [["Particulates, respirable (no specific limit)", "أتربة قابلة للتنفس (بدون حد نوعي)", "5 mg/m³"], ["Particulates, total (no specific limit)", "أتربة كلية (بدون حد نوعي)", "15 mg/m³"], ["Silica, respirable crystalline", "السيليكا البلورية القابلة للتنفس", "0.025 mg/m³"],
+  ["Portland cement (respirable)", "أتربة الأسمنت (الجزء القابل للتنفس)", "1 mg/m³"], ["Wood dust (inhalable)", "أتربة الخشب", "1 mg/m³"], ["Coal dust (respirable)", "أتربة الفحم", "0.4 mg/m³"], ["Iron oxide (respirable)", "أكسيد الحديد", "5 mg/m³"],
+  ["Aluminium metal dust (respirable)", "أتربة الألومنيوم", "1 mg/m³"], ["Talc (respirable, no asbestos)", "التلك", "2 mg/m³"], ["Gypsum (inhalable)", "الجبس", "10 mg/m³"], ["Limestone / calcium carbonate (inhalable)", "الحجر الجيري", "10 mg/m³"],
+  ["Cotton dust (raw, thoracic)", "أتربة القطن الخام", "0.1 mg/m³"], ["Flour dust (inhalable)", "أتربة الدقيق", "0.5 mg/m³"], ["Grain dust (inhalable)", "أتربة الحبوب", "4 mg/m³"], ["Lead dust", "أتربة الرصاص", "0.05 mg/m³"], ["Asbestos (all forms)", "الأسبستوس", "0.1 f/cc"]];
+const LUX = [["ممرات وطرق داخلية", "100"], ["سلالم", "150"], ["مخازن عامة", "100"], ["مخازن فيها قراءة بيانات أو تداول", "200"], ["أرصفة التحميل والتفريغ", "150"], ["كافتيريا وأماكن الراحة", "200"], ["ورش الصيانة وتشغيل الماكينات (شغل خشن)", "300"],
+  ["لحام", "300"], ["خطوط الإنتاج والتجميع العادي", "300 – 500"], ["المكاتب", "500"], ["غرف التحكم", "500"], ["غرفة الإسعافات الأولية", "500"], ["التجميع الدقيق", "750"], ["فحص وضبط الجودة", "750 – 1000"], ["ساحات وممرات خارجية", "20 – 50"]];
+const REF = () => `<div class="grid gap-5" dir="rtl">
+  <section><h3 class="font-bold text-base mb-1">⚖️ القوانين واللوائح</h3><table class="rt"><tr><th></th><th>القانون القديم</th><th>القانون الجديد</th></tr>
+    <tr><td>القانون</td><td>قانون العمل 12 لسنة 2003 (الكتاب الخامس: السلامة والصحة المهنية وتأمين بيئة العمل)</td><td>قانون العمل 14 لسنة 2025</td></tr>
+    <tr><td>التواريخ</td><td>اتلغى من 1 سبتمبر 2025</td><td>اتنشر في 3 مايو 2025 وشغّال من 1 سبتمبر 2025، ومحاكم العمل المتخصصة من 1 أكتوبر 2025</td></tr>
+    <tr><td>السلامة والصحة المهنية</td><td colspan="2">راجع باب السلامة والصحة المهنية في القانون الساري وقرارات وزارة العمل التنفيذية.</td></tr></table>
+    <ul class="list-disc ps-5 mt-2 grid gap-1"><li>قانون البيئة 4 لسنة 1994 (المعدل بالقانون 9 لسنة 2009) ولائحته التنفيذية، قرار 338 لسنة 1995 المعدل بقرار 1095 لسنة 2011 — الملحق 8: حدود الملوثات في هواء أماكن العمل.</li>
+    <li>قانون التأمينات الاجتماعية 148 لسنة 2019 — إصابات العمل والأمراض المهنية؛ لازم الإصابة تتبلّغ لمكتب التأمينات ومديرية العمل.</li></ul></section>
+  <section><h3 class="font-bold text-base mb-1">🦺 التزامات صاحب العمل المعتادة</h3><ul class="list-disc ps-5 grid gap-1"><li>يوفّر مكان شغل آمن، ويعمل تقييم مخاطر وتعليمات سلامة مكتوبة.</li><li>يدّي العمال معدات الوقاية الشخصية (PPE) المناسبة مجانًا ويدرّبهم على استخدامها.</li>
+    <li>كشف طبي قبل التعيين وكشف دوري، وحفظ السجلات الطبية.</li><li>يمسك سجل إصابات العمل والأمراض المهنية ويبلّغ الجهات في الميعاد القانوني.</li><li>خطط مكافحة الحريق والطوارئ والإخلاء، وتغطية أجزاء الماكينات الخطرة، وتخزين المواد الخطرة بشكل آمن.</li>
+    <li>وحدة أو مسؤول سلامة ولجنة سلامة حسب حجم المنشأة، والتعاون مع مفتشي العمل.</li></ul><p class="text-xs text-slate-500 mt-1">للاسترشاد فقط — اتأكد من أرقام المواد والمواعيد والعقوبات من النص الرسمي للقانون الساري.</p></section>
+  <section><h3 class="font-bold text-base mb-1">☣️ حدود التعرض للمواد الخطرة والحدود السقفية</h3><input id="pelQ" type="search" placeholder="Search substance" class="i !mt-0 mb-2">
+    <div class="overflow-auto max-h-96"><table id="pelT" class="rt"><tr><th>Substance</th><th>المادة</th><th>المتوسط على 8 ساعات (TWA)</th><th>حد قصير المدى / حد سقفي (Ceiling)</th></tr>${PEL.map(r => `<tr data-r><td dir="ltr">${r[0]}</td><td>${r[1]}</td><td dir="ltr">${r[2]}</td><td dir="ltr">${r[3]}</td></tr>`).join("")}</table></div>
+    <p class="text-xs text-slate-500 mt-1">الحد السقفي (Ceiling) معناه رقم ما ينفعش يتعدّى لحظة واحدة حتى. القيم دي إرشادية من ACGIH TLV. الحدود الملزمة قانونًا في مصر موجودة في الملحق 8 من قرار 338 لسنة 1995 (المعدل) — راجعها قبل ما تستخدم أي رقم في تقرير رسمي.</p></section>
+  <section><h3 class="font-bold text-base mb-1">🔊 الضوضاء</h3><table class="rt"><tr><th>مستوى الصوت dB(A)</th><th>أقصى مدة تعرّض في اليوم</th></tr>${NOISE.map(r => `<tr><td dir="ltr">${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>
+    <ul class="list-disc ps-5 mt-2 grid gap-1 text-sm"><li>الجدول ده بقاعدة ACGIH (حد 85 ديسيبل لمدة 8 ساعات، وكل زيادة 3 ديسيبل تنصّف المدة). حد OSHA الأمريكي 90 ديسيبل لـ 8 ساعات.</li><li>أي صوت لحظي (نبضي) أعلى من 140 ديسيبل (C) ممنوع تتعرّض له الأذن من غير حماية.</li>
+    <li>لازم سدادات أو سماعات أذن وبرنامج قياس وفحص سمع دوري لو التعرّض عدّى 85 ديسيبل.</li><li>الحد المنصوص عليه في اللائحة التنفيذية لقانون البيئة (حوالي 90 ديسيبل لـ 8 ساعات) — اتأكد منه من النص الرسمي.</li></ul></section>
+  <section><h3 class="font-bold text-base mb-1">🌫️ الأتربة</h3><div class="overflow-auto max-h-80"><table class="rt"><tr><th>Dust</th><th>نوع الأتربة</th><th>الحد (TWA 8 ساعات)</th></tr>${DUST.map(r => `<tr><td dir="ltr">${r[0]}</td><td>${r[1]}</td><td dir="ltr">${r[2]}</td></tr>`).join("")}</table></div>
+    <p class="text-xs text-slate-500 mt-1">قيم إرشادية (ACGIH / OSHA). استخدم شفط موضعي وتهوية، وكمامات مناسبة، وقياس دوري، وراجع الحد الرسمي في الملحق 8 من قرار 338 لسنة 1995 المعدل.</p></section>
+  <section><h3 class="font-bold text-base mb-1">💡 شدة الإضاءة (لوكس)</h3><table class="rt"><tr><th>المكان / نوع الشغل</th><th>الحد الأدنى المقترح (لوكس)</th></tr>${LUX.map(r => `<tr><td>${r[0]}</td><td dir="ltr">${r[1]}</td></tr>`).join("")}</table>
+    <p class="text-xs text-slate-500 mt-1">قيم إرشادية مبنية على المواصفة الأوروبية EN 12464-1. قيس الإضاءة بجهاز لوكس ميتر على مستوى سطح الشغل، وراجع الكود المصري لأعمال الإضاءة واشتراطات الجهات المختصة.</p></section></div>`;
 
 window.addEventListener("popstate", () => { if (location.hash !== "#ai") $("#chat").classList.add("hidden"); });
 
+const regHtml = () => `<div class="grid gap-2" dir="rtl"><div class="flex gap-2 flex-wrap items-center"><input id="regQ" type="search" class="i !mt-0 grow" placeholder="بحث بالاسم أو الكود"><span id="regN" class="text-sm text-slate-500"></span></div>
+  <div class="overflow-auto max-h-[60vh]"><table class="rt"><thead><tr><th>مسلسل</th><th>كود</th><th>اسم</th><th>القسم</th><th>وظيفة</th><th>أنواع الأمراض</th><th>القائمة العاملة</th></tr></thead><tbody id="regB"></tbody></table></div></div>`;
+function renderReg() {                                  // Registered Workers table (live): every worker of this factory, whether or not shown in the working list
+  const b = $("#regB"); if (!b) return; const q = ($("#regQ")?.value || "").trim().toLowerCase(), r = [...S.workers].sort(cmp.serial).filter(w => !q || `${w.name}`.toLowerCase().includes(q) || `${w.code}`.toLowerCase().includes(q));
+  b.innerHTML = r.map((w, i) => `<tr><td>${esc(w.serial || i + 1)}</td><td>${esc(w.code)}</td><td>${esc(w.name)}</td><td>${esc(w.dept)}</td><td>${esc(w.profession)}</td><td>${hasText(w.chronic) ? esc(w.chronic) : "—"}</td>
+    <td class="whitespace-nowrap">${w.listed === false ? "غير ظاهر" : "ظاهر"} <button data-act="regTog" data-id="${w.id}" class="${sm}">${w.listed === false ? "إظهار" : "إخفاء"}</button> <button data-act="edit" data-id="${w.id}" class="${sm}">تعديل</button></td></tr>`).join("")
+    || `<tr><td colspan="7" class="text-center text-slate-500 py-6">لا يوجد عمال مسجلين</td></tr>`; $("#regN").textContent = `${r.length} عامل`; }
+document.addEventListener("input", e => { if (e.target.id === "regQ") renderReg(); });
 const ACT = {
+  regList: need(() => { openModal("قائمة العمال المسجلين", regHtml(), true); renderReg(); }),
+  async regTog(id) { const w = S.workers.find(x => x.id === id); if (!w) return; await run("Saving…", w.listed === false ? "تم إظهار العامل في القائمة العاملة." : "تم إخفاء العامل من القائمة العاملة.", () => updateDoc(doc(col("workers"), id), { listed: w.listed === false })); },
   refs: () => openModal("Safety Guide", REF(), true),
   scanCam() { const i = $("#scanIn"); i.setAttribute("capture", "environment"); i.click(); },
   scanPick() { const i = $("#scanIn"); i.removeAttribute("capture"); i.click(); },
@@ -753,7 +804,7 @@ const ACT = {
   wfields() { if (!S.dev) return; openModal("Worker Fields Settings", `<form data-form="wfields" class="grid gap-2">${COLS.map(k => `<div class="flex items-center gap-2"><input name="l_${k}" value="${esc(S.cfg.labels?.[k] || "")}" placeholder="${esc(DEFLAB[k])}" class="i !mt-0" aria-label="${esc(DEFLAB[k])}">
     <label class="text-xs flex items-center gap-1 whitespace-nowrap"><input type="checkbox" name="h_${k}" ${(S.cfg.hide || []).includes(k) ? "" : "checked"} ${k === "code" || k === "name" ? "disabled checked" : ""}> Show in table</label></div>`).join("")}<button class="b bp">Save</button></form>`); },
   sys() { if (!S.dev) return; const y = S.cfg.sys || {}, e = S.cfg.est || {}; openModal("System Settings", `<form data-form="sys" class="grid sm:grid-cols-2 gap-2">${inp("appName", "App name", y.appName)}${inp("alertDays", "Recent-injury alert window (days)", y.alertDays || 30, "number")}
-    ${inp("dueSoon", "Due-soon window (days)", y.dueSoon || 7, "number")}${inp("examMax", "Max days between medical exams", y.examMax || 365, "number")}<h3 class="font-semibold sm:col-span-2 mt-2">Establishment (injury report header)</h3>
+    ${inp("dueSoon", "Due-soon window (days)", y.dueSoon || 7, "number")}${inp("examMax", "Max days between medical exams", y.examMax || 365, "number")}${inp("aiModel", "AI model", y.aiModel || AI_DEFAULT)}<h3 class="font-semibold sm:col-span-2 mt-2">Establishment (injury report header)</h3>
     ${inp("e_name", "Name", e.name)}${inp("e_activity", "Activity", e.activity)}${inp("e_address", "Address", e.address)}${inp("e_insNo", "Insurance no.", e.insNo)}${inp("e_crNo", "Commercial register no.", e.crNo)}<button class="b bp sm:col-span-2">Save</button></form>`); },
   colors() { if (!S.dev) return; openModal("Colors Studio", `<form data-form="studio" class="grid gap-3">${SECS.map(([k, l]) => { const o = S.ui.sec?.[k] || {}, d = sdef(k);
     return `<div class="flex flex-wrap items-center gap-3 border-b border-slate-100 pb-2"><span class="w-32 text-sm font-semibold">${l}</span><label class="text-xs flex items-center gap-1">Background<input type="color" name="${k}_bg" value="${o.bg ? hex2(o.bg) : d[0]}" class="w-10 h-8"></label>
@@ -779,8 +830,8 @@ const ACT = {
   aiKeys: () => $("#aiKeyBox").classList.toggle("hidden"),
   async aiKey() { const k = $("#gk").value.trim(); try { localStorage.setItem(GK, k); } catch {} await run("Saving…", "Key saved.", () => setDoc(doc(db, "settings", "system"), { gk: $("#aiShare").checked ? k : "" }, { merge: true })); },
   aiNew() { try { localStorage.removeItem(GH); } catch {} setDoc(doc(db, "settings", "aiChat"), { hist: [] }).catch(() => {}); pend = null; renderAiLog(); },
-  async aiSend() { const q = $("#aiQ").value.trim(); if (!q || S.thinking) return; S.thinking = q; $("#aiQ").value = ""; pend = null; renderAiLog();
-    try { pend = await askAi(q); } catch (e) { $("#aiQ").value = q; throw e; } finally { S.thinking = null; renderAiLog(); } },
+  async aiSend() { const q = $("#aiQ").value.trim(); if (!q || S.thinking) return; S.thinking = q; $("#aiQ").value = ""; pend = null; aiBusy(true); renderAiLog();
+    try { pend = await askAi(q); } catch (e) { $("#aiQ").value = q; throw e; } finally { S.thinking = null; aiBusy(false); renderAiLog(); } },
   aiTry() { if (!pend) return toast("Ask the assistant first."); let st = $("#aiPrev"); if (!st) { st = document.createElement("style"); st.id = "aiPrev"; document.head.append(st); }
     st.textContent = pend.css || ""; if (pend.js) runJs(pend.js); toast("Applied on this device only.", 1); },
   async aiSave() { if (!pend) return toast("Ask the assistant first."); const withJs = $("#aiJs").checked, p = { css: String(pend.css || ""), js: withJs ? String(pend.js || "") : "", note: String(pend.explain || "").slice(0, 300), at: Date.now() };
@@ -841,7 +892,7 @@ const FORMS = {
   facs: guard(async f => { const facs = {}; FACTORIES.forEach((x, n) => { facs[x.id] = { en: f.elements["en" + n].value.trim() || x.en, ar: f.elements["ar" + n].value.trim() || x.ar }; }); await saveCfg({ facs }); closeModal(); renderSel(); renderAll(); }),
   depts: guard(async f => { const v = [...new Set([...f.querySelectorAll("[name=d]")].map(x => x.value.trim()).filter(Boolean))]; if (!v.length) throw new Error("Keep at least one department."); await saveCfg({ depts: v }); closeModal(); renderAll(); }),
   wfields: guard(async f => { const labels = {}, hide = []; COLS.forEach(k => { labels[k] = f.elements["l_" + k].value.trim(); if (!f.elements["h_" + k].checked) hide.push(k); }); await saveCfg({ labels, hide }); closeModal(); renderAll(); }),
-  sys: guard(async f => { const g = n => f.elements[n].value.trim(); await saveCfg({ sys: { appName: g("appName"), alertDays: +g("alertDays") || 30, dueSoon: +g("dueSoon") || 7, examMax: +g("examMax") || 365 },
+  sys: guard(async f => { const g = n => f.elements[n].value.trim(); await saveCfg({ sys: { appName: g("appName"), alertDays: +g("alertDays") || 30, dueSoon: +g("dueSoon") || 7, examMax: +g("examMax") || 365, aiModel: g("aiModel") || AI_DEFAULT },
     est: { name: g("e_name"), activity: g("e_activity"), address: g("e_address"), insNo: g("e_insNo"), crNo: g("e_crNo") } }); closeModal(); renderAll(); }),
   studio: guard(async f => { S.ui.sec = readSec(f); await saveUi(); toast("Saved.", 1); closeModal(); }),
   creds: guard(async f => {
@@ -854,8 +905,8 @@ const FORMS = {
     if (S.workers.some(x => x.code === d.code && x.id !== id)) throw new Error("This code already belongs to another worker.");
     btn.disabled = true;                                 // blocks double-submits until Firebase confirms
     try {
-      await run("Saving…", id ? "Worker updated." : "Worker added.", () => id ? updateDoc(doc(col("workers"), id), d)
-        : addDoc(col("workers"), { ...d, serial: Math.max(0, ...S.workers.map(x => x.serial || 0)) + 1, createdAt: serverTimestamp() }));
+      await run("Saving…", id ? "Worker updated." : "تمت إضافة العامل في «قائمة العمال المسجلين» (مش ظاهر في القائمة العاملة لحد ما تفعّله).", () => id ? updateDoc(doc(col("workers"), id), d)
+        : addDoc(col("workers"), { ...d, listed: false, serial: Math.max(0, ...S.workers.map(x => x.serial || 0)) + 1, createdAt: serverTimestamp() }));
       closeModal();
     } finally { btn.disabled = false; } }),
   hform: guard(async f => { const type = f.elements.type.value, id = f.elements.id.value, values = fields(type).map((_, i) => f.elements["f" + i].value);
@@ -886,57 +937,61 @@ document.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey
 $("#search").addEventListener("input", e => { S.q = e.target.value.trim().toLowerCase(); renderTable(); guard(globalSearch)(); });
 /* ======================= 11) VEHICLE INSPECTION MODULE (فحص المركبات) =======================
    Separate module: its own Firestore namespace (vehicleInspection_*), scoped to the signed-in factory and unlocked with that factory's LIVE main
-   password (re-checked by Firebase Auth every time). Its developer (car@gcc.local) signs in on a SECOND Firebase app,
-   so the two developer sessions never mix and the main developer has no access here. No passwords or secrets live in this file. */
-const CAR_DEV = "car@gcc.local", VP = "vehicleInspection_", VCARD = "bg-white rounded-xl shadow border border-slate-200 p-4";
+   password (re-checked by Firebase Auth every time). Its developer ("car developer" = car@gcc.local) signs in on a SECOND Firebase app,
+   so the two developer sessions never mix and the main developer has no access here. No passwords or secrets live in this file.
+   Roles: inspector ADDS vehicles + inspects · supervisor = dashboard/reports/inspectors (UI role) · car developer ONLY edits/disables/deletes/restores. */
+const CAR_DEV = "car@gcc.local", VP = "vehicleInspection_", VK = "gcc.vview", VCARD = "bg-white rounded-xl shadow border border-slate-200 p-4";
 const VCHK = [["ext", "طفاية الحريق صالحة"], ["tri", "مثلث التحذير العاكس"], ["cond", "الحالة العامة للمركبة"], ["lights", "الإضاءة والإطارات"], ["belt", "أحزمة الأمان"]];
 const VB = { ok: ["مطابقة", "bg-emerald-100 text-emerald-800"], bad: ["غير مطابقة", "bg-red-100 text-red-800"], no: ["لم تُفحص", "bg-slate-200 text-slate-700"] };
-const VT = { user: [["dash", "لوحة المتابعة"], ["insp", "فحص مركبة"], ["rep", "التقارير"]], dev: [["dveh", "المركبات"], ["dcon", "المقاولون"], ["dins", "المفتشون"], ["dchk", "قائمة الفحص"], ["dnote", "الإشعارات"], ["dann", "الإعلانات"], ["dset", "الإعدادات"], ["ddiag", "التشخيص"]] };
-const V = { fid: null, dev: false, tab: "dash", month: "", contractor: "", q: "", veh: [], con: [], chk: [], insp: [], insps: [], feat: {} };
-const VFEAT = { enabled: true, csv: true, pdf: true, theme: [217, 0, 0] };
-let vApp = null, vAuth = null, vDb = null, VCACHE = {};
-function vDrive(then) {                                // the microbus leaves to the right, then the password prompt opens
-  const b = $("#vehBtn"), car = b.querySelector(".vcar");
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return then();
-  document.documentElement.style.overflowX = "hidden"; b.disabled = true; b.classList.remove("back"); b.classList.add("go");
-  let fired = false; const end = () => { if (fired) return; fired = true; car.removeEventListener("animationend", on); then(); };
-  const on = e => { if (e.animationName === "vDriveOut") end(); }; car.addEventListener("animationend", on); setTimeout(end, 1300);   // fallback if the event never fires
-}
-function vReturn() {                                   // back in from the left, unless the module itself is open
-  const b = $("#vehBtn"); if (!b || !b.classList.contains("go") || !$("#veh").classList.contains("hidden")) return;
-  b.classList.remove("go"); b.classList.add("back"); b.disabled = false;
-  setTimeout(() => { b.classList.remove("back"); document.documentElement.style.overflowX = ""; }, 950); }
+const VS = { on: "فعّالة", off: "معطلة", hid: "مخفية", del: "محذوفة" };
+const VT = { insp: [["insp", "فحص مركبة"], ["dash", "لوحة المتابعة"]], sup: [["dash", "لوحة المتابعة"], ["rep", "التقارير"], ["insps", "المفتشون"]],
+  dev: [["dveh", "المركبات"], ["dcon", "المقاولون"], ["dchk", "قائمة الفحص"], ["dnote", "الإشعارات"], ["dann", "الإعلانات"], ["dset", "الإعدادات"]] };
+const V = { fid: null, dev: false, role: "insp", tab: "dash", month: "", contractor: "", q: "", veh: [], con: [], chk: [], ins: [], insp: [], set: {} };
+let vApp = null, vAuth = null, vDb = null, VCACHE = {}, vRestored = false, driving = false;
+const vInit = () => { if (!vApp) { vApp = initializeApp(firebaseConfig, "veh"); vAuth = getAuth(vApp); vDb = initializeFirestore(vApp, { experimentalForceLongPolling: true }); } };   // second app = separate session
 const vdb = () => (V.dev ? vDb : db), vcol = n => collection(vdb(), VP + "factories", V.fid, n), vdoc = (n, id) => doc(vdb(), VP + "factories", V.fid, n, id);
 const nowM = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"); };
 const vn = x => String(x ?? "").toLowerCase().normalize("NFKD").replace(/[\u064B-\u065F\u0640]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").trim();
 const vcode = v => [v.code, ...(v.linked || [])].join("/");                            // linked codes = ONE physical vehicle (e.g. 66/67)
+const vst = v => v.deleted ? "del" : v.active === false ? "off" : v.hidden ? "hid" : "on";
 const vstate = v => { const i = V.insp.find(x => x.vehicleId === v.id); return i ? (i.ok ? "ok" : "bad") : "no"; };
-const vAll = () => V.veh.filter(v => v.active !== false && (!V.contractor || v.contractor === V.contractor));
+const vAll = () => V.veh.filter(v => vst(v) === "on" && (!V.contractor || v.contractor === V.contractor));
 const vlist = () => vAll().filter(v => !V.q || vn([vcode(v), v.name, v.plate, v.contractor].join(" ")).includes(vn(V.q)));
 const vdis = () => { try { return JSON.parse(localStorage.getItem("vi.dis." + V.fid)) || []; } catch { return []; } };
+const vFeat = k => V.set.feat?.[k] !== false;                                          // feature toggles set by the car developer
+const vFacs = () => { const o = V.set.facs || {};
+  return [...FACTORIES.map(f => ({ id: f.id, ar: o[f.id]?.ar || f.ar, off: !!o[f.id]?.off })), ...Object.entries(o).filter(([id, x]) => x.extra && !FACTORIES.some(f => f.id === id)).map(([id, x]) => ({ id, ar: x.ar, off: !!x.off, extra: 1 }))]; };
+const vFacName = id => vFacs().find(f => f.id === id)?.ar || id;
+const vTheme = () => { const e = $("#veh").style, t = V.set.theme || {}; e.setProperty("--brand", `rgb(${t.brand || [30, 41, 59]})`); e.setProperty("--accent", `rgb(${t.accent || [217, 0, 0]})`); };   // Fresh red / dark by default
 async function vget(n, force) {                        // stable data is cached 5 min (manual refresh bypasses); a failed read throws and is never cached as "empty"
   const k = V.fid + n, c = VCACHE[k]; if (!force && c && Date.now() - c.t < 3e5) return c.rows;
   const rows = (await getDocs(vcol(n))).docs.map(d => ({ id: d.id, ...d.data() })); VCACHE[k] = { t: Date.now(), rows }; return rows; }
 const vinv = n => delete VCACHE[V.fid + n];
 async function vchk(force) { const c = (await vget("config", force)).find(r => r.id === "checklist"); return c?.items?.length ? c.items : VCHK.map(([id, label]) => ({ id, label })); }
-async function vfeat(force) { const r = (await vget("config", force)).find(x => x.id === "features"); return { ...VFEAT, ...(r || {}) }; }
-const vTheme = () => $("#veh").style.setProperty("--vacc", (V.feat.theme || VFEAT.theme).join(" "));
-const vOrph = () => { const have = new Set(V.con.map(c => vn(c.name))), names = [...new Set(V.veh.map(v => (v.contractor || "").trim()).filter(Boolean))].filter(n => !have.has(vn(n)));   // old free-text contractors → managed list
-  return names.length ? `<div class="rounded-lg border border-amber-300 bg-amber-50 text-amber-900 p-3 grid gap-2"><b>مقاولون مكتوبون يدوياً — ترحيل إلى القائمة المُدارة</b>${names.map(n => `<div class="flex items-center gap-2"><span class="me-auto">${esc(n)}</span><button data-act="vMig" data-id="${esc(n)}" class="b !py-0.5 text-xs">إضافة للقائمة</button></div>`).join("")}</div>` : ""; };
 async function vload(force) {                          // inspections are NEVER cached (monthly status must be exact)
   [V.veh, V.con, V.chk] = await Promise.all([vget("vehicles", force), vget("contractors", force), vchk(force)]);
   V.insp = (await getDocs(query(vcol("inspections"), where("month", "==", V.month)))).docs.map(d => ({ id: d.id, ...d.data() })); }
-function vOpen() { V.fid = FACTORIES[S.f].id; V.dev = false; V.tab = "dash"; V.month = nowM(); V.contractor = V.q = ""; VCACHE = {}; $("#veh").classList.remove("hidden"); document.body.style.overflow = "hidden"; vShow(); }
-function vehClose() { if (vAuth?.currentUser) signOut(vAuth).catch(() => {}); V.dev = false; V.fid = null; VCACHE = {}; $("#veh").classList.add("hidden"); document.body.style.overflow = ""; vReturn(); }
-function vTabs() { const T = V.dev ? VT.dev : VT.user;
+const vLoadSet = async () => { try { V.set = (await getDoc(doc(vdb(), VP + "settings", "main"))).data() || {}; } catch (e) { console.error(e); V.set = {}; } vTheme(); };
+const vSaveView = () => { try { sessionStorage.setItem(VK, JSON.stringify({ f: S.f, fid: V.fid, dev: V.dev, role: V.role, tab: V.tab, month: V.month, contractor: V.contractor })); } catch {} };
+function vOpen(st = {}) {                              // st = saved view (after a refresh) or {dev:true} when the car developer signs in
+  V.fid = st.fid || FACTORIES[S.f].id; V.dev = !!st.dev; V.role = st.role || "insp"; V.tab = st.tab || (V.dev ? "dveh" : V.role === "sup" ? "dash" : "insp");
+  V.month = st.month || nowM(); V.contractor = st.contractor || ""; V.q = ""; VCACHE = {};
+  $("#veh").classList.remove("hidden"); document.body.style.overflow = "hidden"; document.body.classList.add("inveh"); setSide(false);   // side dropdown menu is hidden inside this section
+  vLoadSet().then(() => vShow()); }
+function vehClose() { if (vAuth?.currentUser) signOut(vAuth).catch(() => {}); V.dev = false; V.fid = null; VCACHE = {}; try { sessionStorage.removeItem(VK); } catch {}
+  $("#veh").classList.add("hidden"); document.body.style.overflow = ""; document.body.classList.remove("inveh"); }
+async function vRestore() {                            // a refresh keeps the user inside the vehicle section (same tab/month/role); closing it clears this
+  if (vRestored) return; vRestored = true; let sv; try { sv = JSON.parse(sessionStorage.getItem(VK)); } catch {} if (!sv || sv.f !== S.f || S.dev) return;
+  if (sv.dev) { vInit(); const u = await new Promise(r => { const un = onAuthStateChanged(vAuth, x => { un(); r(x); }); }); if (u?.email !== CAR_DEV) return; }
+  vOpen(sv); }
+function vTabs() { const T = V.dev ? VT.dev : VT[V.role];
   $("#vTabs").innerHTML = T.map(([k, l]) => `<button data-act="vTab" data-id="${k}" class="b ${V.tab === k ? "bp" : ""}">${l}</button>`).join("")
-    + (V.dev ? `<select id="vFac" class="b ms-auto" aria-label="المصنع">${FACTORIES.map(f => `<option value="${f.id}" ${f.id === V.fid ? "selected" : ""}>${esc(f.ar)}</option>`).join("")}</select><button data-act="vDevOut" class="b">خروج المطور</button>` : "");
-  $("#vDevBtn").classList.toggle("hidden", V.dev); $("#vTitle").textContent = `${FACTORIES.find(f => f.id === V.fid)?.ar || ""} · ${V.dev ? "وضع مطور المركبات" : "نظام فحص المركبات"}`; }
+    + (V.dev ? `<select id="vFac" class="b ms-auto" aria-label="المصنع">${vFacs().map(f => `<option value="${f.id}" ${f.id === V.fid ? "selected" : ""}>${esc(f.ar)}${f.off ? " (متوقف)" : ""}</option>`).join("")}</select><button data-act="vDevOut" class="b">خروج المطور</button>`
+      : `<select id="vRole" class="b ms-auto" aria-label="الدور"><option value="insp" ${V.role === "insp" ? "selected" : ""}>👷 مفتش</option><option value="sup" ${V.role === "sup" ? "selected" : ""}>📋 مشرف</option></select>`);
+  $("#vDevBtn").classList.toggle("hidden", V.dev); $("#vTitle").textContent = `${vFacName(V.fid)} · ${V.dev ? "وضع مطور المركبات" : V.role === "sup" ? "المشرف" : "المفتش"}`; }
 async function vShow(tab, force) {
-  if (tab) V.tab = tab; vTabs(); $("#vBody").innerHTML = `<p class="text-center text-slate-500 py-10" role="status">جارٍ التحميل…</p>`;
-  try { V.feat = await vfeat(force); vTheme();
-    if (V.feat.enabled === false && !V.dev) { $("#vBody").innerHTML = `<div class="${VCARD} text-center text-amber-800 font-semibold">نظام فحص المركبات غير مُفعّل لهذا المصنع حالياً.</div>`; return; }
-    await vRender(force); }
+  if (tab) V.tab = tab; vSaveView(); vTabs(); $("#vBody").innerHTML = `<p class="text-center text-slate-500 py-10" role="status">جارٍ التحميل…</p>`;
+  try { await vRender(force); }
   catch (e) { console.error(e); $("#vBody").innerHTML = `<div class="${VCARD} text-center grid gap-2"><p class="text-red-700">تعذر تحميل البيانات (${esc(e.code || e.message)}). تحقق من الاتصال.</p><button data-act="vRefresh" class="b bp justify-self-center">إعادة المحاولة</button></div>`; } }
 function vPaint() {
   const L = vlist(), n = L.length, st = L.map(vstate), ins = st.filter(s => s !== "no").length, bad = st.filter(s => s === "bad").length, pct = n ? Math.round(ins / n * 100) : 0;
@@ -948,14 +1003,18 @@ function vPaint() {
     || `<tr><td colspan="6" class="text-center text-slate-500 py-6">لا توجد مركبات</td></tr>`; }
 function vDevPaint() {
   const L = V.veh.filter(v => !V.q || vn([vcode(v), v.name, v.plate, v.contractor].join(" ")).includes(vn(V.q)));
-  $("#vDRows").innerHTML = L.map(v => `<tr class="${v.active === false ? "opacity-50" : ""}"><td dir="ltr">${esc(vcode(v))}</td><td>${esc(v.name)}</td><td>${esc(v.plate)}</td><td>${esc(v.contractor)}</td><td class="whitespace-nowrap"><button data-act="vVeh" data-id="${v.id}" class="b !py-0.5 text-xs">تعديل</button>
-    <button data-act="vTog" data-id="${v.id}" class="b !py-0.5 text-xs">${v.active === false ? "استعادة" : "تعطيل"}</button></td></tr>`).join("") || `<tr><td colspan="5" class="text-center text-slate-500 py-6">لا توجد مركبات</td></tr>`; }
-const vForm = v => `<form data-form="vsave" data-vid="${v.id}" class="${VCARD} grid gap-3"><div class="font-bold">${esc(vcode(v))} · ${esc(v.name)} <span class="text-slate-500 text-sm font-normal">${esc(v.plate)} ${esc(v.contractor)}</span></div>
+  $("#vDRows").innerHTML = L.map(v => { const s = vst(v); return `<tr class="${s === "on" ? "" : "opacity-60"}"><td dir="ltr">${esc(vcode(v))}</td><td>${esc(v.name)}</td><td>${esc(v.plate)}</td><td>${esc(v.contractor)}</td><td>${VS[s]}</td><td class="whitespace-nowrap"><button data-act="vVeh" data-id="${v.id}" class="b !py-0.5 text-xs">تعديل</button>
+    <button data-act="vTog" data-id="${v.id}" class="b !py-0.5 text-xs">${s === "on" ? "تعطيل" : "استعادة"}</button>${s === "del" ? "" : `<button data-act="vDel" data-id="${v.id}" class="b !py-0.5 text-xs !text-red-700">حذف</button>`}</td></tr>`; }).join("")
+    || `<tr><td colspan="6" class="text-center text-slate-500 py-6">لا توجد مركبات (الإضافة من المفتشين فقط)</td></tr>`; }
+const vForm = v => { const act = (V.ins || []).filter(i => i.active !== false), me = localStorage.getItem("vi.insp") || "";
+  return `<form data-form="vsave" data-vid="${v.id}" class="${VCARD} grid gap-3"><div class="font-bold">${esc(vcode(v))} · ${esc(v.name)} <span class="text-slate-500 text-sm font-normal">${esc(v.plate)} ${esc(v.contractor)}</span></div>
   ${V.chk.map(c => `<fieldset class="grid gap-1 border-b border-slate-100 pb-2"><legend class="text-sm font-semibold">${esc(c.label)}</legend><div class="flex gap-5"><label class="flex items-center gap-1"><input type="radio" name="c_${c.id}" value="1" required> مطابق</label><label class="flex items-center gap-1"><input type="radio" name="c_${c.id}" value="0"> غير مطابق</label></div></fieldset>`).join("")}
   <label class="text-sm font-semibold">ملاحظات<textarea name="notes" rows="2" class="i"></textarea></label>
-  <label class="text-sm font-semibold">اسم المفتش${(() => { const L = (V.insps || []).filter(x => x.active !== false); return L.length ? `<select name="inspector" class="i" required><option value=""></option>${L.map(x => `<option>${esc(x.name)}</option>`).join("")}</select>` : `<input name="inspector" class="i" required value="${esc(localStorage.getItem("vi.insp") || "")}">`; })()}</label><button class="b bp">حفظ الفحص</button></form>`;
+  <label class="text-sm font-semibold">اسم المفتش${act.length ? `<select name="inspector" class="i" required><option value="">— اختر —</option>${act.map(i => `<option ${i.name === me ? "selected" : ""}>${esc(i.name)}</option>`).join("")}</select>` : `<input name="inspector" class="i" required value="${esc(me)}">`}</label><button class="b bp">حفظ الفحص</button></form>`; };
+const vSetRow = f => `<div class="flex items-center gap-2"><input name="fn_${f.id}" value="${esc(f.ar)}" class="i !mt-0 grow" aria-label="اسم المصنع"><label class="text-xs flex items-center gap-1 whitespace-nowrap"><input type="checkbox" name="fd_${f.id}" ${f.off ? "checked" : ""}> متوقف</label></div>`;
 async function vRender(force) {
   const B = $("#vBody"), M = V.tab, CK = "ملاحظة: التقرير يعتمد على الشهر والمقاول المحددين في لوحة المتابعة.";
+  if (!V.dev && vFacs().find(f => f.id === V.fid)?.off) { B.innerHTML = `<div class="${VCARD} text-amber-800 font-semibold">هذا المصنع متوقف مؤقتًا من مطور المركبات.</div>`; return; }
   if (M === "dash") { await vload(force); const anns = (await vget("announcements", force)).filter(a => a.active !== false && !vdis().includes(a.id));
     B.innerHTML = `${anns.map(a => `<div class="rounded-xl bg-amber-50 border border-amber-300 text-amber-900 p-3 flex gap-2 items-start"><span class="me-auto whitespace-pre-wrap">📢 ${esc(a.text)}</span><button data-act="vDis" data-id="${a.id}" class="b !py-0.5 text-xs">إخفاء</button></div>`).join("")}
       <div class="${VCARD} grid gap-3"><div class="flex flex-wrap gap-2 items-end">
@@ -964,137 +1023,166 @@ async function vRender(force) {
         <label class="text-xs font-semibold grow">بحث<input id="vQ" type="search" value="${esc(V.q)}" class="i !mt-0" placeholder="الكود / الاسم / اللوحة / المقاول"></label>
         <button data-act="vRefresh" class="b">↻ تحديث</button></div><div id="vKpi"></div></div>
       <div class="${VCARD} overflow-x-auto"><table class="rt"><thead><tr><th>الكود</th><th>الاسم</th><th>اللوحة</th><th>المقاول</th><th>الحالة</th><th>آخر فحص</th></tr></thead><tbody id="vRows"></tbody></table></div>`; vPaint(); }
-  else if (M === "insp") { [V.veh, V.chk, V.insps] = await Promise.all([vget("vehicles", force), vchk(force), vget("inspectors", force)]);
+  else if (M === "insp") { [V.veh, V.chk, V.ins] = await Promise.all([vget("vehicles", force), vchk(force), vget("inspectors", force)]);
     B.innerHTML = `<form data-form="vlook" class="${VCARD} flex gap-2 items-end"><label class="text-sm font-semibold grow">كود المركبة<input name="code" class="i" required autocomplete="off" dir="ltr" placeholder="مثال: 66"></label><button class="b bp">بحث</button></form><div id="vOut" class="grid gap-3"></div>`; }
   else if (M === "rep") { await vload(force);
     B.innerHTML = `<div class="${VCARD} grid gap-3"><p class="text-sm text-slate-500">${CK} (${esc(V.month)}${V.contractor ? " · " + esc(V.contractor) : ""})</p>
-      <div class="grid sm:grid-cols-2 gap-2">${V.feat.pdf !== false ? `<button data-act="vRep" data-id="all" class="b">كل المركبات حسب المقاول</button><button data-act="vRep" data-id="bad" class="b">المركبات غير المطابقة</button><button data-act="vRep" data-id="no" class="b">لم تُفحص هذا الشهر</button>` : ""}${V.feat.csv !== false ? `<button data-act="vCsv" class="b">تصدير Excel (CSV)</button>` : ""}</div>
-      ${V.feat.pdf !== false ? `<div class="flex gap-2 items-end"><label class="text-xs font-semibold">السنة<input id="vYear" type="number" value="${new Date().getFullYear()}" class="i !mt-0 w-28"></label><button data-act="vRep" data-id="hist" class="b grow">سجل الفحوصات للسنة</button></div>` : ""}</div>`; }
-  else if (M === "dveh") { [V.veh, V.con] = await Promise.all([vget("vehicles", force), vget("contractors", force)]);
-    B.innerHTML = `<div class="${VCARD} grid gap-3"><div class="flex gap-2"><input id="vQD" type="search" value="${esc(V.q)}" class="i !mt-0 grow" placeholder="بحث بالكود أو الاسم أو اللوحة أو المقاول"><button data-act="vVeh" class="b bp">+ مركبة</button><button data-act="vRefresh" class="b">↻</button></div>
-      <div class="overflow-x-auto"><table class="rt"><thead><tr><th>الكود</th><th>الاسم</th><th>اللوحة</th><th>المقاول</th><th></th></tr></thead><tbody id="vDRows"></tbody></table></div></div>`; vDevPaint(); }
-  else if (M === "dcon") { [V.con, V.veh] = await Promise.all([vget("contractors", force), vget("vehicles", force)]);
-    B.innerHTML = `<div class="${VCARD} grid gap-3"><form data-form="vcon" class="flex gap-2"><input name="name" class="i !mt-0 grow" required placeholder="اسم المقاول"><button class="b bp">+ إضافة</button></form>
-      <ul class="grid gap-1">${V.con.map(c => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto ${c.active === false ? "line-through text-slate-400" : ""}">${esc(c.name)}</span><button data-act="vConTog" data-id="${c.id}" class="b !py-0.5 text-xs">${c.active === false ? "استعادة" : "تعطيل"}</button></li>`).join("") || "<li class=\"text-slate-500\">لا يوجد مقاولون</li>"}</ul>${vOrph()}</div>`; }
-  else if (M === "dins") { V.insps = await vget("inspectors", force);
+      <div class="grid sm:grid-cols-2 gap-2">${vFeat("pdf") ? `<button data-act="vRep" data-id="all" class="b">كل المركبات حسب المقاول</button><button data-act="vRep" data-id="bad" class="b">المركبات غير المطابقة</button><button data-act="vRep" data-id="no" class="b">لم تُفحص هذا الشهر</button><button data-act="vRep" data-id="sum" class="b">الملخص الشهري</button>` : ""}${vFeat("excel") ? `<button data-act="vCsv" class="b">تصدير Excel (CSV)</button>` : ""}</div>
+      ${vFeat("pdf") ? `<div class="grid gap-2"><label class="text-xs font-semibold">مقاولون محددون (اضغط مطولًا/Ctrl لأكثر من واحد)<select id="vSel" multiple size="4" class="i">${V.con.filter(c => c.active !== false).map(c => `<option>${esc(c.name)}</option>`).join("")}</select></label><button data-act="vRep" data-id="sel" class="b">تقرير المقاولين المحددين</button></div>
+      <div class="flex gap-2 items-end"><label class="text-xs font-semibold">السنة<input id="vYear" type="number" value="${new Date().getFullYear()}" class="i !mt-0 w-28"></label><button data-act="vRep" data-id="hist" class="b grow">سجل الفحوصات للسنة</button></div>` : ""}</div>`; }
+  else if (M === "insps") { V.ins = await vget("inspectors", force);
     B.innerHTML = `<div class="${VCARD} grid gap-3"><form data-form="vins" class="flex gap-2"><input name="name" class="i !mt-0 grow" required placeholder="اسم المفتش"><button class="b bp">+ إضافة</button></form>
-      <ul class="grid gap-1">${V.insps.map(c => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto ${c.active === false ? "line-through text-slate-400" : ""}">${esc(c.name)}</span><button data-act="vInsTog" data-id="${c.id}" class="b !py-0.5 text-xs">${c.active === false ? "استعادة" : "تعطيل"}</button></li>`).join("") || "<li class=\"text-slate-500\">لا يوجد مفتشون — سيُكتب اسم المفتش يدوياً</li>"}</ul></div>`; }
-  else if (M === "dset") { const f = V.feat, th = f.theme || VFEAT.theme, n = (k, v) => `<label class="text-xs font-semibold">${k}<input name="${k}" type="number" min="0" max="255" step="1" value="${v}" class="i !mt-0 w-20 text-center"></label>`;
-    B.innerHTML = `<form data-form="vset" class="${VCARD} grid gap-3 max-w-xl"><h2 class="font-bold">إعدادات المصنع: ${esc(FACTORIES.find(x => x.id === V.fid)?.ar || "")}</h2>
-      <label class="flex items-center gap-2"><input type="checkbox" name="enabled" ${f.enabled !== false ? "checked" : ""}> تفعيل نظام فحص المركبات لهذا المصنع</label>
-      <label class="flex items-center gap-2"><input type="checkbox" name="pdf" ${f.pdf !== false ? "checked" : ""}> إظهار تقارير الطباعة / PDF</label>
-      <label class="flex items-center gap-2"><input type="checkbox" name="csv" ${f.csv !== false ? "checked" : ""}> إظهار تصدير Excel</label>
-      <div><div class="text-sm font-semibold mb-1">لون الواجهة (RGB من 0 إلى 255)</div><div class="flex items-end gap-2" dir="ltr">${n("R", th[0])}${n("G", th[1])}${n("B", th[2])}<span id="vSw" class="w-10 h-10 rounded border border-slate-300" style="background:rgb(${th})"></span></div></div>
-      <p class="err hidden text-sm text-red-700"></p><button class="b bp justify-self-start">حفظ الإعدادات</button></form>`; }
-  else if (M === "ddiag") { const [a, b, c, d] = await Promise.all([vget("vehicles", true), vget("contractors", true), vget("inspectors", true), vchk(true)]);
-    const mi = (await getDocs(query(vcol("inspections"), where("month", "==", nowM())))).size, nt = (await getDocs(collection(vDb, VP + "notifications"))).docs.filter(x => !x.data().done).length;
-    B.innerHTML = `<div class="${VCARD} grid gap-3"><h2 class="font-bold">تشخيص النظام</h2>${vTbl(["البند", "القيمة"], [["الاتصال بالإنترنت", navigator.onLine ? "متصل" : "غير متصل"], ["المصنع", FACTORIES.find(x => x.id === V.fid)?.ar], ["حساب مطور المركبات", vAuth?.currentUser?.email],
-      ["المركبات (فعّالة / الكل)", `${a.filter(x => x.active !== false).length} / ${a.length}`], ["المقاولون", b.length], ["المفتشون", c.length], ["بنود قائمة الفحص", d.length], ["فحوصات الشهر الحالي", mi], ["إشعارات غير منتهية", nt], ["التخزين المؤقت", "5 دقائق للقوائم الثابتة — الفحوصات لا تُخزَّن"]])}<button data-act="vRefresh" class="b justify-self-start">↻ تحديث</button></div>`; }
+      <ul class="grid gap-1">${V.ins.map(c => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto ${c.active === false ? "line-through text-slate-400" : ""}">${esc(c.name)}</span><button data-act="vInsTog" data-id="${c.id}" class="b !py-0.5 text-xs">${c.active === false ? "استعادة" : "تعطيل"}</button></li>`).join("") || "<li class=\"text-slate-500\">لا يوجد مفتشون (يمكن كتابة الاسم يدويًا وقت الفحص)</li>"}</ul></div>`; }
+  else if (M === "dveh") { [V.veh, V.con] = await Promise.all([vget("vehicles", force), vget("contractors", force)]);
+    B.innerHTML = `<div class="${VCARD} grid gap-3"><div class="flex gap-2"><input id="vQD" type="search" value="${esc(V.q)}" class="i !mt-0 grow" placeholder="بحث بالكود أو الاسم أو اللوحة أو المقاول"><button data-act="vRefresh" class="b">↻</button></div>
+      <p class="text-xs text-slate-500">المطور يعدّل / يعطّل / يحذف / يستعيد فقط. إضافة المركبات الجديدة تتم من المفتشين.</p>
+      <div class="overflow-x-auto"><table class="rt"><thead><tr><th>الكود</th><th>الاسم</th><th>اللوحة</th><th>المقاول</th><th>الحالة</th><th></th></tr></thead><tbody id="vDRows"></tbody></table></div></div>`; vDevPaint(); }
+  else if (M === "dcon") { [V.con, V.veh] = await Promise.all([vget("contractors", force), vget("vehicles", force)]);
+    const mig = [...new Set(V.veh.map(v => (v.contractor || "").trim()).filter(Boolean))].filter(n => !V.con.some(c => vn(c.name) === vn(n)));
+    B.innerHTML = `<div class="${VCARD} grid gap-3"><form data-form="vcon" class="flex gap-2"><input name="name" class="i !mt-0 grow" required placeholder="اسم المقاول"><button class="b bp">+ إضافة</button></form>
+      ${mig.length ? `<button data-act="vMigrate" class="b justify-self-start">⇪ ترحيل ${mig.length} اسم مقاول مكتوب نصًا في المركبات إلى القائمة المُدارة</button>` : ""}
+      <ul class="grid gap-1">${V.con.map(c => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto ${c.active === false ? "line-through text-slate-400" : ""}">${esc(c.name)}</span><button data-act="vConTog" data-id="${c.id}" class="b !py-0.5 text-xs">${c.active === false ? "استعادة" : "تعطيل"}</button></li>`).join("") || "<li class=\"text-slate-500\">لا يوجد مقاولون</li>"}</ul></div>`; }
   else if (M === "dchk") { V.chk = await vchk(force);
     B.innerHTML = `<form data-form="vchk" class="${VCARD} grid gap-3"><p class="text-sm text-slate-500">بند واحد في كل سطر. التعديل لا يغيّر الفحوصات السابقة المحفوظة.</p><textarea name="items" rows="8" class="i">${esc(V.chk.map(c => c.label).join("\n"))}</textarea><button class="b bp justify-self-start">حفظ القائمة</button></form>`; }
   else if (M === "dnote") { const rows = (await getDocs(collection(vDb, VP + "notifications"))).docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.ts?.seconds || 0) - (a.ts?.seconds || 0));
-    B.innerHTML = `<div class="${VCARD} grid gap-2"><h2 class="font-bold">إشعارات أكواد غير معروفة / طلبات تعديل</h2>${rows.map(r => `<div class="flex items-center gap-2 border-b border-slate-100 py-1 ${r.done ? "opacity-50" : ""}"><span class="me-auto">${esc(FACTORIES.find(f => f.id === r.fid)?.ar || r.fid)} · الكود <b dir="ltr">${esc(r.code)}</b> · ${r.ts?.seconds ? new Date(r.ts.seconds * 1e3).toLocaleString("ar-EG") : ""}</span>
+    B.innerHTML = `<div class="${VCARD} grid gap-2"><h2 class="font-bold">إشعارات أكواد غير معروفة / طلبات تعديل</h2>${rows.map(r => `<div class="flex items-center gap-2 border-b border-slate-100 py-1 ${r.done ? "opacity-50" : ""}"><span class="me-auto">${esc(vFacName(r.fid))} · ${r.type === "change_request" ? "طلب تعديل" : "كود غير معروف"} <b dir="ltr">${esc(r.code)}</b>${r.note ? " — " + esc(r.note) : ""} · ${r.ts?.seconds ? new Date(r.ts.seconds * 1e3).toLocaleString("ar-EG") : ""}</span>
       ${r.done ? "✓" : `<button data-act="vNoteDone" data-id="${r.id}" class="b !py-0.5 text-xs">تم</button>`}</div>`).join("") || "<p class=\"text-slate-500\">لا توجد إشعارات</p>"}</div>`; }
   else if (M === "dann") { const an = await vget("announcements", force);
     B.innerHTML = `<div class="${VCARD} grid gap-3"><form data-form="vann" class="grid gap-2"><textarea name="text" rows="2" class="i" required placeholder="نص الإعلان لهذا المصنع"></textarea><button class="b bp justify-self-start">نشر</button></form>
       <ul class="grid gap-1">${an.map(a => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto whitespace-pre-wrap">${esc(a.text)}</span><button data-act="vAnnDel" data-id="${a.id}" class="b !py-0.5 text-xs">حذف</button></li>`).join("") || "<li class=\"text-slate-500\">لا توجد إعلانات</li>"}</ul></div>`; }
-}
+  else if (M === "dset") { const th = V.set.theme || {};
+    B.innerHTML = `<form data-form="vset" class="${VCARD} grid gap-3"><h3 class="font-bold">المصانع (إعادة تسمية / إيقاف / استعادة)</h3>${vFacs().map(vSetRow).join("")}
+      <input name="newfac" class="i !mt-0" placeholder="اسم مصنع جديد (يظهر للمطور؛ دخول المفتشين يحتاج حساب Firebase له)">
+      <h3 class="font-bold">المزايا</h3><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_excel" ${vFeat("excel") ? "checked" : ""}> تصدير Excel (CSV)</label><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_pdf" ${vFeat("pdf") ? "checked" : ""}> تقارير PDF / طباعة</label>
+      <h3 class="font-bold">ألوان الوحدة (RGB)</h3>${rgbRow("vbrand", "الشريط", th.brand || [30, 41, 59])}${rgbRow("vaccent", "الأزرار", th.accent || [217, 0, 0])}<button class="b bp justify-self-start">حفظ الإعدادات</button></form>
+      <div class="${VCARD} grid gap-2"><h3 class="font-bold">التشخيص</h3><div id="vDiag" class="text-sm grid gap-1">${vDiagHtml()}</div><button data-act="vDiag" class="b justify-self-start">فحص الاتصال</button></div>`; } }
+const vDiagHtml = () => { const n = s => V.veh.filter(v => vst(v) === s).length;
+  return `<div>الحساب: <b dir="ltr">${esc(vAuth?.currentUser?.email || "—")}</b></div><div>المصنع: ${esc(vFacName(V.fid))} (<span dir="ltr">${esc(V.fid)}</span>)</div><div>المركبات: ${n("on")} فعّالة · ${n("off")} معطلة · ${n("hid")} مخفية · ${n("del")} محذوفة</div>
+    <div>الكاش: ${Object.entries(VCACHE).map(([k, c]) => `${esc(k.replace(V.fid, ""))} (${Math.round((Date.now() - c.t) / 1e3)}ث)`).join("، ") || "فارغ"}</div>`; };
 const vTbl = (head, rows) => `<table class="rt"><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;
 const vSum = L => { const st = L.map(vstate), ins = st.filter(s => s !== "no").length, bad = st.filter(s => s === "bad").length;     // ONE overall summary at the end (no per-contractor subtotals)
   return `<h3 style="margin-top:12px">الملخص العام</h3>` + vTbl(["إجمالي المركبات", "تم فحصها", "لم تُفحص", "مطابقة", "غير مطابقة", "نسبة الإنجاز"], [[L.length, ins, L.length - ins, ins - bad, bad, (L.length ? Math.round(ins / L.length * 100) : 0) + "%"]]); };
 async function vReport(kind) {
-  const fac = FACTORIES[S.f], H = t => `<div dir="rtl" style="text-align:right"><h2 style="font-weight:700">${t}</h2><p>المصنع: ${esc(fac.ar)} · الفترة: ${esc(V.month)}${V.contractor ? " · المقاول: " + esc(V.contractor) : ""}</p>`;
+  const H = t => `<div dir="rtl" style="text-align:right"><h2 style="font-weight:700">${t}</h2><p>المصنع: ${esc(vFacName(V.fid))} · الفترة: ${esc(V.month)}${V.contractor ? " · المقاول: " + esc(V.contractor) : ""}</p>`;
   if (kind === "hist") { const y = $("#vYear").value || new Date().getFullYear();
     const R = (await getDocs(query(vcol("inspections"), where("month", ">=", `${y}-01`), where("month", "<=", `${y}-12`)))).docs.map(d => d.data()).filter(r => !V.contractor || r.contractor === V.contractor).sort((a, b) => a.code.localeCompare(b.code, "ar", { numeric: true }) || a.month.localeCompare(b.month));
     return printDoc(`سجل الفحوصات ${y}`, H(`سجل فحوصات المركبات — ${y}`).replace(esc(V.month), y) + vTbl(["الكود", "المقاول", "الشهر", "النتيجة", "المفتش", "ملاحظات"], R.map(r => [r.code, r.contractor, r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, r.notes])) + `<h3 style="margin-top:12px">الملخص العام</h3><p>عدد الفحوصات: ${R.length} · غير المطابقة: ${R.filter(r => !r.ok).length}</p></div>`); }
-  const A = vAll(), L = A.filter(v => kind === "all" || (kind === "bad" ? vstate(v) === "bad" : vstate(v) === "no")), G = {};
+  const sel = kind === "sel" ? [...$("#vSel").selectedOptions].map(o => o.value) : null; if (sel && !sel.length) throw new Error("اختر مقاولًا واحدًا على الأقل.");
+  const A = vAll().filter(v => !sel || sel.includes(v.contractor)), L = A.filter(v => kind === "bad" ? vstate(v) === "bad" : kind === "no" ? vstate(v) === "no" : kind !== "sum"), G = {};
   L.forEach(v => (G[v.contractor || "بدون مقاول"] ??= []).push(v));
   const body = Object.keys(G).sort((a, b) => a.localeCompare(b, "ar")).map(c => `<h3 style="margin-top:10px">${esc(c)}</h3>` + vTbl(["الكود", "الاسم", "اللوحة", "الحالة", "البنود غير المطابقة"],
     G[c].sort((a, b) => a.code.localeCompare(b.code, "ar", { numeric: true })).map(v => { const i = V.insp.find(x => x.vehicleId === v.id); return [vcode(v), v.name, v.plate, VB[vstate(v)][0], (i?.items || []).filter(x => !x.ok).map(x => x.label).join("، ")]; }))).join("");
-  printDoc({ all: "كل المركبات", bad: "المركبات غير المطابقة", no: "مركبات لم تُفحص" }[kind], H({ all: "تقرير المركبات حسب المقاول", bad: "المركبات غير المطابقة", no: "مركبات لم تُفحص" }[kind]) + (body || "<p>لا توجد بيانات</p>") + vSum(A) + "</div>"); }
-function vVehForm(v = {}) {
-  openModal(v.id ? "تعديل مركبة" : "إضافة مركبة", `<form data-form="vvehsave" dir="rtl" class="grid gap-2"><input type="hidden" name="id" value="${v.id || ""}">
+  const T = { all: "تقرير المركبات حسب المقاول", bad: "المركبات غير المطابقة", no: "مركبات لم تُفحص", sel: "تقرير المقاولين المحددين: " + (sel || []).join("، "), sum: "الملخص الشهري" }[kind];
+  printDoc(T, H(T) + (kind === "sum" ? "" : body || "<p>لا توجد بيانات</p>") + vSum(A) + "</div>"); }
+function vVehForm(v = {}, add) {
+  const dev = V.dev, cons = V.con.filter(c => c.active !== false || c.name === v.contractor);
+  openModal(add ? "إضافة مركبة جديدة" : "تعديل مركبة", `<form data-form="vvehsave" dir="rtl" class="grid gap-2"><input type="hidden" name="id" value="${v.id || ""}">
     <label class="text-sm font-semibold">الكود (مطلوب)<input name="code" class="i" dir="ltr" required value="${esc(v.code)}"></label>
-    <label class="text-sm font-semibold">أكواد مرتبطة (نفس المركبة، افصل بفاصلة)<input name="linked" class="i" dir="ltr" value="${esc((v.linked || []).join(", "))}"></label>
+    ${dev ? `<label class="text-sm font-semibold">أكواد مرتبطة (نفس المركبة، افصل بفاصلة — امسحها لفك الربط)<input name="linked" class="i" dir="ltr" value="${esc((v.linked || []).join(", "))}"></label>` : ""}
     <label class="text-sm font-semibold">الاسم / السائق<input name="name" class="i" value="${esc(v.name)}"></label><label class="text-sm font-semibold">رقم اللوحة<input name="plate" class="i" value="${esc(v.plate)}"></label>
-    <label class="text-sm font-semibold">المقاول<select name="contractor" class="i"><option value=""></option>${V.con.filter(c => c.active !== false || c.name === v.contractor).map(c => `<option ${c.name === v.contractor ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></label>
-    <label class="text-sm font-semibold">النوع<input name="type" class="i" value="${esc(v.type)}"></label><label class="text-sm font-semibold">ملاحظات<textarea name="notes" rows="2" class="i">${esc(v.notes)}</textarea></label>
-    <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="active" ${v.active === false ? "" : "checked"}> مركبة فعّالة</label><button class="b bp">حفظ</button></form>`); }
+    <label class="text-sm font-semibold">المقاول<select name="contractor" class="i"><option value=""></option>${cons.map(c => `<option ${c.name === v.contractor ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></label>
+    <label class="text-sm font-semibold">النوع / الفئة<input name="type" class="i" value="${esc(v.type)}"></label><label class="text-sm font-semibold">ملاحظات<textarea name="notes" rows="2" class="i">${esc(v.notes)}</textarea></label>
+    ${dev ? `<label class="flex items-center gap-2 text-sm"><input type="checkbox" name="active" ${v.active === false ? "" : "checked"}> مركبة فعّالة</label><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" ${v.hidden ? "checked" : ""}> مخفية (لا تظهر في المتابعة)</label>` : ""}<button class="b bp">${add ? "إضافة وفحص" : "حفظ"}</button></form>`); }
+const vGate = () => { openModal("فحص المركبات", `<form data-form="vgate" dir="rtl" class="grid gap-3"><p>أدخل كلمة السر الرئيسية لمصنع <b>${esc(FACTORIES[S.f].ar)}</b> لفتح نظام فحص المركبات.</p>
+    <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة سر المصنع"><p class="err hidden text-sm text-red-700"></p><button class="b bp">فتح</button></form>
+    <button type="button" data-act="vDev" class="b w-full mt-2">🔧 دخول مطور المركبات</button>`); $("[data-form=vgate] [name=pw]").focus(); };
+function driveCar(btn) {                               // car starts on the LEFT, drives to the RIGHT with exhaust smoke, then the gate opens
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return Promise.resolve();
+  const track = $("#carTrack"), tr = track.getBoundingClientRect(), br = btn.getBoundingClientRect(), dist = Math.max(0, tr.width - br.width - 32), T = 1500;
+  const an = btn.animate([{ transform: "translateX(0) rotate(0)" }, { transform: `translateX(${dist * .06}px) rotate(-2deg)`, offset: .14 }, { transform: `translateX(${dist}px) rotate(0)` }], { duration: T, easing: "cubic-bezier(.5,0,.3,1)", fill: "forwards" });
+  const puff = () => { const r = btn.getBoundingClientRect(), s = document.createElement("span"), z = 9 + Math.random() * 9;
+    s.className = "smoke"; s.style.cssText = `left:${r.left - tr.left - 2}px;top:${r.top - tr.top + 32}px;width:${z}px;height:${z}px`; track.append(s); setTimeout(() => s.remove(), 1100); };
+  let last = 0, t0 = performance.now(); const tick = now => { if (now - t0 < T) { if (now - last > 65) { last = now; puff(); } requestAnimationFrame(tick); } }; requestAnimationFrame(tick);
+  return an.finished.then(() => new Promise(r => setTimeout(r, 150))).finally(() => an.cancel()); }
 
 const VACT = {
-  veh() { if (!can()) return toast("Sign in to a factory first.");
-    vDrive(() => { openModal("فحص المركبات", `<form data-form="vgate" dir="rtl" class="grid gap-3"><p>أدخل كلمة السر الرئيسية لمصنع <b>${esc(FACTORIES[S.f].ar)}</b> لفتح نظام فحص المركبات.</p>
-      <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة سر المصنع"><p class="err hidden text-sm text-red-700"></p><button class="b bp">فتح</button></form>`);
-      $("[data-form=vgate] [name=pw]").focus(); }); },
+  async veh(_, b) { if (driving) return; if (!can()) return toast("Sign in to a factory first."); driving = true; try { await driveCar(b); } finally { driving = false; } vGate(); },
   vehClose,
-  vDev() { if (V.dev) return; openModal("دخول مطور المركبات", `<form data-form="vdev" dir="rtl" class="grid gap-3"><label class="text-sm font-semibold">حساب مطور المركبات<input class="i" value="car@gcc.local" readonly dir="ltr"></label>
-      <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة السر"><p class="err hidden text-sm text-red-700"></p><button class="b bp">دخول</button></form>`); },
-  vDevOut() { if (vAuth?.currentUser) signOut(vAuth).catch(() => {}); V.dev = false; V.fid = FACTORIES[S.f].id; V.tab = "dash"; VCACHE = {}; vShow(); },
+  vDev() { if (V.dev) return; openModal("دخول مطور المركبات", `<form data-form="vdev" dir="rtl" class="grid gap-3"><label class="text-sm font-semibold">اسم المستخدم<input class="i" value="${CAR_DEV}" readonly dir="ltr"></label>
+      <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة السر"><p class="err hidden text-sm text-red-700"></p><button class="b bp">دخول</button></form>`); $("[data-form=vdev] [name=pw]").focus(); },
+  vDevOut: vehClose,                                   // leaving developer mode closes the module (a factory password is needed to enter as inspector)
   vTab: id => vShow(id), vRefresh: () => vShow(null, true), vDis(id) { localStorage.setItem("vi.dis." + V.fid, JSON.stringify([...vdis(), id])); vShow(); },
   async vHist(id) { const v = V.veh.find(x => x.id === id); if (!v) return;
     const R = (await getDocs(query(vcol("inspections"), where("vehicleId", "==", id)))).docs.map(d => d.data()).sort((a, b) => b.month.localeCompare(a.month));
-    openModal(`سجل الفحص — ${vcode(v)}`, `<div dir="rtl">${R.length ? vTbl(["الشهر", "النتيجة", "المفتش", "بنود غير مطابقة"], R.map(r => [r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, (r.items || []).filter(x => !x.ok).map(x => x.label).join("، ")])) : "<p>لا توجد فحوصات سابقة</p>"}</div>`, true); },
+    openModal(`سجل الفحص — ${vcode(v)}`, `<div dir="rtl">${R.length ? vTbl(["الشهر", "النتيجة", "المفتش", "بنود غير مطابقة"], R.map(r => [r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, (r.items || []).filter(x => !x.ok).map(x => x.label).join("، ")])) : "<p>لا توجد فحوصات سابقة</p>"}
+      ${V.dev ? "" : `<button data-act="vReq" data-id="${esc(vcode(v))}" class="b mt-3">طلب تعديل بيانات المركبة من المطور</button>`}</div>`, true); },
+  vReq(code) { openModal("طلب تعديل", `<form data-form="vreq" dir="rtl" class="grid gap-2"><input type="hidden" name="code" value="${esc(code)}"><p>المركبة: <b dir="ltr">${esc(code)}</b></p><textarea name="note" rows="3" class="i" required maxlength="300" placeholder="ما التعديل المطلوب؟ (بدون بيانات شخصية)"></textarea><button class="b bp">إرسال للمطور</button></form>`); },
   async vNotify(code) { await run("جارٍ الإرسال…", "تم إبلاغ مطور المركبات ✓", () => addDoc(collection(vdb(), VP + "notifications"), { fid: V.fid, code, type: "unknown_code", done: false, ts: serverTimestamp() })); $("#vOut").innerHTML = ""; },
+  async vAddVeh(code) { V.con = await vget("contractors"); vVehForm({ code }, true); },
   vRep: id => vReport(id),
   vCsv() { const L = vlist(); if (!L.length) return toast("لا توجد بيانات للتصدير."); const q = x => `"${String(x ?? "").replace(/"/g, '""').replace(/^([=+\-@])/, "'$1")}"`;
     const csv = "\ufeff" + [["الكود", "الاسم", "اللوحة", "المقاول", "الحالة"], ...L.map(v => [vcode(v), v.name, v.plate, v.contractor, VB[vstate(v)][0]])].map(r => r.map(q).join(",")).join("\r\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = `vehicles-${V.fid}-${V.month}.csv`; a.click(); URL.revokeObjectURL(a.href); },
-  vVeh: id => vVehForm(V.veh.find(v => v.id === id)),
-  async vTog(id) { const v = V.veh.find(x => x.id === id); await run("جارٍ الحفظ…", v.active === false ? "تمت الاستعادة ✓" : "تم التعطيل ✓", () => updateDoc(vdoc("vehicles", id), { active: v.active === false })); vinv("vehicles"); vShow("dveh"); },
+  vVeh: id => V.dev && vVehForm(V.veh.find(v => v.id === id)),
+  async vTog(id) { const v = V.veh.find(x => x.id === id), on = vst(v) === "on"; await run("جارٍ الحفظ…", on ? "تم التعطيل ✓" : "تمت الاستعادة ✓", () => updateDoc(vdoc("vehicles", id), on ? { active: false } : { active: true, deleted: false, hidden: false })); vinv("vehicles"); vShow("dveh"); },
+  async vDel(id) { const v = V.veh.find(x => x.id === id); if (!(await confirmBox(`حذف المركبة ${vcode(v)}؟ (تُؤرشف ويمكن استعادتها، وسجل فحوصاتها يبقى)`))) return;
+    await run("جارٍ الحذف…", "تم الحذف (أرشفة) ✓", () => updateDoc(vdoc("vehicles", id), { deleted: true, active: false })); vinv("vehicles"); vShow("dveh"); },
   async vConTog(id) { const c = V.con.find(x => x.id === id); await run("جارٍ الحفظ…", "تم ✓", () => updateDoc(vdoc("contractors", id), { active: c.active === false })); vinv("contractors"); vShow("dcon"); },
-  async vMig(name) { await run("جارٍ الحفظ…", "تمت الإضافة ✓", () => addDoc(vcol("contractors"), { name, active: true })); vinv("contractors"); vShow("dcon"); },
-  async vInsTog(id) { const c = V.insps.find(x => x.id === id); await run("جارٍ الحفظ…", "تم ✓", () => updateDoc(vdoc("inspectors", id), { active: c.active === false })); vinv("inspectors"); vShow("dins"); },
+  async vInsTog(id) { const c = V.ins.find(x => x.id === id); await run("جارٍ الحفظ…", "تم ✓", () => updateDoc(vdoc("inspectors", id), { active: c.active === false })); vinv("inspectors"); vShow("insps"); },
+  async vMigrate() { const names = [...new Set(V.veh.map(v => (v.contractor || "").trim()).filter(Boolean))].filter(n => !V.con.some(c => vn(c.name) === vn(n)));
+    await run("جارٍ الترحيل…", `تم ترحيل ${names.length} مقاول ✓`, () => Promise.all(names.map(name => addDoc(vcol("contractors"), { name, active: true, migrated: true })))); vinv("contractors"); vShow("dcon"); },
   async vNoteDone(id) { await updateDoc(doc(vDb, VP + "notifications", id), { done: true }); vShow("dnote"); },
-  async vAnnDel(id) { if (await confirmBox("حذف هذا الإعلان؟")) { await run("جارٍ الحذف…", "تم الحذف ✓", () => deleteDoc(vdoc("announcements", id))); vinv("announcements"); vShow("dann"); } }
+  async vAnnDel(id) { if (await confirmBox("حذف هذا الإعلان؟")) { await run("جارٍ الحذف…", "تم الحذف ✓", () => deleteDoc(vdoc("announcements", id))); vinv("announcements"); vShow("dann"); } },
+  async vDiag() { const t0 = performance.now(); try { await getDoc(doc(vDb, VP + "settings", "main")); $("#vDiag").innerHTML = vDiagHtml() + `<div class="text-emerald-700">✓ الاتصال سليم (${Math.round(performance.now() - t0)} م.ث)</div>`; }
+    catch (e) { $("#vDiag").innerHTML = vDiagHtml() + `<div class="text-red-700">✗ فشل الاتصال (${esc(e.code || e.message)})</div>`; } }
 };
 for (const k in VACT) ACT[k] = guard(VACT[k]);
 const vFail = (f, m) => { const el = f.querySelector(".err"); el.textContent = m; el.classList.remove("hidden"); };
 const VFORMS = {
-  vgate: guard(async f => { const u = auth.currentUser, btn = f.querySelector("button");
+  vgate: guard(async f => { const u = auth.currentUser, btn = f.querySelector("button:not([type])");
     if (!u || u.email !== em(FACTORIES[S.f].id)) return vFail(f, "الجلسة لا تخص هذا المصنع. سجّل الدخول مرة أخرى.");
     btn.disabled = true;
     try { await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, f.elements.pw.value)); }   // live check: follows every change of the factory's main password
     catch (e) { btn.disabled = false; return vFail(f, authMsg(e)); }
-    vOpen(); closeModal(); }),
-  vdev: guard(async f => { const btn = f.querySelector("button"); btn.disabled = true;
-    if (!vApp) { vApp = initializeApp(firebaseConfig, "veh"); vAuth = getAuth(vApp); vDb = initializeFirestore(vApp, { experimentalForceLongPolling: true }); }   // second app = separate session
+    closeModal(); vOpen(); }),
+  vdev: guard(async f => { const btn = f.querySelector("button:not([type])"); btn.disabled = true; vInit();
     try { await signInWithEmailAndPassword(vAuth, CAR_DEV, f.elements.pw.value); }
     catch (e) { btn.disabled = false; return vFail(f, authMsg(e, true)); }
-    closeModal(); V.dev = true; VCACHE = {}; vShow("dveh"); }),
+    closeModal(); vOpen({ dev: true }); }),
   vlook: guard(async f => { const raw = f.elements.code.value.trim(), c = vn(raw), out = $("#vOut"); if (!c) return;
-    [V.veh, V.chk, V.insps] = await Promise.all([vget("vehicles"), vchk(), vget("inspectors")]); const v = V.veh.find(x => [x.code, ...(x.linked || [])].some(k => vn(k) === c));
-    if (!v) return out.innerHTML = `<div class="${VCARD} grid gap-2"><p class="text-red-700 font-semibold">الكود ${esc(raw)} غير مسجل. لا يمكن للمفتش إنشاء مركبات جديدة.</p><button data-act="vNotify" data-id="${esc(raw)}" class="b bp justify-self-start">إبلاغ المطور</button></div>`;
-    if (v.active === false) return out.innerHTML = `<div class="${VCARD} text-amber-800">هذه المركبة معطلة.</div>`;
+    [V.veh, V.chk, V.ins] = await Promise.all([vget("vehicles"), vchk(), vget("inspectors")]); const v = V.veh.find(x => [x.code, ...(x.linked || [])].some(k => vn(k) === c));
+    if (!v) return out.innerHTML = `<div class="${VCARD} grid gap-2"><p class="text-red-700 font-semibold">الكود ${esc(raw)} غير مسجل.</p><div class="flex flex-wrap gap-2"><button data-act="vAddVeh" data-id="${esc(raw)}" class="b bp">+ إضافة مركبة جديدة</button><button data-act="vNotify" data-id="${esc(raw)}" class="b">إبلاغ المطور</button></div></div>`;
+    if (vst(v) !== "on") return out.innerHTML = `<div class="${VCARD} text-amber-800">هذه المركبة ${VS[vst(v)]}.</div>`;
     const done = await getDoc(vdoc("inspections", `${v.id}_${nowM()}`));
     out.innerHTML = done.exists() ? `<div class="${VCARD} text-amber-800 font-semibold">تم فحص المركبة ${esc(vcode(v))} بالفعل هذا الشهر.</div>` : vForm(v); }),
   vsave: guard(async f => { const v = V.veh.find(x => x.id === f.dataset.vid), btn = f.querySelector("button:not([type])"), insp = f.elements.inspector.value.trim(); if (!v || !insp) return;
     const items = V.chk.map(c => ({ id: c.id, label: c.label, ok: f.elements["c_" + c.id].value === "1" })), id = `${v.id}_${nowM()}`; btn.disabled = true;      // locked right away: no double taps
     try { await run("جارٍ حفظ الفحص…", "تم حفظ الفحص بنجاح ✓", () => setDoc(vdoc("inspections", id), { vehicleId: v.id, code: vcode(v), name: v.name || "", plate: v.plate || "", contractor: v.contractor || "", month: nowM(), items, ok: items.every(x => x.ok), notes: f.elements.notes.value.trim(), inspector: insp, clientTs: Date.now(), ts: serverTimestamp() })); }
     catch (e) { btn.disabled = false; throw new Error(e.code === "permission-denied" ? "تم فحص هذه المركبة بالفعل هذا الشهر (أو لا توجد صلاحية)." : e.message); }
-    try { localStorage.setItem("vi.insp", insp); } catch {} $("#vOut").innerHTML = `<div class="${VCARD} text-emerald-700 font-semibold">✓ تم حفظ فحص ${esc(vcode(v))}</div>`; f.closest("form")?.reset?.(); }),
-  vvehsave: guard(async f => { const e = f.elements, id = e.id.value, code = e.code.value.trim(); if (!code) throw new Error("الكود مطلوب");
-    const linked = e.linked.value.split(/[,،\s]+/).map(x => x.trim()).filter(Boolean), all = [code, ...linked], dup = all.find((c, i) => all.findIndex(z => vn(z) === vn(c)) !== i); if (dup) throw new Error(`الكود ${dup} مكرر داخل نفس المركبة`);
+    try { localStorage.setItem("vi.insp", insp); } catch {} $("#vOut").innerHTML = `<div class="${VCARD} text-emerald-700 font-semibold">✓ تم حفظ فحص ${esc(vcode(v))}</div>`; }),
+  vvehsave: guard(async f => { const e = f.elements, id = e.id.value, code = e.code.value.trim(), btn = f.querySelector("button:not([type])"); if (!code) throw new Error("الكود مطلوب");
+    if (V.dev && !id) throw new Error("مطور المركبات لا يضيف مركبات جديدة — الإضافة من المفتشين فقط.");
+    if (!V.dev && id) throw new Error("تعديل المركبات للمطور فقط.");
+    if (!V.dev) V.veh = await vget("vehicles", true);   // fresh read so a code added a moment ago by someone else is caught
+    const linked = e.linked ? e.linked.value.split(/[,،\s]+/).map(x => x.trim()).filter(Boolean) : [], all = [code, ...linked], dup = all.find((c, i) => all.findIndex(z => vn(z) === vn(c)) !== i); if (dup) throw new Error(`الكود ${dup} مكرر داخل نفس المركبة`);
     const clash = V.veh.find(v => v.id !== id && [v.code, ...(v.linked || [])].some(c => all.some(a => vn(a) === vn(c)))); if (clash) throw new Error(`أحد الأكواد مستخدم في المركبة ${vcode(clash)}`);
-    const d = { code, linked, name: e.name.value.trim(), plate: e.plate.value.trim(), contractor: e.contractor.value, type: e.type.value.trim(), notes: e.notes.value.trim(), active: e.active.checked };
-    await run("جارٍ الحفظ…", "تم الحفظ ✓", () => id ? updateDoc(vdoc("vehicles", id), d) : addDoc(vcol("vehicles"), { ...d, createdAt: serverTimestamp() })); vinv("vehicles"); closeModal(); vShow("dveh"); }),
+    const d = { code, linked, name: e.name.value.trim(), plate: e.plate.value.trim(), contractor: e.contractor.value, type: e.type.value.trim(), notes: e.notes.value.trim() };
+    btn.disabled = true;
+    try { if (V.dev) await run("جارٍ الحفظ…", "تم الحفظ ✓", () => updateDoc(vdoc("vehicles", id), { ...d, active: e.active.checked, hidden: e.hidden.checked, updatedAt: serverTimestamp() }));
+      else await run("جارٍ الحفظ…", "تمت إضافة المركبة ✓", () => addDoc(vcol("vehicles"), { ...d, active: true, createdBy: "inspector", createdAt: serverTimestamp() })); }
+    catch (er) { btn.disabled = false; throw er; }
+    vinv("vehicles"); closeModal(); if (V.dev) vShow("dveh"); else { const lf = $("[data-form=vlook]"); lf.elements.code.value = code; lf.requestSubmit(); } }),
+  vreq: guard(async f => { await run("جارٍ الإرسال…", "تم إرسال الطلب للمطور ✓", () => addDoc(collection(vdb(), VP + "notifications"), { fid: V.fid, code: f.elements.code.value, note: f.elements.note.value.trim().slice(0, 300), type: "change_request", done: false, ts: serverTimestamp() })); closeModal(); }),
   vcon: guard(async f => { const name = f.elements.name.value.trim(); if (V.con.some(c => vn(c.name) === vn(name))) throw new Error("المقاول موجود بالفعل");
     await run("جارٍ الحفظ…", "تمت الإضافة ✓", () => addDoc(vcol("contractors"), { name, active: true })); vinv("contractors"); vShow("dcon"); }),
+  vins: guard(async f => { const name = f.elements.name.value.trim(); if (V.ins.some(c => vn(c.name) === vn(name))) throw new Error("المفتش موجود بالفعل");
+    await run("جارٍ الحفظ…", "تمت الإضافة ✓", () => addDoc(vcol("inspectors"), { name, active: true })); vinv("inspectors"); vShow("insps"); }),
   vchk: guard(async f => { const old = V.chk, lines = f.elements.items.value.split("\n").map(x => x.trim()).filter(Boolean); if (!lines.length) throw new Error("أضف بنداً واحداً على الأقل");
     const items = lines.map((label, i) => ({ id: old.find(c => c.label === label)?.id || "c" + Date.now().toString(36) + i, label }));
     await run("جارٍ الحفظ…", "تم حفظ القائمة ✓", () => setDoc(vdoc("config", "checklist"), { items, ts: Date.now() })); vinv("config"); vShow("dchk"); }),
-  vins: guard(async f => { const name = f.elements.name.value.trim(); if (V.insps.some(c => vn(c.name) === vn(name))) throw new Error("المفتش موجود بالفعل");
-    await run("جارٍ الحفظ…", "تمت الإضافة ✓", () => addDoc(vcol("inspectors"), { name, active: true })); vinv("inspectors"); vShow("dins"); }),
-  vset: guard(async f => { const e = f.elements, th = ["R", "G", "B"].map(k => e[k].value.trim()), er = f.querySelector(".err");
-    if (!th.every(x => /^\d{1,3}$/.test(x) && +x <= 255)) { er.textContent = "كل قيمة لون يجب أن تكون رقماً صحيحاً من 0 إلى 255."; er.classList.remove("hidden"); return; }
-    await run("جارٍ الحفظ…", "تم حفظ الإعدادات ✓", () => setDoc(vdoc("config", "features"), { enabled: e.enabled.checked, pdf: e.pdf.checked, csv: e.csv.checked, theme: th.map(Number) }, { merge: true })); vinv("config"); vShow("dset"); }),
-  vann: guard(async f => { await run("جارٍ النشر…", "تم النشر ✓", () => addDoc(vcol("announcements"), { text: f.elements.text.value.trim(), active: true, ts: Date.now() })); vinv("announcements"); vShow("dann"); })
+  vann: guard(async f => { await run("جارٍ النشر…", "تم النشر ✓", () => addDoc(vcol("announcements"), { text: f.elements.text.value.trim(), active: true, ts: Date.now() })); vinv("announcements"); vShow("dann"); }),
+  vset: guard(async f => { const e = f.elements, facs = {}, brand = readRgb(f, "vbrand"), accent = readRgb(f, "vaccent"); if (!brand || !accent) throw new Error("قيم RGB لازم تكون أرقام من 0 إلى 255.");
+    vFacs().forEach(x => { facs[x.id] = { ar: e["fn_" + x.id].value.trim() || x.ar, off: e["fd_" + x.id].checked, ...(x.extra ? { extra: true } : {}) }; });
+    const nf = e.newfac.value.trim(); if (nf) facs["x" + Date.now().toString(36)] = { ar: nf, off: false, extra: true };
+    const set = { facs, feat: { excel: e.f_excel.checked, pdf: e.f_pdf.checked }, theme: { brand, accent } };
+    await run("جارٍ الحفظ…", "تم حفظ الإعدادات ✓", () => setDoc(doc(vDb, VP + "settings", "main"), set)); V.set = set; vTheme(); vShow("dset"); })
 };
 Object.assign(FORMS, VFORMS);
 document.addEventListener("change", e => { const t = e.target;
-  if (t.id === "vMonth" && t.value) { V.month = t.value; vShow(); } if (t.id === "vCon") { V.contractor = t.value; vPaint(); }
-  if (t.id === "vFac") { V.fid = t.value; VCACHE = {}; vShow(); } });
-document.addEventListener("input", e => { const vs = e.target.closest?.("[data-form=vset]"); if (vs) { const th = ["R", "G", "B"].map(k => vs.elements[k].value); if (th.every(x => /^\d{1,3}$/.test(x) && +x <= 255)) { $("#vSw").style.background = `rgb(${th})`; $("#veh").style.setProperty("--vacc", th.join(" ")); } }
-  if (e.target.id === "vQ") { V.q = e.target.value; vPaint(); } if (e.target.id === "vQD") { V.q = e.target.value; vDevPaint(); } });
+  if (t.id === "vMonth" && t.value) { V.month = t.value; vShow(); } if (t.id === "vCon") { V.contractor = t.value; vSaveView(); vPaint(); }
+  if (t.id === "vFac") { V.fid = t.value; VCACHE = {}; vLoadSet().then(() => vShow()); }
+  if (t.id === "vRole") { V.role = t.value; vShow(VT[V.role][0][0]); } });
+document.addEventListener("input", e => { if (e.target.id === "vQ") { V.q = e.target.value; vPaint(); } if (e.target.id === "vQD") { V.q = e.target.value; vDevPaint(); } });
 /* PWA (single file): manifest is built at runtime; open sessions reload themselves when a new version of this file is deployed */
 try { const u = location.href.split("#")[0], man = { name: "Gas Cooker Complex — HSE", short_name: "HSE", start_url: u, scope: u, display: "standalone", background_color: "#1e293b", theme_color: "#1e293b", lang: "ar",
     icons: [{ src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjY4YjAwYWE4LTQzNTctNGZkMi1hYTRiLTE0NzdhZjczMTBiMQAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNopy0HJfUEbYmT0JPW4FDDvQAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6OTJiMjY3N2EtMTM5Mi00NjY5LTljNWItMzRkMGEzZTBhNjc0bHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaGYLQA4QkK8ywIbp5hMy4dAAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIBgo5ONQwu3YP/bOzgRJi+K2xWqwUBkOnCEyRNXtRTHApGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2gi31xWYFNSSc75wmY+PD3gAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFggrz64/evLwuEM+4H4QDDx7W4kWNgu/gY89X7nGXJdCp1kbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo2OGIwMGFhOC00MzU3LTRmZDItYWE0Yi0xNDc3YWY3MzEwYjEvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDo4MjFjODU4Ny1iNDZkLTQ2MmMtODA1Yi04NmMwOWI3OWM5OTRyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggGCjk41DC7dg/9s7OBEmL4rbFarBQGQ6cITJE1e1FMcCiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYII/3ZyzIuOs+UtdVG245DcLJEyN0rQ9u99q7FdJTuDW8omN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIMV7+tDh4Dtpd6cyGDihYfWsKOE2r0V2IgHGaQvpAXhXdGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2WECu7g+X1ermC0uqIYr3Bs0UEqz70oSplzVUiT+Ifa4bWlFep2EUchX/PsqXIPao3pkFsr1alep4fBZ5YgRVN5bCUd8NRgAABA9JREFUeJzt3UtuZEUQhtFoYBmIOTtAYilsgxljZmyj98JC2AYSg2qBuX502X9V3YjMc8aWnBn5Of2Qb9WnH378ueCjvjl7AcwmICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiKgr/jrlz/OXkJrn7zE3Yte7Ob7z78+fiXNCejoq1eOjJ4S0Bcf+FalpBJQ/iPO5hntG9DNfzres6TtArr3b1W7ZbRRQA/+hXyTktYP6PQ/5Kxd0rIBnd7NwaoZLRhQt3QOFitpnYCad3OwTEbjA5rVzXPTSxoc0PR0DoaWNC+gxbo5GJfRpIDWTudgSkkDAtqqm4P+GfUNaOdunmtbUseApPOahhk1Ckg31+tTkv+JJiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiLy3dkL6OLv335618d/+/ufd1rJLG4gIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiIiICICIiIgIgIiIiAiAiKywmM9730ip88nXeDZIDcQEQERERARAREREBEBEREQEQERERARAREREJFGAfV5C6PmWg2qUUDVbDQ9dRtRr4Cq34BaaTicdgExS6O3vHzq8W9/2f9lfhteP9X2Buo5rBO1HUjTgKrxyB6v8yj6BlS9B/cwzYfQOqBqP75767/97gHVhCHubEBA2xrxlTMjoBGjvK0pW54RUM0Z6E0M2uyYgGrUWBOztjkpoJo23A8Yt8FhAdXAEV9v4tbmBVQzB72qkQHVig0N3dHUgBYztJ4aHdDcoR+M3sjggGr46C+mb2F2QDX8AEYv/mJ8QLXEMcy1QkA1s6GJa35ukYBq2nnMWu0b1glokGXqqcUCGnEwIxZ5vaaP9SQe/0jQ9Rarpxa7gS7aHlLbhSUWDKgWPaqe1gyo+jXUbT23smxA1enM+qzk5lYOqImF66nlAzr98E5fwL0tHlCdeoTL11M7BFR7HORZtgiozmhok2p3Cagee6Kb1FNbBVSPOtd96qndAnqAreqpDQO66wHvVk9tGFBtecz3s2NAdZ+G9uxy04Dq1ue9Zz21c0B1u1Pftp7aPKC6xdnvXE8JqLICNq+nBJRQTwnoQgofJqAv3tuQ5i4E9J/rm1DPvwT0P9eUoZ6nBHT0dh/qORDQC16rRD3PCYiIgF72/LJx/bxIQK96Wox6XiOgt1y6Uc8bFnx5Fx7JDUREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQERERARAREREBEBEREQEQEROQfFvHLQlYT8ggAAAAASUVORK5CYII=", sizes: "192x192", type: "image/png" }, { src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjliZmViMmMzLWRjMjktNDVhNS1iNjQ0LTY2MWEyODRhMTNmNAAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNon8+Tsj4U8uEBQoirn/NCFgAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6YzI2YzYxMjYtYWNmYy00YjUwLWFmMzQtY2MwZTRjOWVhMDExbHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaKk4WSFbjNk3Rnwy/4K2sNkAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYID0Yc5bvYQ4bytkKNs80qtLp56+CH0pRBXqUJUnYEIt5pGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2jwsCbl1YU19ddEQxdmaTSiAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFgg6LVhwrvkOn5Iq1dS/Bs6xUcRHHp/OFig3UDnysPwnOZkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo5YmZlYjJjMy1kYzI5LTQ1YTUtYjY0NC02NjFhMjg0YTEzZjQvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDoxOGY5YjNmNi0wMjJiLTQ5MWYtYmIwZi1lYzVhNTU0NDA0MzRyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggPRhzlu9hDhvK2Qo2zzSq0unnr4IfSlEFepQlSdgQi3miY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIKVBeoZmQIKOmfaEXc9SAiWmZBXQ4zaK4usl2l5EImo+omN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYICNk/T+WcSaUt2x8/PoXbEf5oiHn3oJOLAXXymBZDOK3dGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2WEBq7fhuhPyKNQ3RwClWkPNkFKeSNJyem2NZ3wdPjjd7+ptHFS0zAaJRhSk1uK5vL4yHE7hA4iDPjcALxPkrVb8qwX+dMQAAC+JJREFUeJzt2stxHdUChlEbCIPy3BlQ5VBIgxljZqRBLg6ENKi6A1PGV5Kl8+rej2+tBNSnz97/J4Hff/j46R0APT+MfgAAxhAAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIA0v7+9c/RjwDDvP/w8dPoZ4Czvbj7P//12/lPAgMJAC1v/sovA3QIAAk3/KceJWB7AsDO7v9P/DLAxgSAPT38/+4qAfsRALZywr/qUQK2IQBs4uR/0CkDbEAAWNvwf8ivBKxLAFjS8N1/QgZYkQCwmNmm/wklYCECwBom3/3nlID5CQBTW273n5ABZiYATGr16X9CCZiQADCXzXb/OSVgHgLALLaf/m/JADMQAAZL7f5zSsBAAsAY8d1/QgYYQgA4m+l/hRJwJgHgJHb/KkrACQSAY9n9e8gAhxIAjmL6H0gJOIIA8GB2/zgywGMJAA9j+k+jBDyEAHAvuz+QEnAPAeBGdn8eMsBtBICrmf5pKQFXEQAuZfdXIQNcSAB4g91flxLwOgHgu0z/NpSAFwkAT9n9XckATwgA/zH9EUrAFwKA3Y+SAQSgy+7zhRJkCUCR6edFSlAjACF2n0vIQIcA7M/ucxsl2J4A7Mz0cz8Z2JgAbMjucwQl2I8AbMX0cwIl2IYA7MDucz4Z2IAALMzuMwMlWJcALMn0MyElWI4ArMTuMz8ZWIgALMDusyIlmJ8ATM30szoZmJkAzMjusx8lmJAAzMX0sz0lmIcATMHuUyMDMxCAkew+KMFAAjCG6YdvycAQAnAquw+vU4Iz/TD6AQAYQwAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACifhr9AHCXf37/ZeBP//GPzwN/OtzJXwAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQ9dPoB2AW//z+y+hHWM+iL+3HPz6PfgSm4C8AgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBAIgSAIAoAQCIEgCAKAEAiBIAgCgBONXPf/02+hFgXi7IyQTgbI44vMjVOJ8ADOCgwxMuxRACMIbjDgwnAMBgfh8aRQCGcejhnYswlACM5OgT5wqMJQCDuQBkOfzDCcB4rgFBjv0MBGAKLgMpDvwk3n/4+Gn0M/Cvv3/9c/QjrOef338Z+NN//OPzwJ++KOs/D38BTMTFAM4kAMB5/JYzFQGYi+vBxhzv2QjAdFwStuRgT0gAZuSqsBlHek4CMCkXhm04zNMSgHm5NmzAMZ6ZAEzN5WFpDvDkBGB2rhBwEAEADuF3l/kJwAJcJJbj0C5BANbgOrEQx3UVArAMl4olOKgLEYCVuFpMzhFdiwAsxgVjWg7ncgRgPa4Z8BACsCQNYDbO5IoEALiX9V+UAKzKlWMSjuK6BGBhLh7DOYRLE4C1uX4M5PitTgCW5xIyhIO3AQHYgavIyRy5PQjAJlxI4FoCsA8N4BxO2jYEALiC9d+JAGzF5eRQDthmBGA3rigHcbT2IwAbclF5OIdqSwKwJ9eVB3KcdiUA23JpeQgHaWMCsDNXF3iFAGxOA7iH87M3AQBeZv23JwD7c425gWNTIAAJLjNXcWAiBKDCleZCjkqHAIS42LzJIUkRgBbXG/hKAHI0gO9xNmoEoMg95zmnIkgAAOsfJQBRLjxfOQxZAtDl2vPOMWgTgDSXP84BiBOAOhOQ5atHADAEECUAvHunAT2+cd4JAF9ZhA7fNV8IALRYf74SAP5jGrbnK+ZbAsD/MRAb8+XyhADwlJnYkq+V5wSAFxiLzfhCeZEA8DKTAdsTAL5LA/bge+R7BIDX2I7V+QZ5hQDAtqw/rxMA3mBEFuWL400CwNtMyXJ8ZVzi/YePn0Y/A2v4+9c/Rz8CF7H+XMhfAFzKrMBmBIAraMD8fEdcTgC4jn2ZmW+HqwgAV7Myc/K9cC0BgB1Yf24gANzC3EzF18FtBIAbGZ1J+CK4mQBwO9MznK+AewgAdzFAsC4B4F4aMIo3z50EgAewROfzzrmfAPAY9uhM3jYPIQCwGOvPowgAD2OYTuAl80ACwCOZp0N5vTyWAPBgRgpWIQA8ngYcwVvl4QSAQ1irx/I+OYIAcBSb9SjeJAcRAA5kue7nHXIcAYB5WX8OJQAcy4TdzKvjaALA4QzZDbw0TiAAnMGcwYQEgJNowOW8K84hAJzHrl3CW+I0AsCprNvrvB/OJACczcZ9jzfDyQQApmD9OZ8AMICxe8ILYQgBYAyT95VXwSgCwDCGD8YSAEbSAG+AgQSAwcoLWP7szEAAGK+5g81PzVQEgCnU1rD2eZmTAMDZrD+TEABmEZnFyMdkCQLARIwjnEkAmMveDdj707EcAWA6u67krp+LdQkAM9pvK/f7RGxAAJjUTou502dhJwLAvPbYzT0+BVsSADiQ9WdmAsDUlh7QpR+eAgFgdmYUDiIALGDFBqz4zNQIAGtYa0/XelqyBIBlrLKqqzwnCAArmX9b539C+EoAWMzMCzvzs8FzAgCPYf1ZjgCwngmndsJHgjcJAEsyuHA/AWBV8zRgnieBqwgAC5theWd4BriNALC2sftr/VmaALC8USts/VmdALCD87fY+rMBAYCrWX/2IABswijDtQSAfZzTAKVhGwLAVo5eZ+vPTgSA3Ry30dafzQgAGzpiqa0/+xEA9vTYvbb+bEkA2NajVtv6sysBgNdYfzYmAOzMfMMrBIDN3dMA/WBvAsD+bttx68/2BICEa9fc+lMgAFRcvunWnwgBIOSSZbf+dAgALa/vu/UnRQDgX9afGgEgx9DDFwJA0fMGqAJBAkDUt4tv/WkSALq+7L71J+v9h4+fRj8DAAP4CwAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAgSgAAogQAIEoAAKIEACBKAACiBAAg6n+qoQjI7Ky+vQAAAABJRU5ErkJggg==", sizes: "512x512", type: "image/png", purpose: "any maskable" }] };
