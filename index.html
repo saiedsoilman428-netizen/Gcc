@@ -140,6 +140,14 @@ html.dark input,html.dark select,html.dark textarea{background:#14161B;color:#e5
 #sbar{position:fixed;bottom:0;inset-inline:0;z-index:30;padding:.5rem .75rem calc(.5rem + env(safe-area-inset-bottom));background:var(--cd);border-top:1px solid var(--bdr)}
 #upBtn{position:fixed;left:.75rem;bottom:4.6rem;z-index:30;width:2.75rem;height:2.75rem;border-radius:999px;display:grid;place-items:center;background:var(--bl);color:#fff;box-shadow:0 4px 14px #0006}
 #upBtn.hidden{display:none}
+/* vehicle access modals (gate + car developer login): centered, 92vw / 88vh, dark 72% backdrop, Arabic RTL, × close */
+#modal.vgm{background:rgba(0,0,0,.72)!important;align-items:center;padding:.75rem;overflow:hidden;direction:rtl}
+#modal.vgm #mBox{width:100%;max-width:min(24rem,92vw)!important;max-height:88vh;overflow-y:auto;box-sizing:border-box;padding:1.1rem;border-radius:20px}
+#modal.vgm [data-act=close]{font-size:0;width:2.25rem;height:2.25rem;padding:0;display:grid;place-items:center;border-radius:999px;flex:none}
+#modal.vgm [data-act=close]::before{content:"×";font-size:1.6rem;line-height:1}
+#modal.vgm #mTitle{min-width:0;overflow-wrap:anywhere}
+#modal.vgm form>button,#modal.vgm #mBody>button{width:100%;min-height:2.75rem;justify-content:center}
+#vehBtn.go{pointer-events:none}header.brand{overflow-x:clip}
 </style>
 </head>
 <body class="bg-slate-100 text-slate-800">
@@ -241,7 +249,7 @@ html.dark input,html.dark select,html.dark textarea{background:#14161B;color:#e5
 <!-- ================= MODAL + PRINT ================= -->
 <div id="modal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-start justify-center p-3 sm:p-6 overflow-auto">
   <div id="mBox" class="bg-white rounded-xl w-full max-w-lg p-4 sm:p-5 shadow-xl">
-    <div class="flex items-center mb-3"><h2 id="mTitle" class="font-bold text-lg me-auto"></h2><button data-act="close" class="b">Close</button></div>
+    <div class="flex items-center mb-3"><h2 id="mTitle" class="font-bold text-lg me-auto"></h2><button data-act="close" class="b" aria-label="إغلاق" title="إغلاق">Close</button></div>
     <div id="mBody" class="text-sm"></div>
   </div>
 </div>
@@ -350,7 +358,7 @@ const recall = () => { try { return JSON.parse(localStorage.getItem(NAV_KEY)); }
 const remember = () => { try { localStorage.setItem(NAV_KEY, JSON.stringify({ f: S.f, dept: S.dept, v: S.view, t: S.tool })); } catch {} };
 const can = () => !S.dev && S.ok === S.f;   // developer mode never loads workers
 const col = n => collection(db, "factories", FACTORIES[S.f].id, n);
-const openModal = (t, h, wide, dark) => { $("#mTitle").textContent = t; $("#mBody").innerHTML = h; $("#mBox").classList.toggle("mdark", !!dark); $("#modal").classList.toggle("mdark", !!dark);
+const openModal = (t, h, wide, dark) => { $("#modal").classList.remove("vgm"); $("#mTitle").textContent = t; $("#mBody").innerHTML = h; $("#mBox").classList.toggle("mdark", !!dark); $("#modal").classList.toggle("mdark", !!dark);
   $("#mBox").classList.toggle("max-w-4xl", !!wide); $("#mBox").classList.toggle("max-w-lg", !wide); $("#modal").classList.remove("hidden"); };
 const closeModal = () => { $("#modal").classList.add("hidden"); applyUi(); S.unl = null; pwDone(false); vReturn(); if (S.tool) { S.tool = ""; remember(); } };   // also discards unsaved colour previews
 let PD = null, pwRes = null, pwFor = null;              // password gate: pending promise + the worker being unlocked
@@ -391,7 +399,7 @@ const cmp = { serial: (a, b) => (a.serial || 0) - (b.serial || 0), codeA: (a, b)
 const vis = () => base().filter(w => S.hf === "all" || health(w) === S.hf).sort(cmp[S.sort] || cmp.serial);
 const COLS = ["serial", "code", "name", "dept", "profession", "hireDate", "medical", "injuries", "chronic", "notes"];
 
-const tile = (act, ic, lb, o = {}) => `<button data-act="${act}" ${o.data ? `data-id="${esc(o.data)}"` : ""} class="tile ${o.pri ? "pri" : ""}" ${o.color ? `style="border-color:rgb(${rgbSafe(o.color)})"` : ""}><span class="tic">${esc(ic)}</span><span>${esc(lb)}</span>${o.sub ? `<span class="text-xs font-normal opacity-70">${o.sub}</span>` : ""}</button>`;   // home / department tile
+function tile(act, ic, lb, o = {}) { return `<button data-act="${act}" ${o.data ? `data-id="${esc(o.data)}"` : ""} class="tile ${o.pri ? "pri" : ""}" ${o.color ? `style="border-color:rgb(${rgbSafe(o.color)})"` : ""}><span class="tic">${esc(ic)}</span><span>${esc(lb)}</span>${o.sub ? `<span class="text-xs font-normal opacity-70">${o.sub}</span>` : ""}</button>`; }   // home / department tile (hoisted declaration: always defined before any render)
 const renderDepts = () => { $("#wdepts").innerHTML = [...DEPTS, ...S.custom.filter(c => c.type === "menu").map(c => c.label)].map(d => tile("dept", "🏷️", d, { data: d, sub: `${S.workers.filter(w => w.listed !== false && w.dept === d).length} ${esc(t("workers"))}` })).join(""); };
 function renderNav() {
   $("#facNav").innerHTML = FACTORIES.map((f, i) => `<button data-act="fac" data-id="${i}" class="w-full flex items-center gap-2 ps-1 pe-3 py-1.5 rounded-full text-sm ${i === S.f ? "bp text-white font-semibold" : "bg-slate-100 hover:bg-slate-200 text-slate-800"}">${facIcon(f)}<span>${esc(fname(f))}</span>${S.dev || S.ok === i ? "" : "<span>🔒</span>"}</button>`).join("");
@@ -1286,9 +1294,8 @@ function vVehForm(v) {
     <label class="text-sm font-semibold">المقاول<select name="contractor" class="i"><option value=""></option>${cons.map(c => `<option ${c.name === v.contractor ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></label>
     <label class="text-sm font-semibold">النوع / الفئة<input name="type" class="i" value="${esc(v.type)}"></label><label class="text-sm font-semibold">الخط<input name="route" class="i" value="${esc(v.route)}"></label><label class="text-sm font-semibold">ملاحظات<textarea name="notes" rows="2" class="i">${esc(v.notes)}</textarea></label>
     <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="active" ${v.active === false ? "" : "checked"}> مركبة فعّالة</label><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" ${v.hidden ? "checked" : ""}> مخفية (لا تظهر في المتابعة)</label><button class="b bp">حفظ</button></form>`); }
-const vGate = () => { openModal("فحص المركبات", `<form data-form="vgate" dir="rtl" class="grid gap-3"><p>أدخل كلمة السر الرئيسية لمصنع <b>${esc(FACTORIES[S.f].ar)}</b> لفتح نظام فحص المركبات.</p>
-    <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة سر المصنع"><p class="err hidden text-sm text-red-700"></p><button class="b bp">فتح</button></form>
-    <button type="button" data-act="vDev" class="b w-full mt-2">🔧 دخول مطور المركبات</button>`); $("[data-form=vgate] [name=pw]").focus(); };
+const vGate = () => { openModal("فحص المركبات", `<form data-form="vgate" dir="rtl" class="grid gap-3"><input name="pw" type="password" class="i !mt-0" required autocomplete="off" placeholder="كلمة سر المصنع" aria-label="كلمة سر المصنع — ${esc(FACTORIES[S.f].ar)}"><p class="err hidden text-sm text-red-700"></p><button class="b bp">فتح</button></form>
+    <button type="button" data-act="vDev" class="b w-full mt-2">🔧 دخول مطور المركبات</button>`); $("#modal").classList.add("vgm"); $("[data-form=vgate] [name=pw]").focus(); };
 function vDrive(then) {                                // the microbus (on the LEFT) drives off to the right with exhaust smoke, then the gate opens
   const b = $("#vehBtn"), car = b.querySelector(".vcar");
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return then();
@@ -1328,7 +1335,7 @@ const VACT = {
   veh() { if (!can()) return toast("Sign in to a factory first."); vDrive(vGate); },
   vehClose,
   vDev() { if (V.dev) return; openModal("دخول مطور المركبات", `<form data-form="vdev" dir="rtl" class="grid gap-3"><label class="text-sm font-semibold">اسم المستخدم<input class="i" value="${CAR_DEV}" readonly dir="ltr"></label>
-      <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة السر"><p class="err hidden text-sm text-red-700"></p><button class="b bp">دخول</button></form>`); $("[data-form=vdev] [name=pw]").focus(); },
+      <input name="pw" type="password" class="i" required autocomplete="off" placeholder="كلمة السر"><p class="err hidden text-sm text-red-700"></p><button class="b bp">دخول</button></form>`); $("#modal").classList.add("vgm"); $("[data-form=vdev] [name=pw]").focus(); },
   vDevOut() { closeModal(); vehClose(); },             // leaving developer mode closes the module (a factory password is needed to enter as inspector)
   async vBack() { if (V.draft && V.tab === "insp") { if (!(await confirmBox("إلغاء هذا الفحص والعودة للبحث؟"))) return; V.draft = null; vDraftSave(); return vShow(); } if (V.tab !== vFirst()) vShow(vFirst()); else vehClose(); },
   vSt(id, b) { const d = V.draft; if (!d) return; const c = V.chk.find(x => x.id === id), s = c.kind === "gen" ? +b.dataset.s : b.dataset.s; d.items[id] = c.kind === "gen" ? { pct: s, st: s >= GEN_MIN ? "ok" : "bad" } : { st: s };   // instant: only classes change, nothing re-renders
