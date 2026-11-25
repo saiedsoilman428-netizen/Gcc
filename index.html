@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' https: blob: data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://www.gstatic.com; manifest-src 'self' blob:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
@@ -25,14 +25,14 @@
   .bp{background:var(--accent,#0284c7)!important;border-color:var(--accent,#0284c7)!important}
   .bp:hover{filter:brightness(1.12)}
   html:not(.dark) body{background:var(--page,#f1f5f9);color:var(--text,#1e293b)}
-  .dark body{background:#0b1220;color:#e2e8f0}
-  .dark .bg-white,.dark .b{background:#1e293b!important;color:#e2e8f0!important;border-color:#334155!important}
+  .dark body{background:#121417;color:#e2e8f0}
+  .dark .bg-white,.dark .b{background:#1E2128!important;color:#e2e8f0!important;border-color:rgba(255,255,255,.12)!important}
   .dark .bp{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
-  .dark .bg-slate-100{background:#0b1220!important}.dark .bg-slate-50,.dark tbody tr:nth-child(even){background:#162033!important}
+  .dark .bg-slate-100{background:#121417!important}.dark .bg-slate-50,.dark tbody tr:nth-child(even){background:#1a1d24!important}
   .dark .text-slate-800,.dark .text-slate-900{color:#e2e8f0!important}.dark .text-slate-500,.dark .text-slate-600{color:#94a3b8!important}
-  .dark .border-slate-200,.dark .border-slate-300,.dark .border-slate-100{border-color:#334155!important}
-  .dark .i{background:#0f172a!important;color:#e2e8f0!important}.dark .hover\:bg-slate-100:hover{background:#273449!important}
-  .dark .rt th{background:#334155!important;color:#e2e8f0}
+  .dark .border-slate-200,.dark .border-slate-300,.dark .border-slate-100{border-color:rgba(255,255,255,.12)!important}
+  .dark .i{background:#14161B!important;color:#e2e8f0!important}.dark .hover\:bg-slate-100:hover{background:#272b34!important}
+  .dark .rt th{background:#272b34!important;color:#e2e8f0}.dark .rt td,.dark .rt th{border-color:rgba(255,255,255,.16)}
   #modal.mdark{background:#121417!important;padding:0!important;align-items:stretch}
   #mBox.mdark{background:#16181D!important;color:#e5e7eb;max-width:none!important;width:100%;min-height:100%;border-radius:0!important;padding:1rem!important}
   #mBox.mdark .b{background:#1E2128!important;color:#e5e7eb!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:12px}
@@ -47,16 +47,14 @@
   #side.open+#sideTab{right:min(17rem,85vw)}#sideTab:hover{filter:brightness(1.12)}
   #sideTab svg{transition:transform .3s}#side.open+#sideTab svg{transform:rotate(180deg)}
   #app .devonly{display:none}#app.dev .devonly{display:block}#app.dev .nodev{display:none!important}
-  .b,.hb,#bell,#gear,#addBtn{transition:transform .15s ease,box-shadow .15s ease,filter .15s ease,background-color .15s}
-  .b:hover,.hb:hover,#addBtn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.18)}
-  .b:active,.hb:active,#addBtn:active{transform:scale(.96)}
+  .b,.hb,#bell,#gear{transition:transform .15s ease,box-shadow .15s ease,filter .15s ease,background-color .15s}
+  .b:hover,.hb:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.18)}
+  .b:active,.hb:active{transform:scale(.96)}
   #gear svg{transition:transform .4s}#gear:hover svg{transform:rotate(90deg)}
   @keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(14deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-6deg)}}
   .ring svg{animation:ring 1.2s ease 3;transform-origin:top center}
-  article,#facCards button{transition:transform .15s,box-shadow .15s}article:hover{transform:translateY(-2px)}
+  #facCards button,.tile{transition:transform .15s,box-shadow .15s}.tile:hover{transform:translateY(-2px)}
   .dark .hover\:bg-slate-200:hover{background:#273449!important}
-  html[data-add=right] #addBtn{left:auto;right:1rem}
-  html[data-ctl=right] #gearBox{left:auto;right:.5rem}html[data-ctl=right] #rightBox{right:auto;left:.5rem}html[data-ctl=right] #bell{left:auto;right:3.5rem}
   [dir=rtl] .flip{transform:scaleX(-1)}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   @media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important}}
@@ -123,6 +121,26 @@
 #veh #vBody,#veh form.grid{grid-template-columns:minmax(0,1fr)}#veh .vc{min-width:0}
 body.inveh #side,body.inveh #sideTab{display:none!important}
 </style>
+<style>
+/* main screen: dark RTL mobile-first (#121417 page · #1E2128 cards r16 · #14161B inputs · green/red/amber/blue accents) */
+:root{--cd:#fff;--bdr:#cbd5e1;--gr:#22C55E;--rd:#EF4444;--am:#F59E0B;--bl:#3B82F6}
+html.dark{--cd:#1E2128;--bdr:rgba(255,255,255,.16)}
+html.dark input,html.dark select,html.dark textarea{background:#14161B;color:#e5e7eb;border-color:rgba(255,255,255,.12)}
+#topbar{position:fixed;top:0;inset-inline:0;z-index:40;height:3.5rem;display:flex;align-items:center;gap:.5rem;padding:0 .75rem;background:var(--brand,#1E2128);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+#topbar .tb{position:relative;width:2.5rem;height:2.5rem;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#fff;font-weight:700}
+#topbar .tb.hidden{display:none}
+.tile{display:grid;justify-items:center;align-content:center;gap:.4rem;min-height:6.5rem;padding:1rem .6rem;border-radius:16px;background:var(--cd);border:1px solid var(--bdr);font-weight:700;text-align:center}
+.tile .tic{font-size:2rem;line-height:1}.tile.pri{border-color:var(--bl)}
+.wtw{overflow-x:auto;border:1px solid var(--bdr);border-radius:16px;background:var(--cd)}
+.wtw table{width:100%;min-width:720px;border-collapse:collapse;font-size:.875rem}
+.wtw th,.wtw td{border:1px solid var(--bdr);padding:.55rem .75rem;white-space:nowrap;text-align:start}
+.wtw th{background:rgba(127,127,127,.14);font-weight:700}.wtw td:nth-child(3){min-width:9rem}
+.wtw tbody tr[data-act]{cursor:pointer}.wtw tbody tr[data-act]:hover td{background:rgba(59,130,246,.12)}
+.wtw .empty{text-align:center;padding:2rem 1rem;opacity:.7;white-space:normal}
+#sbar{position:fixed;bottom:0;inset-inline:0;z-index:30;padding:.5rem .75rem calc(.5rem + env(safe-area-inset-bottom));background:var(--cd);border-top:1px solid var(--bdr)}
+#upBtn{position:fixed;left:.75rem;bottom:4.6rem;z-index:30;width:2.75rem;height:2.75rem;border-radius:999px;display:grid;place-items:center;background:var(--bl);color:#fff;box-shadow:0 4px 14px #0006}
+#upBtn.hidden{display:none}
+</style>
 </head>
 <body class="bg-slate-100 text-slate-800">
 <div id="intro" style="display:none;position:fixed;inset:0;z-index:120;background:#000;align-items:center;justify-content:center">
@@ -164,30 +182,18 @@ body.inveh #side,body.inveh #sideTab{display:none!important}
   </div>
 </main>
 
-<!-- Always-visible controls: gear (far top-left) · language · dark/light · install -->
-<div id="gearBox" class="fixed top-2 left-2 z-40"><button id="gear" data-act="gear" class="w-10 h-10 rounded-full bg-slate-900/80 text-white grid place-items-center shadow" aria-label="Settings" title="Settings"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
-<div id="rightBox" class="fixed top-2 right-2 z-40 flex gap-1.5">
-  <button id="installBtn" data-act="install" class="hidden w-10 h-10 rounded-full bg-slate-900/80 text-white grid place-items-center shadow" aria-label="Install app" title="Install app"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg></button>
-  <button id="langBtn" data-act="lang" class="w-10 h-10 rounded-full bg-slate-900/80 text-white grid place-items-center shadow text-sm font-bold" aria-label="Language" title="Language">ع</button>
-  <button id="darkBtn" data-act="dark" class="w-10 h-10 rounded-full bg-slate-900/80 text-white grid place-items-center shadow" aria-label="Dark mode" title="Dark mode">🌙</button>
-</div>
+<!-- Top bar: back · HSE · bell · install · language · theme · gear -->
+<header id="topbar"><button id="nback" data-act="nback" class="tb hidden" aria-label="Back" title="Back"><svg class="w-5 h-5 flip" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><div class="me-auto flex items-center gap-2 font-bold tracking-wider"><svg class="w-6 h-6 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="M12 8v8M8 12h8"/></svg><span>HSE</span></div><button id="bell" data-act="alerts" class="tb nodev" aria-label="Notifications" title="Notifications"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="badge" class="absolute -top-1 -end-1 bg-red-600 text-[10px] rounded-full px-1.5 hidden">0</span></button><button id="installBtn" data-act="install" class="tb hidden" aria-label="Install app" title="Install app"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16"/></svg></button><button id="langBtn" data-act="lang" class="tb text-sm" aria-label="Language" title="Language">ع</button><button id="darkBtn" data-act="dark" class="tb" aria-label="Dark mode" title="Dark mode">🌙</button><button id="gear" data-act="gear" class="tb" aria-label="Settings" title="Settings"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></header>
 
 <!-- ================= APP ================= -->
 <div id="app" class="hidden min-h-screen flex flex-col">
   <header class="brand bg-slate-800 text-white pt-16 pb-4">
-    <button id="bell" data-act="alerts" class="nodev fixed top-2 left-14 z-40 relative w-10 h-10 rounded-full bg-slate-900/80 text-white grid place-items-center shadow" aria-label="Notifications" title="Notifications"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="badge" class="absolute -top-1 -end-1 bg-red-600 text-[10px] rounded-full px-1.5 hidden">0</span></button>
     <div class="flex flex-col items-center gap-3 px-4 text-center">
       <div class="flex items-center gap-3"><span class="logo shrink-0" data-s="56"></span><div class="leading-tight text-start"><div class="font-bold text-lg">فريش للأجهزة الكهربائية</div><div class="text-xs text-slate-300">Fresh Electric</div></div></div>
       <div class="flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5"><svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="M12 8v8M8 12h8"/></svg><span class="font-bold tracking-wider">HSE</span><span class="text-xs sm:text-sm">Occupational Safety and Health Department (HSE)</span></div>
     </div>
     <div class="flex flex-wrap items-center gap-3 px-4 pt-5">
       <div class="leading-tight me-auto"><div id="title" class="font-semibold"></div><div id="role" class="text-xs text-slate-300"></div></div>
-      <div class="nodev relative w-full sm:w-64 order-last sm:order-none">
-        <svg class="w-4 h-4 absolute start-2.5 top-3 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
-        <input id="search" type="search" placeholder="Search name or code" class="w-full rounded-lg ps-8 pe-2 py-2 text-sm text-slate-900">
-        <div id="gres" class="hidden absolute top-full start-0 mt-1 w-[min(22rem,90vw)] max-h-72 overflow-auto bg-white text-slate-900 rounded-lg shadow-lg z-40"></div>
-      </div>
-      <span id="actBtns" class="contents nodev"></span>
       <button data-act="logout" class="hb">Log out</button>
     </div>
     <div dir="ltr" class="nodev flex justify-start px-4 pt-3">           <!-- vehicle inspection: microbus button on the LEFT; drives off to the right when pressed -->
@@ -200,29 +206,34 @@ body.inveh #side,body.inveh #sideTab{display:none!important}
     </div>
   </header>
   <div class="flex flex-col md:flex-row flex-1 min-h-0">
-    <main class="flex-1 min-w-0 p-3 md:p-4 grid gap-3 content-start">
+    <main class="flex-1 min-w-0 p-3 md:p-4 pb-24 grid gap-3 content-start">
       <div id="work" class="grid gap-3 content-start nodev">
-      <div class="flex flex-wrap items-center gap-2"><h2 id="deptTitle" class="font-bold text-lg me-auto"></h2><span id="count" class="text-sm text-slate-500"></span><button data-act="regList" class="b">📋 قائمة العمال المسجلين</button>
-        <select id="sortSel" class="b" aria-label="Sort"><option value="serial">Sort: default</option><option value="codeA">Code ↑</option><option value="codeD">Code ↓</option><option value="nameA">Name A–Z</option><option value="nameD">Name Z–A</option></select></div>
-      <button id="addBtn" data-act="add" class="bp fixed bottom-6 left-4 z-30 w-14 h-14 rounded-xl shadow-lg grid place-items-center" aria-label="Add worker" title="+ Add worker"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-      <div id="hfBar" class="flex gap-2 overflow-x-auto pb-1" aria-label="Quick filters"></div>
-      <div class="hidden md:block overflow-auto scroll-smooth overscroll-x-contain [-webkit-overflow-scrolling:touch] bg-white rounded-xl shadow border border-slate-200 max-h-[70vh]">
-        <table id="wt" class="min-w-[1050px] w-full text-sm border-collapse">
-          <thead class="sticky top-0 bg-slate-800 text-white text-xs"><tr id="thead"></tr></thead>
-          <tbody id="tbody" class="[&_td]:px-3 [&_td]:py-2 [&_td]:border [&_td]:border-slate-200 [&_tr:nth-child(even)]:bg-slate-50"></tbody>
-        </table>
-      </div>
-      <div id="cards" class="md:hidden grid gap-2"></div>
+      <section id="home"><div id="tiles" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div></section>
+      <section id="wv" class="hidden grid gap-3">
+        <div id="wdepts" class="hidden grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+        <div id="wlist" class="hidden grid gap-3">
+          <div class="flex flex-wrap items-center gap-2"><h2 id="deptTitle" class="font-bold text-lg me-auto"></h2><span id="count" class="text-sm text-slate-500"></span>
+            <select id="sortSel" class="b" aria-label="Sort"><option value="serial">Sort: default</option><option value="codeA">Code ↑</option><option value="codeD">Code ↓</option><option value="nameA">Name A–Z</option><option value="nameD">Name Z–A</option></select>
+            <button data-act="regList" class="b">📋 قائمة العمال المسجلين</button><button data-act="add" class="b bp" aria-label="Add worker">+ Add worker</button></div>
+          <div id="hfBar" class="flex gap-2 overflow-x-auto pb-1" aria-label="Quick filters"></div>
+          <div class="wtw"><table id="wt"><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+        </div>
+      </section>
       </div>
       <div id="devHub" class="devonly"></div>
     </main>
   </div>
+  <div id="sbar" class="nodev"><div class="relative max-w-3xl mx-auto">
+    <svg class="w-4 h-4 absolute start-3 top-3 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+    <input id="search" type="search" placeholder="Search name or code" class="w-full rounded-xl ps-9 pe-3 py-2.5 text-sm border">
+    <div id="gres" class="hidden absolute bottom-full start-0 mb-2 w-full max-h-72 overflow-auto bg-white text-slate-900 rounded-xl shadow-lg border border-slate-200"></div></div></div>
+  <button id="upBtn" data-act="up" class="hidden" aria-label="Up" title="Up"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
   <aside id="side" class="nodev bg-white" aria-label="Menu"><h3 class="text-xs font-semibold text-slate-500 mb-2">Factories</h3><nav id="facNav" class="grid gap-1 mb-4" aria-label="Factories"></nav>
     <h3 class="text-xs font-semibold text-slate-500 mb-2">Departments</h3><nav id="deptNav" class="grid gap-1" aria-label="Departments"></nav></aside>
   <button id="sideTab" data-act="side" class="nodev bp" aria-label="Departments" aria-expanded="false" title="Departments"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
 </div>
 
-<footer class="text-center text-xs text-slate-500 py-4 px-3 grid gap-1 border-t border-slate-200">
+<footer class="text-center text-xs text-slate-500 pt-4 pb-20 px-3 grid gap-1 border-t border-slate-200">
   <div>✉ <a href="mailto:saiedsoilman428@gmail.com" class="underline">saiedsoilman428@gmail.com</a> · 📞 <a href="tel:+201011604913" dir="ltr" class="underline">+201011604913</a></div>
   <div>Developed by Mr. Saied Ebrihem</div>
 </footer>
@@ -310,7 +321,7 @@ const $ = s => document.querySelector(s);
 const rgbSafe = a => (Array.isArray(a) ? a : String(a ?? "").split(",")).slice(0, 3).map(n => Math.max(0, Math.min(255, Math.round(+n) || 0))).join(",");   // colours from Firestore can never break out of a style attribute
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const toast = (m, ok) => { const e = document.createElement("div");
-  e.className = `fixed bottom-4 end-4 z-[60] max-w-xs px-4 py-2 rounded-lg shadow text-sm text-white ${ok === 2 ? "bg-amber-600" : ok ? "bg-emerald-700" : "bg-red-700"}`;
+  e.className = `fixed bottom-20 end-4 z-[60] max-w-xs px-4 py-2 rounded-lg shadow text-sm text-white ${ok === 2 ? "bg-amber-600" : ok ? "bg-emerald-700" : "bg-red-700"}`;
   e.textContent = m; e.setAttribute("role", "status"); document.body.append(e); setTimeout(() => e.remove(), 5000); };
 const guard = fn => async (...a) => { try { return await fn(...a); } catch (e) { console.error(e); toast(e.message || String(e)); } };
 let busyN = 0, slow;                                   // spinner while Firebase confirms a write; success toast only after the server acknowledges
@@ -333,15 +344,15 @@ const parseDates = s => { const o = [];            // accepts YYYY-MM-DD and DD/
   String(s || "").replace(/(\d{4})-(\d{1,2})-(\d{1,2})|(\d{1,2})\/(\d{1,2})\/(\d{4})/g, (m, y, mo, d, d2, mo2, y2) => { o.push(y ? new Date(+y, +mo - 1, +d) : new Date(+y2, +mo2 - 1, +d2)); return m; });
   return o.filter(d => !isNaN(d)); };
 
-const S = { cfg: {}, gk: "", sort: "serial", f: 0, dept: "All", hf: "all", dev: false, ok: null, q: "", custom: [], workers: [], forms: [], alerts: [] };
-const NAV_KEY = "gcc.nav";   // remembers the last factory + department across refreshes
+const S = { cfg: {}, gk: "", sort: "serial", f: 0, dept: "All", view: "home", tool: "", hf: "all", dev: false, ok: null, q: "", custom: [], workers: [], forms: [], alerts: [] };
+const VIEWS = ["home", "wdepts", "wlist"], TOOLS = ["hse", "injury", "refs", "expo"], NAV_KEY = "gcc.nav";   // remembers the last factory + department across refreshes
 const recall = () => { try { return JSON.parse(localStorage.getItem(NAV_KEY)); } catch { return null; } };
-const remember = () => { try { localStorage.setItem(NAV_KEY, JSON.stringify({ f: S.f, dept: S.dept })); } catch {} };
+const remember = () => { try { localStorage.setItem(NAV_KEY, JSON.stringify({ f: S.f, dept: S.dept, v: S.view, t: S.tool })); } catch {} };
 const can = () => !S.dev && S.ok === S.f;   // developer mode never loads workers
 const col = n => collection(db, "factories", FACTORIES[S.f].id, n);
 const openModal = (t, h, wide, dark) => { $("#mTitle").textContent = t; $("#mBody").innerHTML = h; $("#mBox").classList.toggle("mdark", !!dark); $("#modal").classList.toggle("mdark", !!dark);
   $("#mBox").classList.toggle("max-w-4xl", !!wide); $("#mBox").classList.toggle("max-w-lg", !wide); $("#modal").classList.remove("hidden"); };
-const closeModal = () => { $("#modal").classList.add("hidden"); applyUi(); S.unl = null; pwDone(false); vReturn(); };   // also discards unsaved colour previews
+const closeModal = () => { $("#modal").classList.add("hidden"); applyUi(); S.unl = null; pwDone(false); vReturn(); if (S.tool) { S.tool = ""; remember(); } };   // also discards unsaved colour previews
 let PD = null, pwRes = null, pwFor = null;              // password gate: pending promise + the worker being unlocked
 function pwDone(v) { const r = pwRes; pwRes = null; pwFor = null; r?.(v); }
 const askPw = w => { return new Promise(res => { pwDone(false); pwRes = res; pwFor = w.id;
@@ -380,11 +391,15 @@ const cmp = { serial: (a, b) => (a.serial || 0) - (b.serial || 0), codeA: (a, b)
 const vis = () => base().filter(w => S.hf === "all" || health(w) === S.hf).sort(cmp[S.sort] || cmp.serial);
 const COLS = ["serial", "code", "name", "dept", "profession", "hireDate", "medical", "injuries", "chronic", "notes"];
 
+const renderDepts = () => { $("#wdepts").innerHTML = [...DEPTS, ...S.custom.filter(c => c.type === "menu").map(c => c.label)].map(d => tile("dept", "🏷️", d, { data: d, sub: `${S.workers.filter(w => w.listed !== false && w.dept === d).length} ${esc(t("workers"))}` })).join(""); };
 function renderNav() {
   $("#facNav").innerHTML = FACTORIES.map((f, i) => `<button data-act="fac" data-id="${i}" class="w-full flex items-center gap-2 ps-1 pe-3 py-1.5 rounded-full text-sm ${i === S.f ? "bp text-white font-semibold" : "bg-slate-100 hover:bg-slate-200 text-slate-800"}">${facIcon(f)}<span>${esc(fname(f))}</span>${S.dev || S.ok === i ? "" : "<span>🔒</span>"}</button>`).join("");
   $("#deptNav").innerHTML = ["All", ...DEPTS, ...S.custom.filter(c => c.type === "menu").map(c => c.label)].map(d =>
     `<button data-act="dept" data-id="${esc(d)}" class="text-start w-full px-3 py-2 rounded-lg text-sm ${d === S.dept ? "bg-sky-100 text-sky-900 font-semibold" : "hover:bg-slate-100"}">${esc(d)}</button>`).join("");
-  $("#actBtns").innerHTML = allItems().filter(x => !x.hide).map(x => `<button data-act="${x.act}" ${x.data ? `data-id="${esc(x.data)}"` : ""} class="hb relative flex items-center gap-1" title="${esc(x.t || x.label || x.id)}" ${x.color ? `style="background:rgb(${rgbSafe(x.color)})"` : ""}><span>${esc(x.icon)}</span>${x.label ? `<span class="hidden lg:inline">${esc(x.label)}</span>` : ""}${x.id === "alerts" ? '<span id="badge" class="absolute -top-1 -end-1 bg-red-600 text-[10px] rounded-full px-1.5 hidden">0</span>' : ""}</button>`).join("");
+  const tile = (act, ic, lb, o = {}) => `<button data-act="${act}" ${o.data ? `data-id="${esc(o.data)}"` : ""} class="tile ${o.pri ? "pri" : ""}" ${o.color ? `style="border-color:rgb(${rgbSafe(o.color)})"` : ""}><span class="tic">${esc(ic)}</span><span>${esc(lb)}</span>${o.sub ? `<span class="text-xs font-normal opacity-70">${o.sub}</span>` : ""}</button>`;
+  $("#tiles").innerHTML = tile("workers", "👷", "Workers", { pri: 1 }) + allItems().filter(x => !x.hide).map(x => tile(x.act, x.icon, x.label || x.t || x.id, { data: x.data, color: x.color })).join("");
+  renderDepts();
+  $("#home").classList.toggle("hidden", S.view !== "home"); $("#wv").classList.toggle("hidden", S.view === "home"); $("#wdepts").classList.toggle("hidden", S.view !== "wdepts"); $("#wlist").classList.toggle("hidden", S.view !== "wlist"); $("#nback").classList.toggle("hidden", S.view === "home" || !can()); $("#bell").classList.toggle("hidden", !can());
   $("#title").textContent = S.dev ? t("Developer hub") : fname(FACTORIES[S.f]); $("#role").textContent = S.dev ? "Developer mode" : "Factory login"; $("#app").classList.toggle("dev", S.dev); if (S.dev) renderHub();
   $("#deptTitle").textContent = S.dept === "All" ? "All departments" : S.dept;
   $("#gear").classList.toggle("!bg-orange-600", S.dev); refreshAlerts();
@@ -395,24 +410,18 @@ const health = w => { const t = today(); if (parseDates(w.injuries).some(d => d 
 const badge = w => { const [l, c, i] = HEALTH[health(w)]; return `<span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${c}">${i} ${l}</span>`; };
 const DEFLAB = { serial: "Serial", code: "Code", name: "Name", dept: "Department", profession: "Profession", hireDate: "Hire Date", medical: "Medical History", injuries: "Work Injury (إصابة عمل)", chronic: "Chronic Diseases", notes: "Notes" };
 const lab = k => S.cfg.labels?.[k] || DEFLAB[k], cols = () => COLS.filter(k => !(S.cfg.hide || []).includes(k));
-function renderHead() { $("#thead").innerHTML = cols().map(k => `<th class="px-3 py-2 text-start whitespace-nowrap border border-slate-700">${esc(lab(k))}</th>`).join("") + `<th class="px-3 py-2 text-start whitespace-nowrap border border-slate-700">Actions</th>`; }
-function renderTable() { renderHead();
-  const r = vis(), bs = base(), cnt = k => bs.filter(w => health(w) === k).length, sb = "b !px-2 !py-0.5 text-xs";
+const WCOLS = [["serial", "مسلسل"], ["code", "كود"], ["name", "اسم"], ["dept", "القسم"], ["profession", "وظيفة"], ["chronic", "أنواع الأمراض"]];
+function renderTable() {
+  $("#thead").innerHTML = WCOLS.map(([k, l]) => `<th>${esc(S.cfg.labels?.[k] || l)}</th>`).join("");
+  const r = vis(), bs = base(), cnt = k => bs.filter(w => health(w) === k).length;
   $("#hfBar").innerHTML = [["all", "All", bs.length], ["injury", "🔴 Active injury", cnt("injury")], ["chronic", "🟠 Chronic", cnt("chronic")], ["ok", "🟢 Normal", cnt("ok")]]
     .map(([k, l, n]) => `<button data-act="hfilter" data-id="${k}" class="px-3 py-1 rounded-full text-sm whitespace-nowrap border ${S.hf === k ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-300 hover:bg-slate-100"}">${l} <b>${n}</b></button>`).join("");
-  const empty = can() ? "No workers in this view." : "Sign in to view workers.";
-  const acts = w => `<button data-act="edit" data-id="${w.id}" class="${sb}">Edit</button> <button data-act="del" data-id="${w.id}" class="${sb} text-red-700">Delete</button>`;
-  $("#tbody").innerHTML = r.map(w => `<tr>${cols().map(k => `<td>${k === "name" ? `${esc(w.name)}<div class="mt-1">${badge(w)}</div>` : esc(w[k])}</td>`).join("")}<td class="whitespace-nowrap">${acts(w)}</td></tr>`).join("")
-    || `<tr><td colspan="${cols().length + 1}" class="text-center text-slate-500 py-8">${empty}</td></tr>`;
-  $("#cards").innerHTML = r.map(w => `<article class="bg-white rounded-xl shadow border border-slate-200 p-3"><div class="flex items-start gap-2"><div class="me-auto"><div class="font-bold">${esc(w.name)}</div>
-    <div class="text-xs text-slate-500">${esc(w.code)} · ${esc(w.dept)} · ${esc(w.profession)}</div></div>${badge(w)}</div>
-    <details class="mt-2 text-sm"><summary class="cursor-pointer text-sky-700">Details</summary><dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">${[["Serial", "serial"], ["Hired", "hireDate"], ["Medical", "medical"], ["Work Injury", "injuries"], ["Chronic", "chronic"], ["Notes", "notes"]]
-      .map(([l, k]) => `<dt class="text-slate-500">${l}</dt><dd>${esc(w[k]) || "—"}</dd>`).join("")}</dl></details><div class="mt-2 flex gap-2">${acts(w)}</div></article>`).join("")
-    || `<p class="text-center text-slate-500 py-8">${empty}</p>`;
+  $("#tbody").innerHTML = r.map((w, i) => `<tr data-act="wopen" data-id="${w.id}"><td>${esc(w.serial || i + 1)}</td><td dir="ltr">${esc(w.code)}</td><td><span title="${esc(HEALTH[health(w)][0])}">${HEALTH[health(w)][2]}</span> ${esc(w.name)}</td><td>${esc(w.dept)}</td><td>${esc(w.profession)}</td><td>${hasText(w.chronic) ? esc(w.chronic) : "—"}</td></tr>`).join("")
+    || `<tr><td colspan="6" class="empty">${can() ? "لا يوجد عمال في هذا القسم." : "سجّل الدخول لعرض العمال."}</td></tr>`;
   $("#count").textContent = `${r.length} ${t("workers")}`;
 }
 const renderAll = () => { renderNav(); renderData(); };
-const renderData = () => { renderTable(); refreshAlerts(); renderForms(); renderReg(); };
+const renderData = () => { renderDepts(); renderTable(); refreshAlerts(); renderForms(); renderReg(); };
 
 /* ======================= 6) WORKER CRUD + EXPORT ======================= */
 const AREA = ["medical", "injuries", "chronic", "notes"];
@@ -564,17 +573,17 @@ const getRead = () => { try { return new Set(JSON.parse(localStorage.getItem(rea
 const markRead = k => { const r = getRead(); r.add(k); try { localStorage.setItem(readKey(), JSON.stringify([...r])); } catch {} };
 
 /* ---- UI settings (colors · logo · icons): cached locally and shared through settings/system.ui ---- */
-const DEF = { brand: [30, 41, 59], accent: [2, 132, 199], page: [241, 245, 249], text: [30, 41, 59] }, UI_KEY = "gcc.ui", SESS = "gcc.sess";
+const DEF = { brand: [30, 33, 40], accent: [59, 130, 246], page: [241, 245, 249], text: [30, 41, 59] }, UI_KEY = "gcc.ui", SESS = "gcc.sess";
 const toRgb = v => { if (Array.isArray(v) && v.length === 3 && v.every(x => Number.isInteger(x) && x >= 0 && x <= 255)) return v;
   const h = String(v || "").replace("#", ""); return /^[0-9a-f]{6}$/i.test(h) ? [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)) : null; };   // also reads old "#rrggbb" values
-const defUi = () => ({ colors: { ...DEF }, logo: "", items: {}, order: [], fac: {}, sec: {}, layout: {} });
+const defUi = () => ({ colors: { ...DEF }, logo: "", items: {}, order: [], fac: {}, sec: {} });
 const mergeUi = x => { x = x || {}; const d = defUi(); for (const k in DEF) d.colors[k] = toRgb(x.colors?.[k]) || DEF[k];
-  d.logo = typeof x.logo === "string" ? x.logo : ""; d.items = x.items || {}; d.order = x.order || []; d.fac = x.fac || {}; d.sec = x.sec || {}; d.layout = x.layout || {}; return d; };
+  d.logo = typeof x.logo === "string" ? x.logo : ""; d.items = x.items || {}; d.order = x.order || []; d.fac = x.fac || {}; d.sec = x.sec || {}; return d; };
 const getUi = () => { try { const t = JSON.parse(localStorage.getItem(UI_KEY)); if (t) return mergeUi(t);
   const o = JSON.parse(localStorage.getItem("gcc.theme")); if (o) return mergeUi({ colors: { brand: o.brand, accent: o.accent }, logo: o.logo }); } catch {} return defUi(); };
 S.ui = getUi();
 const paintLogo = () => document.querySelectorAll(".logo").forEach(e => e.innerHTML = `<img src="${esc(S.ui.logo || FRESH)}" alt="Fresh" class="rounded-md" style="height:${+e.dataset.s}px;width:auto">`);
-const applyUi = () => { const r = document.documentElement.style; for (const k in DEF) r.setProperty("--" + k, `rgb(${rgbSafe(S.ui.colors[k])})`); paintLogo(); applySec(S.ui.sec); const D = document.documentElement.dataset; D.add = S.ui.layout?.add || "left"; D.ctl = S.ui.layout?.ctl || "left"; };
+const applyUi = () => { const r = document.documentElement.style; for (const k in DEF) r.setProperty("--" + k, `rgb(${rgbSafe(S.ui.colors[k])})`); paintLogo(); applySec(S.ui.sec); };
 const saveUi = async () => { try { localStorage.setItem(UI_KEY, JSON.stringify(S.ui)); } catch {} applyUi(); await setDoc(doc(db, "settings", "system"), { ui: S.ui }, { merge: true }); };
 let unsubSet = null;
 function subSettings(on) {                              // live settings (colours, names, AI patches) — only for signed-in accounts
@@ -600,7 +609,6 @@ function settingsHtml() {
   const c = S.ui.colors, sm2 = "b !px-2 !py-0.5 text-xs";
   return `<form data-form="theme" class="grid gap-3">
     <section><h3 class="font-semibold">Colors (RGB 0–255)</h3>${rgbRow("brand", "Header", c.brand)}${rgbRow("accent", "Buttons", c.accent)}${rgbRow("page", "Background", c.page)}${rgbRow("text", "Text", c.text)}</section>
-    <section><h3 class="font-semibold">Layout positions</h3><div class="grid sm:grid-cols-2 gap-2 mt-2"><label class="text-sm">Add-worker button<select name="lay_add" class="i"><option value="left" ${S.ui.layout?.add !== "right" ? "selected" : ""}>Bottom-left</option><option value="right" ${S.ui.layout?.add === "right" ? "selected" : ""}>Bottom-right</option></select></label><label class="text-sm">Settings &amp; bell<select name="lay_ctl" class="i"><option value="left" ${S.ui.layout?.ctl !== "right" ? "selected" : ""}>Top-left</option><option value="right" ${S.ui.layout?.ctl === "right" ? "selected" : ""}>Top-right</option></select></label></div></section>
     <section><h3 class="font-semibold">Header icons</h3>${allItems().map((x, i) => `<div class="flex flex-wrap items-center gap-1 mt-2 border-t border-slate-100 pt-2"><input name="ic${i}" value="${esc(x.icon)}" class="i !mt-0 !w-12 text-center" aria-label="Icon">
       <input name="lb${i}" value="${esc(x.label || "")}" placeholder="Label" class="i !mt-0 !w-28" aria-label="Label">${rgbCells(`co${i}_`, x.color)}
       <label class="text-xs flex items-center gap-1"><input type="checkbox" name="hd${i}" ${x.hide ? "checked" : ""}> Hide</label>
@@ -652,8 +660,7 @@ Object.assign(AR, { "Occupational Safety and Health Department (HSE)": "إدار
   "Sort": "ترتيب", "Dark mode": "الوضع الداكن",
   "Factories Settings": "إعدادات المصانع", "Departments Settings": "إعدادات الأقسام", "Worker Fields Settings": "إعدادات الأسماء والحقول", "System Settings": "إعدادات النظام", "Passwords Settings": "إعدادات كلمة السر",
   "Colors Studio": "إعدادات الألوان", "Layout & Icons": "إعدادات مكان الأيقونات", "Safety Guide": "دليل السلامة", "📷 Scan with camera": "📷 مسح بالكاميرا", "🖼 Upload image": "🖼 رفع صورة",
-  "Layout positions": "أماكن العناصر", "Add-worker button": "زر إضافة عامل", "Bottom-left": "أسفل اليسار", "Bottom-right": "أسفل اليمين", "Settings & bell": "الإعدادات والجرس", "Top-left": "أعلى اليسار", "Top-right": "أعلى اليمين",
-  "+ Add": "+ إضافة", "Show in table": "إظهار في الجدول", "Icons": "الأيقونات", "Reset": "إعادة", "Main area": "المنطقة الرئيسية", "Sidebar": "القائمة الجانبية", "Table & cards": "الجدول والبطاقات", "Footer": "التذييل",
+  "+ Add": "+ إضافة", "Show in table": "إظهار في الجدول", "Icons": "الأيقونات", "Reset": "إعادة", "Main area": "المنطقة الرئيسية", "Sidebar": "القائمة الجانبية", "Table": "الجدول", "Footer": "التذييل",
   "Save key": "حفظ المفتاح", "Share key with factory devices (needed for image scanning)": "مشاركة المفتاح مع أجهزة المصانع (لازم لقراءة الصور)", "Total hours worked": "إجمالي ساعات العمل", "Search substance": "ابحث عن مادة",
   "App name": "اسم التطبيق", "Recent-injury alert window (days)": "مدة تنبيه الإصابة الحديثة (أيام)", "Due-soon window (days)": "مدة التنبيه قبل الاستحقاق (أيام)", "Max days between medical exams": "أقصى مدة بين الفحوص الطبية (أيام)",
   "Establishment (injury report header)": "بيانات المنشأة (ترويسة تقرير الإصابات)", "Address": "العنوان", "Activity": "النشاط", "Insurance no.": "رقم التأمينات", "Commercial register no.": "رقم السجل التجاري",
@@ -661,9 +668,10 @@ Object.assign(AR, { "Occupational Safety and Health Department (HSE)": "إدار
 Object.assign(AR, { "Password required": "كلمة السر مطلوبة", "Enter the password of this factory:": "أدخل كلمة سر هذا المصنع:", "Verify": "تحقق" });
 Object.assign(AR, { "Current password": "كلمة السر الحالية", "New password (min 6)": "كلمة السر الجديدة (6 أحرف على الأقل)", "Fill only the accounts you want to change. Passwords are checked by Firebase and are never stored in the database.": "املأ الحسابات التي تريد تغييرها فقط. كلمات السر يتحقق منها Firebase ولا تُخزَّن في قاعدة البيانات.",
   "Wrong developer password.": "كلمة سر المطوّر غير صحيحة.", "Too many attempts. Wait a few minutes and try again.": "محاولات كثيرة. انتظر بضع دقائق ثم حاول مجدداً." });
-Object.assign(AR, { "AI model": "نموذج الذكاء الاصطناعي" });
+Object.assign(AR, { "AI model": "نموذج الذكاء الاصطناعي", "Workers": "العمال", "Up": "للأعلى" });
 const AR2EN = Object.fromEntries(Object.entries(AR).map(([k, v]) => [v, k]));
-let LANG = localStorage.getItem("gcc.lang") || "en", DARK = !!localStorage.getItem("gcc.dark");
+const gd = localStorage.getItem("gcc.dark");
+let LANG = localStorage.getItem("gcc.lang") || "ar", DARK = gd === null ? true : gd === "1";   // default: dark + Arabic/RTL
 const t = s => (LANG === "ar" && AR[s]) || s;
 function i18n(root = document.body, force) {            // swaps known UI strings (text + placeholder/title); stored data is never changed
   if (LANG === "en" && !force) return;
@@ -681,12 +689,12 @@ function start(ok, dev) {
   S.ok = ok; S.dev = !!dev; const sv = recall();
   if (dev) try { sessionStorage.removeItem(SESS); } catch {}                // developer mode is never restored after refresh
   if (ok != null) S.f = ok; else if (FACTORIES[sv?.f]) S.f = sv.f;
-  S.dept = sv?.f === S.f ? sv.dept || "All" : "All"; S.hf = "all"; closeModal();
-  $("#login").classList.add("hidden"); $("#app").classList.remove("hidden"); watch(); if (!dev) vRestore().catch(console.error);
+  const same = sv?.f === S.f; S.dept = same ? sv.dept || "All" : "All"; S.view = !dev && same && VIEWS.includes(sv.v) ? sv.v : "home"; if (S.view === "wlist" && S.dept === "All") S.view = "wdepts"; S.hf = "all"; closeModal();
+  $("#login").classList.add("hidden"); $("#app").classList.remove("hidden"); watch(); if (!dev) { vRestore().catch(console.error); if (same && TOOLS.includes(sv.t)) ACT[sv.t](); }   // reload keeps the open view / tool
 }
 function leave() {
   unsubs.forEach(u => u()); unsubs = []; try { sessionStorage.removeItem(SESS); } catch {}
-  S.ok = null; S.dev = false; S.workers = []; S.forms = []; S.q = ""; $("#search").value = ""; $("#gres").classList.add("hidden");
+  S.ok = null; S.dev = false; S.workers = []; S.forms = []; S.q = ""; S.view = "home"; S.tool = ""; S.dept = "All"; remember(); $("#search").value = ""; $("#gres").classList.add("hidden");
   closeModal(); vehClose(); $("#chat").classList.add("hidden"); $("#app").classList.add("hidden"); $("#login").classList.remove("hidden"); showSel(); renderAll();
 }
 
@@ -734,7 +742,7 @@ function applyPatches(p) {                              // CSS re-applied every 
   if (appliedN && p.length < appliedN) return location.reload();
   patches = p; let st = document.getElementById("aiCss"); if (!st) { st = document.createElement("style"); st.id = "aiCss"; document.head.append(st); }
   st.textContent = p.map(x => x.css || "").join("\n"); p.slice(appliedN).forEach(x => x.js && runJs(x.js)); appliedN = p.length; }
-const SYS = `You edit a single-page HSE worker-register web app (Tailwind classes; ids #app #side #deptNav #facNav #tbody #cards #addBtn; CSS variables --brand --accent --page --text). Reply ONLY with JSON {"explain":"short reply in the user's language","css":"CSS to append, or empty","js":"safe vanilla JS to run once, or empty"}. Prefer CSS. Never touch Firebase, passwords, storage, network or delete data.`;
+const SYS = `You edit a single-page HSE worker-register web app (Tailwind classes; ids #app #side #deptNav #facNav #tiles #tbody; CSS variables --brand --accent --page --text). Reply ONLY with JSON {"explain":"short reply in the user's language","css":"CSS to append, or empty","js":"safe vanilla JS to run once, or empty"}. Prefer CSS. Never touch Firebase, passwords, storage, network or delete data.`;
 const AI_THINK = () => { const v = String(S.cfg.sys?.aiThink || "low").trim().toLowerCase(); return ["low", "medium", "high"].includes(v) ? v : "low"; };
 const AI_DEFAULT = "gemini-3.8-flash", aiModel = () => "models/" + String(S.cfg.sys?.aiModel || AI_DEFAULT).trim().replace(/^models\//, "");   // model name comes from System Settings, never hard-wired
 const aiErr = (st, msg, m) => (st === 400 && /api key/i.test(msg)) || st === 401 || st === 403 ? "مفتاح Gemini غير صحيح أو مش مسموح له. راجع المفتاح من زر 🔑."
@@ -812,14 +820,14 @@ function applyCfg(c) { S.cfg = c || {}; FACTORIES.forEach(f => { const o = S.cfg
   if (Array.isArray(S.cfg.depts) && S.cfg.depts.length) DEPTS.splice(0, DEPTS.length, ...S.cfg.depts);
   const y = S.cfg.sys || {}; ALERT_DAYS = +y.alertDays || 30; DUE_SOON_DAYS = +y.dueSoon || 7; EXAM_MAX_DAYS = +y.examMax || 365; document.title = y.appName ? `${y.appName} | HSE` : "Gas Cooker Complex | مجمع البوتاجاز"; }
 const saveCfg = async p => { S.cfg = { ...S.cfg, ...p }; applyCfg(S.cfg); await run("Saving…", "Saved.", () => setDoc(doc(db, "settings", "system"), { cfg: S.cfg }, { merge: true })); };
-const SECS = [["header", "Header"], ["side", "Sidebar"], ["main", "Main area"], ["table", "Table & cards"], ["footer", "Footer"]];
+const SECS = [["header", "Header"], ["side", "Sidebar"], ["main", "Main area"], ["table", "Table"], ["footer", "Footer"]];
 const hex2 = a => "#" + a.map(x => x.toString(16).padStart(2, "0")).join("");
 const sdef = k => ({ header: [hex2(S.ui.colors.brand), "#ffffff"], side: ["#ffffff", "#334155"], main: [hex2(S.ui.colors.page), "#334155"], table: ["#ffffff", "#334155"], footer: [hex2(S.ui.colors.page), "#64748b"] })[k];
 const readSec = f => { const sec = structuredClone(S.ui.sec || {}); SECS.forEach(([k]) => ["bg", "ic"].forEach(c => { const el = f.elements[k + "_" + c]; if (el.dataset.t) { sec[k] = sec[k] || {}; sec[k][c] = toRgb(el.value); } })); return sec; };
 function applySec(sec) { let st = document.getElementById("secCss"); if (!st) { st = document.createElement("style"); st.id = "secCss"; document.head.append(st); }
   const c = (k, f) => sec?.[k]?.[f] ? `rgb(${rgbSafe(sec[k][f])})` : "", R = [], bg = (sel, k) => c(k, "bg") && R.push(`${sel}{background:${c(k, "bg")}!important}`), ic = (sel, k) => c(k, "ic") && R.push(`${sel}{color:${c(k, "ic")}!important}`);
-  bg("header.brand", "header"); ic("header svg,#gear,#bell,#langBtn,#darkBtn", "header"); bg("#side", "side"); ic("#side svg", "side"); bg("#app main", "main"); ic("#app main svg", "main");
-  bg("#wt tbody tr,#cards article", "table"); bg("footer", "footer"); ic("footer", "footer"); st.textContent = R.join(""); }
+  bg("header.brand,#topbar", "header"); ic("header svg,#gear,#bell,#langBtn,#darkBtn", "header"); bg("#side", "side"); ic("#side svg", "side"); bg("#app main", "main"); ic("#app main svg", "main");
+  bg("#wt tbody tr", "table"); bg("footer", "footer"); ic("footer", "footer"); st.textContent = R.join(""); }
 const dpRow = d => `<div class="flex gap-2"><input name="d" value="${esc(d)}" class="i !mt-0"><button type="button" data-act="dpRm" class="b !text-red-700" aria-label="Remove">✕</button></div>`;
 const inp = (n, l, v, type = "text") => `<label class="text-sm font-semibold">${l}<input name="${n}" type="${type}" value="${esc(v ?? "")}" class="i"></label>`;
 
@@ -926,6 +934,7 @@ function xCalc() {
 const X_EX = { twa: { xt1c: 50, xt1h: 4, xt2c: 120, xt2h: 2, xt3c: 20, xt3h: 2, xtL: 100 }, rf: { xrH: 12, xrL: 100 }, em: { xm1c: 50, xm1l: 100, xm2c: 100, xm2l: 400, xm3c: 20, xm3l: 200 } };
 document.addEventListener("input", e => { if (/^x[tmr]/.test(e.target.id || "") && e.target.closest("#mBox")) xCalc(); });
 
+const go = (v, dept) => { S.view = v; S.dept = dept; S.hf = "all"; remember(); renderAll(); window.scrollTo(0, 0); };   // one navigation helper for home → departments → worker table
 const ACT = {
   regList: need(() => { openModal("قائمة العمال المسجلين", regHtml(), true, true); renderReg(); }),
   async regTog(id) { const w = S.workers.find(x => x.id === id); if (!w) return; await run("Saving…", w.listed === false ? "تم إظهار العامل في القائمة العاملة." : "تم إخفاء العامل من القائمة العاملة.", () => updateDoc(doc(col("workers"), id), { listed: w.listed === false })); },
@@ -950,6 +959,12 @@ const ACT = {
     <label class="text-xs flex items-center gap-1">Icons<input type="color" name="${k}_ic" value="${o.ic ? hex2(o.ic) : d[1]}" class="w-10 h-8"></label><button type="button" data-act="secReset" data-id="${k}" class="b !px-2 !py-0.5 text-xs">Reset</button></div>`; }).join("")}<button class="b bp">Save</button></form>`); },
   async secReset(k) { S.ui.sec ||= {}; delete S.ui.sec[k]; await saveUi(); ACT.colors(); },
   side: () => setSide(!$("#side").classList.contains("open")),
+  workers: need(() => go("wdepts", "All")),
+  nback: () => go(S.view === "wlist" ? "wdepts" : "home", "All"),
+  up: () => window.scrollTo({ top: 0, behavior: "smooth" }),
+  wopen: need(id => { const w = S.workers.find(x => x.id === id); if (!w) return; const sb = "b !px-3 !py-1";
+    openModal(w.name, `<dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-sm" dir="auto">${COLS.map(k => `<dt class="text-slate-500">${esc(lab(k))}</dt><dd>${esc(w[k]) || "—"}</dd>`).join("")}</dl>
+      <div class="mt-3 flex flex-wrap items-center gap-2">${badge(w)}<button data-act="edit" data-id="${w.id}" class="${sb} ms-auto">Edit</button><button data-act="del" data-id="${w.id}" class="${sb} text-red-700">Delete</button></div>`); }),
   async install() { if (!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall = null; $("#installBtn").classList.add("hidden"); },
   pdoX: () => $("#pdo").classList.add("hidden"),
   pdoPrint() { $("#pdo").classList.add("hidden"); $("#printArea").innerHTML = PD.body; window.print(); },
@@ -985,25 +1000,25 @@ const ACT = {
   async uiReset() { S.ui = defUi(); await saveUi(); renderSel(); renderNav(); ACT.settings(); },
   async mv(v) { const [i, d] = v.split("|").map(Number), ids = allItems().map(x => x.id), j = i + d; if (j < 0 || j >= ids.length) return;
     [ids[i], ids[j]] = [ids[j], ids[i]]; S.ui.order = ids; await saveUi(); renderNav(); ACT.settings(); },
-  dark() { DARK = !DARK; try { localStorage.setItem("gcc.dark", DARK ? "1" : ""); } catch {} applyDark(); },
+  dark() { DARK = !DARK; try { localStorage.setItem("gcc.dark", DARK ? "1" : "0"); } catch {} applyDark(); },
   lang() { LANG = LANG === "ar" ? "en" : "ar"; try { localStorage.setItem("gcc.lang", LANG); } catch {} applyLang(); },
   gear() { S.dev ? ACT.settings() : openModal("Developer login", `<form data-form="dev" class="grid gap-3"><div class="text-xs text-slate-500" dir="ltr">${DEV_EMAIL}</div>
     <input name="p" type="password" class="i" placeholder="Developer password" autocomplete="off" required><p class="err hidden text-sm text-red-700">Wrong developer credentials.</p>
     <button class="b bp">Enter developer mode</button></form>`); },
   async gopen(v) { const w = S.hits?.[v]; if (!w) return; const i = w.fi;
     if (!(S.dev || S.ok === i)) return toast("This factory is not available for your account.");
-    $("#gres").classList.add("hidden"); $("#search").value = ""; S.q = ""; S.dept = w.dept || "All"; S.hf = "all";
+    $("#gres").classList.add("hidden"); $("#search").value = ""; S.q = ""; S.dept = w.dept || "All"; S.view = w.dept ? "wlist" : "wdepts"; S.hf = "all";
     if (S.f !== i) { S.f = i; remember(); watch(); } else { remember(); renderAll(); }
     if (await askPw(w)) workerForm(w); },
   logout: () => signOut(auth),
-  fac(i) { i = +i; setSide(false); if (S.dev || S.ok === i) { S.f = i; S.dept = "All"; S.hf = "all"; remember(); watch(); } else openModal(`Sign in — ${FACTORIES[i].en}`, loginForm(i)); },
-  dept(d) { S.dept = d; setSide(false); remember(); renderAll(); },
+  fac(i) { i = +i; setSide(false); if (S.dev || S.ok === i) { S.f = i; S.dept = "All"; S.view = "home"; S.hf = "all"; remember(); watch(); } else openModal(`Sign in — ${FACTORIES[i].en}`, loginForm(i)); },
+  dept(d) { setSide(false); go(d === "All" ? "wdepts" : "wlist", d); },
   hfilter(k) { S.hf = k; renderTable(); },
   add: need(() => workerForm()), edit: need(async id => { const w = S.workers.find(x => x.id === id); if (w && await askPw(w)) workerForm(w); }),
   async del(id) { const w = S.workers.find(x => x.id === id); if (!w || !(await askPw(w))) return; closeModal();
     if (await confirmBox(`Delete ${w.name} (${w.code})? This permanently removes the record.`)) await run("Deleting…", "Worker deleted.", () => deleteDoc(doc(col("workers"), id))); },
   export: need(exportCsv),
-  print: need(() => { const t = $("#wt").cloneNode(true); t.querySelectorAll("tr").forEach(r => r.lastElementChild?.remove()); t.className = "rt"; printDoc($("#deptTitle").textContent, t.outerHTML); }),
+  print: need(() => { const t = $("#wt").cloneNode(true); t.className = "rt"; printDoc($("#deptTitle").textContent, t.outerHTML); }),
   alerts: need(() => { openModal("Notifications", `<div id="alertL" class="grid gap-2"></div>`); renderAlertList(); }),
   async review(key) { const a = S.alerts.find(x => x.key === key), w = S.workers.find(x => x.id === a?.w), f = hf(a?.f); markRead(key); refreshAlerts(); if (w) { if (await askPw(w)) workerForm(w); } else if (f) hseForm(f.type, f); },
   hse: need(hseMenu), hnew: need(t => hseForm(t)), hopen: id => hseForm(hf(id).type, hf(id)),
@@ -1016,6 +1031,7 @@ const ACT = {
   settings() { if (!S.dev) return; openModal("Developer settings", settingsHtml(), true); },
   async rm(i) { S.custom.splice(+i, 1); await saveSettings(); renderNav(); ACT.settings(); }
 };
+for (const k of TOOLS) { const f = ACT[k]; ACT[k] = (...a) => { if (can()) { S.tool = k; remember(); } return f(...a); }; }
 Object.keys(ACT).forEach(k => ACT[k] = guard(ACT[k]));
 
 const FORMS = {
@@ -1055,7 +1071,7 @@ const FORMS = {
   theme: guard(async f => {
     const u = structuredClone(S.ui), items = allItems(); let bad = false;
     for (const k in DEF) { const v = readRgb(f, k); if (!v) bad = true; else u.colors[k] = v; }
-    u.layout = { add: f.elements.lay_add.value, ctl: f.elements.lay_ctl.value }; u.items = {}; items.forEach((x, i) => { const co = readRgb(f, `co${i}_`, true); if (co === false) bad = true;
+    u.items = {}; items.forEach((x, i) => { const co = readRgb(f, `co${i}_`, true); if (co === false) bad = true;
       u.items[x.id] = { icon: f.elements["ic" + i].value.trim() || x.icon, label: f.elements["lb" + i].value.trim(), hide: f.elements["hd" + i].checked, ...(co ? { color: co } : {}) }; });
     u.fac = {}; FACTORIES.forEach((fa, n) => { const co = readRgb(f, `fc${n}_`, true); if (co === false) bad = true;
       u.fac[fa.id] = { icon: f.elements["fi" + n].value.trim() || FIC[fa.id], ...(co ? { color: co } : {}) }; });
@@ -1214,7 +1230,7 @@ async function vRender(force) {
         <div class="flex gap-3 items-stretch"><input name="code" class="vcode grow min-w-0" required autocomplete="off" dir="ltr" placeholder="أدخل الكود..." aria-label="كود المركبة"><button class="vgo">بحث</button></div><p class="vmu text-sm">يقبل أرقام عربية وإنجليزية</p></form><div id="vOut" class="grid gap-3"></div>`; }
   else if (M === "rep") { await vload(force);
     B.innerHTML = `<div class="${VCARD} grid gap-3"><label class="text-xs font-semibold">الشهر${vMonthSel()}</label><p class="text-sm text-slate-500">${CK} (${esc(V.month)}${V.contractor ? " · " + esc(V.contractor) : ""})</p>
-      <div class="grid sm:grid-cols-2 gap-2">${vFeat("pdf") ? `<button data-act="vRep" data-id="all" class="b">كل المركبات حسب المقاول</button><button data-act="vRep" data-id="bad" class="b">المركبات غير المطابقة</button><button data-act="vRep" data-id="no" class="b">لم تُفحص هذا الشهر</button><button data-act="vRep" data-id="sum" class="b">الملخص الشهري</button>` : ""}${vFeat("excel") ? `<button data-act="vCsv" class="b">تصدير Excel (CSV)</button>` : ""}</div>
+      <div class="grid sm:grid-cols-2 gap-2">${vFeat("pdf") ? `<button data-act="vRep" data-id="all" class="b">كل المركبات حسب المقاول</button><button data-act="vRep" data-id="bad" class="b">المركبات غير المطابقة</button><button data-act="vRep" data-id="no" class="b">لم تُفحص هذا الشهر</button><button data-act="vRep" data-id="sum" class="b">الملخص الشهري</button>` : ""}${vFeat("excel") ? `<button data-act="vXls" class="b">تصدير Excel</button>` : ""}</div>
       ${vFeat("pdf") ? `<div class="grid gap-2"><label class="text-xs font-semibold">مقاولون محددون (اضغط مطولًا/Ctrl لأكثر من واحد)<select id="vSel" multiple size="4" class="i">${V.con.filter(c => c.active !== false).map(c => `<option>${esc(c.name)}</option>`).join("")}</select></label><button data-act="vRep" data-id="sel" class="b">تقرير المقاولين المحددين</button></div>
       <div class="flex gap-2 items-end"><label class="text-xs font-semibold">السنة<input id="vYear" type="number" value="${new Date().getFullYear()}" class="i !mt-0 w-28"></label><button data-act="vRep" data-id="hist" class="b grow">سجل الفحوصات للسنة</button></div>` : ""}</div>`; }
   else if (M === "insps") { V.ins = await vget("inspectors", force);
@@ -1240,7 +1256,7 @@ async function vRender(force) {
   else if (M === "dset") { const th = V.set.theme || {};
     B.innerHTML = `<form data-form="vset" class="${VCARD} grid gap-3"><h3 class="font-bold">المصانع (إعادة تسمية / إيقاف / استعادة)</h3>${vFacs().map(vSetRow).join("")}
       <input name="newfac" class="i !mt-0" placeholder="اسم مصنع جديد (يظهر للمطور؛ دخول المفتشين يحتاج حساب Firebase له)">
-      <h3 class="font-bold">المزايا</h3><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_excel" ${vFeat("excel") ? "checked" : ""}> تصدير Excel (CSV)</label><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_pdf" ${vFeat("pdf") ? "checked" : ""}> تقارير PDF / طباعة</label>
+      <h3 class="font-bold">المزايا</h3><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_excel" ${vFeat("excel") ? "checked" : ""}> تصدير Excel</label><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_pdf" ${vFeat("pdf") ? "checked" : ""}> تقارير PDF / طباعة</label>
       <h3 class="font-bold">ألوان الوحدة (RGB)</h3>${rgbRow("vaccent", "لون الواجهة", th.accent || [47, 95, 154])}<button class="b bp justify-self-start">حفظ الإعدادات</button></form>
       <div class="${VCARD} grid gap-2"><h3 class="font-bold">التشخيص</h3><div id="vDiag" class="text-sm grid gap-1">${vDiagHtml()}</div><button data-act="vDiag" class="b justify-self-start">فحص الاتصال</button></div>`; } }
 const vDiagHtml = () => { const n = s => V.veh.filter(v => vst(v) === s).length;
@@ -1285,6 +1301,29 @@ function vReturn() {                                   // the car drives back in
   b.classList.remove("go"); b.classList.add("back"); b.disabled = false;
   setTimeout(() => { b.classList.remove("back"); document.documentElement.style.overflowX = ""; }, 950); }
 
+/* minimal .xlsx writer (stored zip, right-to-left sheet, inline strings — no library, no formula injection) */
+const CRC = Array.from({ length: 256 }, (_, n) => { for (let k = 0; k < 8; k++) n = n & 1 ? 0xEDB88320 ^ (n >>> 1) : n >>> 1; return n >>> 0; });
+const crc32 = b => { let c = -1; for (const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ -1) >>> 0; };
+function zipStore(files) {
+  const enc = new TextEncoder(), u16 = n => [n & 255, n >> 8 & 255], u32 = n => [n & 255, n >> 8 & 255, n >> 16 & 255, n >>> 24 & 255], loc = [], cen = []; let off = 0, cs = 0;
+  for (const [name, text] of files) { const nm = enc.encode(name), d = enc.encode(text), c = crc32(d), sz = [...u32(c), ...u32(d.length), ...u32(d.length), ...u16(nm.length)];
+    const lh = new Uint8Array([0x50, 0x4b, 3, 4, ...u16(20), ...u16(0x800), ...u16(0), ...u16(0), ...u16(0x21), ...sz, ...u16(0)]);
+    const ch = new Uint8Array([0x50, 0x4b, 1, 2, ...u16(20), ...u16(20), ...u16(0x800), ...u16(0), ...u16(0), ...u16(0x21), ...sz, ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]);
+    loc.push(lh, nm, d); cen.push(ch, nm); off += lh.length + nm.length + d.length; cs += ch.length + nm.length; }
+  return new Blob([...loc, ...cen, new Uint8Array([0x50, 0x4b, 5, 6, 0, 0, 0, 0, ...u16(files.length), ...u16(files.length), ...u32(cs), ...u32(off), 0, 0])], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+const xmlE = x => String(x ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
+function xlsx(rows) {                                    // rows: arrays of strings / numbers; first row is the bold header
+  const col = i => String.fromCharCode(65 + i), cell = (v, r, i) => typeof v === "number" ? `<c r="${col(i)}${r}"><v>${v}</v></c>` : `<c r="${col(i)}${r}" t="inlineStr"${r === 1 ? ' s="1"' : ""}><is><t>${xmlE(v)}</t></is></c>`;
+  const X = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>', N = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"', R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  return zipStore([["[Content_Types].xml", `${X}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`],
+    ["_rels/.rels", `${X}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+    ["xl/workbook.xml", `${X}<workbook ${N} xmlns:r="${R}"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>`],
+    ["xl/_rels/workbook.xml.rels", `${X}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/styles" Target="styles.xml"/></Relationships>`],
+    ["xl/styles.xml", `${X}<styleSheet ${N}><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" applyFont="1"/></cellXfs></styleSheet>`],
+    ["xl/worksheets/sheet1.xml", `${X}<worksheet ${N}><sheetViews><sheetView rightToLeft="1" workbookViewId="0"/></sheetViews><cols><col min="1" max="5" width="22" customWidth="1"/></cols><sheetData>${rows.map((r, j) => `<row r="${j + 1}">${r.map((v, i) => cell(v, j + 1, i)).join("")}</row>`).join("")}</sheetData></worksheet>`]]);
+}
+
 const VACT = {
   veh() { if (!can()) return toast("Sign in to a factory first."); vDrive(vGate); },
   vehClose,
@@ -1313,9 +1352,9 @@ const VACT = {
   async vNotify(code) { await run("جارٍ الإرسال…", "تم إبلاغ مطور المركبات ✓", () => addDoc(collection(vdb(), VP + "notifications"), { fid: V.fid, code, type: "unknown_code", done: false, ts: serverTimestamp() })); $("#vOut").innerHTML = ""; },
   vAddVeh: code => vOpenInsp(null, code),                // unknown code: the inspector adds the vehicle together with its first inspection
   vRep: id => vReport(id),
-  vCsv() { const L = vlist(); if (!L.length) return toast("لا توجد بيانات للتصدير."); const q = x => `"${String(x ?? "").replace(/"/g, '""').replace(/^([=+\-@])/, "'$1")}"`;
-    const csv = "\ufeff" + [["الكود", "الاسم", "اللوحة", "المقاول", "الحالة"], ...L.map(v => [vcode(v), v.name, v.plate, v.contractor, VB[vstate(v)][0]])].map(r => r.map(q).join(",")).join("\r\n");
-    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = `vehicles-${V.fid}-${V.month}.csv`; a.click(); URL.revokeObjectURL(a.href); },
+  vXls() { const L = vlist(); if (!L.length) return toast("لا توجد بيانات للتصدير."); const st = L.map(vstate), ins = st.filter(x => x !== "no").length, bad = st.filter(x => x === "bad").length;
+    const rows = [["الكود", "الاسم", "اللوحة", "المقاول", "الحالة"], ...L.map(v => [vcode(v), v.name, v.plate, v.contractor, VB[vstate(v)][0]]), [], ["الملخص العام"], ["إجمالي المركبات", L.length], ["تم فحصها", ins], ["لم تُفحص", L.length - ins], ["مطابقة", ins - bad], ["غير مطابقة", bad], ["نسبة الإنجاز", Math.round(ins / L.length * 100) + "%"]];
+    const a = document.createElement("a"); a.href = URL.createObjectURL(xlsx(rows)); a.download = `vehicles-${V.fid}-${V.month}.xlsx`; a.click(); URL.revokeObjectURL(a.href); },
   vVeh: id => V.dev && vVehForm(V.veh.find(v => v.id === id)),
   async vTog(id) { const v = V.veh.find(x => x.id === id), on = vst(v) === "on"; await run("جارٍ الحفظ…", on ? "تم التعطيل ✓" : "تمت الاستعادة ✓", () => updateDoc(vdoc("vehicles", id), on ? { active: false } : { active: true, deleted: false, hidden: false })); vinv("vehicles"); vShow("dveh"); },
   async vDel(id) { const v = V.veh.find(x => x.id === id); if (!(await confirmBox(`حذف المركبة ${vcode(v)}؟ (تُؤرشف ويمكن استعادتها، وسجل فحوصاتها يبقى)`))) return;
@@ -1353,12 +1392,12 @@ const VFORMS = {
     if (!code) return fail("كود السيارة مطلوب.", f.elements.code); if (!d.plateL.trim() || !d.plateN.trim()) return fail("رقم اللوحة لهذا الشهر مطلوب (حروف وأرقام).", !d.plateL.trim() ? f.elements.plateL : f.elements.plateN); if (!d.contractor) return fail("اختر المقاول.", f.elements.contractor); if (!d.route.trim()) return fail("الخط مطلوب.", f.elements.route); if (!d.inspector.trim()) return fail("اختر اسم الفاحص.", f.elements.inspector);
     const miss = V.chk.filter(c => !(c.kind === "gen" ? d.items[c.id]?.pct != null : d.items[c.id]?.st)); miss.forEach(c => row(c.id)?.classList.add("err")); if (miss.length) return fail(`أكمل كل بنود الفحص (${miss.length} متبقي).`, row(miss[0].id));
     const items = V.chk.map(c => { const x = d.items[c.id]; return { id: c.id, label: c.label, kind: c.kind, st: x.st, ...(c.kind === "gen" ? { pct: x.pct } : {}), ok: x.st === "ok" }; }), plate = `${d.plateL.trim()} ${d.plateN.trim()}`.trim();
-    const rec = { name: v?.name || "", plate, contractor: d.contractor, route: d.route.trim(), type: d.type.trim(), month: V.month, items, ok: items.every(x => x.ok), notes: d.notes.trim(), inspector: d.inspector.trim(), secs: Math.round((Date.now() - d.t0) / 1e3), clientTs: Date.now(), ts: serverTimestamp() };
+    const rec = { factoryId: V.fid, name: v?.name || "", plate, contractor: d.contractor, route: d.route.trim(), type: d.type.trim(), month: V.month, items, ok: items.every(x => x.ok), notes: d.notes.trim(), inspector: d.inspector.trim(), secs: Math.round((Date.now() - d.t0) / 1e3), clientTs: Date.now(), ts: serverTimestamp() };
     btn.disabled = true;                                // locked right away: no double taps
     try { if (v) await run("جارٍ حفظ الفحص…", "تم حفظ الفحص بنجاح ✓", () => setDoc(vdoc("inspections", `${v.id}_${V.month}`), { ...rec, vehicleId: v.id, code: vcode(v) }));
       else { V.veh = await vget("vehicles", true); const all = [code, ...d.linked], clash = V.veh.find(x => [x.code, ...(x.linked || [])].some(c => all.some(a => vn(a) === vn(c)))); if (clash) throw new Error(`الكود مستخدم في المركبة ${vcode(clash)} — ابحث عنه من شاشة البحث.`);
         const ref = doc(vcol("vehicles")), b = writeBatch(vdb());       // new vehicle + its first inspection are written together (all or nothing)
-        b.set(ref, { code, linked: d.linked, name: "", plate, contractor: d.contractor, type: rec.type, route: rec.route, notes: "", active: true, createdBy: "inspector", createdAt: serverTimestamp() });
+        b.set(ref, { factoryId: V.fid, code, linked: d.linked, name: "", plate, contractor: d.contractor, type: rec.type, route: rec.route, notes: "", active: true, createdBy: "inspector", createdAt: serverTimestamp() });
         b.set(vdoc("inspections", `${ref.id}_${V.month}`), { ...rec, vehicleId: ref.id, code: all.join("/") }); await run("جارٍ حفظ الفحص…", "تمت إضافة المركبة وحفظ الفحص ✓", () => b.commit()); vinv("vehicles"); } }
     catch (e) { btn.disabled = false; throw new Error(e.code === "permission-denied" ? "تم فحص هذه المركبة بالفعل في هذا الشهر (أو لا توجد صلاحية)." : e.message); }
     try { localStorage.setItem("vi.insp", d.inspector.trim()); } catch {} V.draft = null; vDraftSave(); vTick();
@@ -1392,6 +1431,7 @@ document.addEventListener("change", e => { const t = e.target, fs = t.closest?.(
   if (t.id === "vRole") { closeModal(); V.role = t.value; vShow(VT[V.role][0][0]); } });
 document.addEventListener("input", e => { const f = e.target.closest?.("[data-form=vsave]"); if (f) vSync(f); if (e.target.id === "vQ") { V.q = e.target.value; vPaint(); } if (e.target.id === "vQD") { V.q = e.target.value; vDevPaint(); } });
 
+window.addEventListener("scroll", () => $("#upBtn").classList.toggle("hidden", scrollY < 300), { passive: true });
 $("#veh").addEventListener("scroll", () => $("#vTop").classList.toggle("hidden", $("#veh").scrollTop < 300), { passive: true });
 /* PWA (single file): manifest is built at runtime; open sessions reload themselves when a new version of this file is deployed */
 try { const u = location.href.split("#")[0], man = { name: "Gas Cooker Complex — HSE", short_name: "HSE", start_url: u, scope: u, display: "standalone", background_color: "#1e293b", theme_color: "#1e293b", lang: "ar",
