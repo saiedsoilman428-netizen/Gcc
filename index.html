@@ -33,6 +33,14 @@
   .dark .border-slate-200,.dark .border-slate-300,.dark .border-slate-100{border-color:#334155!important}
   .dark .i{background:#0f172a!important;color:#e2e8f0!important}.dark .hover\:bg-slate-100:hover{background:#273449!important}
   .dark .rt th{background:#334155!important;color:#e2e8f0}
+  #modal.mdark{background:#121417!important;padding:0!important;align-items:stretch}
+  #mBox.mdark{background:#16181D!important;color:#e5e7eb;max-width:none!important;width:100%;min-height:100%;border-radius:0!important;padding:1rem!important}
+  #mBox.mdark .b{background:#1E2128!important;color:#e5e7eb!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:12px}
+  #mBox.mdark .i,#mBox.mdark select{background:#14161B!important;color:#e5e7eb!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:12px}
+  #mBox.mdark .rt th{background:#1E2128!important;color:#9ca3af!important}#mBox.mdark .rt td,#mBox.mdark .rt th{border-color:rgba(255,255,255,.08)!important;white-space:nowrap}
+  #mBox.mdark .xc{background:#1E2128;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1rem}
+  #mBox.mdark .xok{color:#22C55E}#mBox.mdark .xbad{color:#EF4444}#mBox.mdark .xbtn{background:#2563EB!important;color:#fff!important;border-color:#2563EB!important}
+  .regw{overflow-x:auto}.regw table{min-width:760px}.regw td:nth-child(3),.regw td:nth-child(5),.regw td:nth-child(6){min-width:9rem}
   #side{position:fixed;top:0;right:0;bottom:0;width:17rem;max-width:85vw;transform:translateX(100%);transition:transform .3s ease;z-index:45;padding:4.5rem 1rem 1rem;overflow:auto;box-shadow:-8px 0 24px rgba(0,0,0,.2)}
   #side.open{transform:none}
   #sideTab{position:fixed;top:50%;right:0;z-index:46;width:1.75rem;height:4.5rem;margin-top:-2.25rem;display:grid;place-items:center;border-radius:.75rem 0 0 .75rem;transition:right .3s ease,filter .15s}
@@ -331,7 +339,7 @@ const recall = () => { try { return JSON.parse(localStorage.getItem(NAV_KEY)); }
 const remember = () => { try { localStorage.setItem(NAV_KEY, JSON.stringify({ f: S.f, dept: S.dept })); } catch {} };
 const can = () => !S.dev && S.ok === S.f;   // developer mode never loads workers
 const col = n => collection(db, "factories", FACTORIES[S.f].id, n);
-const openModal = (t, h, wide) => { $("#mTitle").textContent = t; $("#mBody").innerHTML = h;
+const openModal = (t, h, wide, dark) => { $("#mTitle").textContent = t; $("#mBody").innerHTML = h; $("#mBox").classList.toggle("mdark", !!dark); $("#modal").classList.toggle("mdark", !!dark);
   $("#mBox").classList.toggle("max-w-4xl", !!wide); $("#mBox").classList.toggle("max-w-lg", !wide); $("#modal").classList.remove("hidden"); };
 const closeModal = () => { $("#modal").classList.add("hidden"); applyUi(); S.unl = null; pwDone(false); vReturn(); };   // also discards unsaved colour previews
 let PD = null, pwRes = null, pwFor = null;              // password gate: pending promise + the worker being unlocked
@@ -616,7 +624,7 @@ const uploadLogo = file => { if (!file) return; if (!file.type.startsWith("image
 /* ---- Factory icons + header icon list (built-in + custom, reorderable by the developer) ---- */
 const FIC = { small: "🧰", gas: "🔥", metals: "⚙️", atlantic: "🌊" };
 const BASE = [{ id: "hse", icon: "🦺", label: "HSE Forms", act: "hse" }, { id: "injury", icon: "🩹", label: "Injury Reports", act: "injury" },
-  { id: "export", icon: "📊", label: "Export to Excel", act: "export" }, { id: "print", icon: "🖨", label: "Print", act: "print" }, { id: "refs", icon: "📚", label: "Safety Guide", act: "refs" }];
+  { id: "export", icon: "📊", label: "Export to Excel", act: "export" }, { id: "print", icon: "🖨", label: "Print", act: "print" }, { id: "refs", icon: "📚", label: "Safety Guide", act: "refs" }, { id: "expo", icon: "🧮", label: "حدود التعرض", act: "expo" }];
 const allItems = () => { const o = S.ui.order, all = [...BASE, ...S.custom.filter(c => c.type === "button").map(c => ({ id: "c:" + c.label, icon: c.icon || "⭐", label: c.label, act: "cust", data: c.label }))];
   return all.map(x => ({ ...x, ...S.ui.items[x.id] })).sort((a, b) => (o.indexOf(a.id) + 1 || 99) - (o.indexOf(b.id) + 1 || 99)); };
 const facIcon = (f, big) => { const o = S.ui.fac[f.id] || {};
@@ -727,31 +735,65 @@ function applyPatches(p) {                              // CSS re-applied every 
   patches = p; let st = document.getElementById("aiCss"); if (!st) { st = document.createElement("style"); st.id = "aiCss"; document.head.append(st); }
   st.textContent = p.map(x => x.css || "").join("\n"); p.slice(appliedN).forEach(x => x.js && runJs(x.js)); appliedN = p.length; }
 const SYS = `You edit a single-page HSE worker-register web app (Tailwind classes; ids #app #side #deptNav #facNav #tbody #cards #addBtn; CSS variables --brand --accent --page --text). Reply ONLY with JSON {"explain":"short reply in the user's language","css":"CSS to append, or empty","js":"safe vanilla JS to run once, or empty"}. Prefer CSS. Never touch Firebase, passwords, storage, network or delete data.`;
+const AI_THINK = () => { const v = String(S.cfg.sys?.aiThink || "low").trim().toLowerCase(); return ["low", "medium", "high"].includes(v) ? v : "low"; };
 const AI_DEFAULT = "gemini-3.8-flash", aiModel = () => "models/" + String(S.cfg.sys?.aiModel || AI_DEFAULT).trim().replace(/^models\//, "");   // model name comes from System Settings, never hard-wired
 const aiErr = (st, msg, m) => (st === 400 && /api key/i.test(msg)) || st === 401 || st === 403 ? "مفتاح Gemini غير صحيح أو مش مسموح له. راجع المفتاح من زر 🔑."
   : st === 404 || /not found|no longer available|not supported/i.test(msg) ? `النموذج ${m.replace("models/", "")} مش متاح دلوقتي. غيّر اسمه من إعدادات النظام (نموذج الذكاء الاصطناعي).`
   : st === 429 ? "تم تجاوز حد الاستخدام. استنى شوية وجرّب تاني." : st >= 500 ? "خدمة Gemini مشغولة دلوقتي. جرّب تاني بعد لحظات." : `تعذّر تنفيذ الطلب (${st}). ${msg.slice(0, 120)}`;
 const aiBusy = on => { const b = $("#aiSendBtn"), q = $("#aiQ"); if (b) { b.disabled = on; b.classList.toggle("opacity-50", on); } if (q) q.disabled = on; };
-async function gemPost(key, body) {                    // one place for every Gemini call (AI assistant + image scan): timeout, one retry on network / 429 / 5xx, Arabic errors
-  const m = aiModel(); let last;
+/* ---- Gemini client · isolated helper: Interactions API first, automatic generateContent fallback ----
+   Only this block talks to Gemini. Key = localStorage / System Settings (never hardcoded). Base URL + model + thinking level come from System Settings (aiBase / aiModel / aiThink). */
+const GEM_BASE = () => String(S.cfg.sys?.aiBase || "https://generativelanguage.googleapis.com/v1beta").trim().replace(/\/+$/, "");
+const GEM_THINK = v => { v = String(v ?? "").trim().toLowerCase(); return ["low", "medium", "high"].includes(v) ? v : "low"; };   // strictly low | medium | high — never "minimal"
+const GEM_FALLBACK_STATUS = [400, 404, 405, 422, 501];                                                                                // endpoint / schema errors → try generateContent
+const gemAuthErr = (st, msg) => (st === 400 && /api key/i.test(msg)) || st === 401 || st === 403;
+const gemWait = ms => new Promise(r => setTimeout(r, ms));
+async function gemRequest(url, key, body, m) {            // one HTTP call: 40s timeout, one retry on network / 429 / 5xx, Arabic errors. Error.status + Error.fallbackable tell the caller what happened
+  let last;
   for (let n = 0; n < 2; n++) {
     const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 40000);
     try {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/${m}:generateContent`, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal: ctl.signal });
-      const j = await r.json().catch(() => ({})); if (r.ok) return j;
-      last = new Error(aiErr(r.status, j.error?.message || "", m)); if (!(r.status === 429 || r.status >= 500)) throw last;
-    } catch (e) { if (e === last) throw e; last = new Error(e.name === "AbortError" ? "الطلب أخد وقت طويل. تأكد من الإنترنت وجرّب تاني." : "مفيش اتصال بالإنترنت أو الخدمة مش متاحة. تأكد من الاتصال وجرّب تاني."); }
+      const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), signal: ctl.signal });
+      const j = await r.json().catch(() => ({})), msg = j.error?.message || ""; if (r.ok) return j;
+      last = Object.assign(new Error(aiErr(r.status, msg, m)), { status: r.status, fallbackable: GEM_FALLBACK_STATUS.includes(r.status) && !gemAuthErr(r.status, msg) });
+      if (!(r.status === 429 || r.status >= 500)) throw last;
+    } catch (e) { if (e === last) throw e;
+      const timedOut = e.name === "AbortError";
+      last = Object.assign(new Error(timedOut ? "الطلب أخد وقت طويل. تأكد من الإنترنت وجرّب تاني." : "مفيش اتصال بالإنترنت أو الخدمة مش متاحة. تأكد من الاتصال وجرّب تاني."), { status: 0, fallbackable: !timedOut }); }
     finally { clearTimeout(to); }
-    if (n < 1) await new Promise(r => setTimeout(r, 1500));
+    if (n < 1) await gemWait(1500);
   }
   throw last;
 }
+function gemInteractionText(j) {                          // Interactions API: `output` / `outputs` (items with .text or .content) or a top-level `.text`; thought items are skipped
+  const take = (x, out) => { if (x == null) return out; if (typeof x === "string") { out.push(x); return out; } if (Array.isArray(x)) { x.forEach(i => take(i, out)); return out; }
+    if (typeof x === "object" && !/thought|reasoning/i.test(x.type || "")) { if (typeof x.text === "string") out.push(x.text); else if (x.content != null) take(x.content, out); } return out; };
+  for (const src of [j?.output, j?.outputs, j?.text]) { const t = take(src, []).join("").trim(); if (t) return t; }
+  return "";
+}
+const gemContentText = j => (j?.candidates?.[0]?.content?.parts || []).filter(p => p && typeof p.text === "string" && !p.thought).map(p => p.text).join("").trim();   // generateContent: candidates[0].content.parts[].text
+/* callGeminiWithFallback({ key, promptText, fallbackBody? }) → text
+   · promptText  : plain text sent to /interactions as { model, input, thinking_level }. Omit it (image requests) to go straight to generateContent.
+   · fallbackBody: full generateContent body (history / systemInstruction / inlineData / generationConfig). Default: { contents: [{ role: "user", parts: [{ text: promptText }] }] } */
+async function callGeminiWithFallback({ key, promptText, fallbackBody }) {
+  if (!key) throw new Error("ضيف مفتاح Gemini الأول من زر 🔑.");
+  const m = aiModel(), base = GEM_BASE(), hasText = typeof promptText === "string" && promptText.trim() !== "";
+  if (hasText) {
+    try {
+      const j = await gemRequest(`${base}/interactions`, key, { model: m.replace(/^models\//, ""), input: promptText, thinking_level: GEM_THINK(AI_THINK()) }, m);
+      const t = gemInteractionText(j); if (t) return t;   // unknown output shape → fall through to generateContent
+    } catch (e) { if (!e.fallbackable) throw e; console.warn("Gemini interactions failed (" + e.status + "), falling back to generateContent"); }
+  }
+  const body = fallbackBody || { contents: [{ role: "user", parts: [{ text: promptText }] }] };
+  return gemContentText(await gemRequest(`${base}/${m}:generateContent`, key, body, m));
+}
+const gemHistoryPrompt = (sys, contents) => sys + "\n\n" + contents.map(c => (c.role === "model" ? "Assistant: " : "User: ") + (c.parts?.[0]?.text || "")).join("\n") + "\nAssistant:";   // flattens chat history for the text-only Interactions payload
 async function askAi(text) {
   const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("ضيف مفتاح Gemini الأول من زر 🔑.");
   if (!navigator.onLine) throw new Error("مفيش اتصال بالإنترنت. تأكد من الشبكة وجرّب تاني.");
   const hist = tryJ(localStorage.getItem(GH) || "[]"), contents = [...(Array.isArray(hist) ? hist : []), { role: "user", parts: [{ text }] }];
-  const j = await gemPost(key, { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { responseMimeType: "application/json" } });
-  const raw = j.candidates?.[0]?.content?.parts?.[0]?.text; if (!raw) throw new Error("المساعد رجّع رد فاضي. جرّب تكتب الطلب بصيغة تانية.");
+  const raw = await callGeminiWithFallback({ key, promptText: gemHistoryPrompt(SYS, contents), fallbackBody: { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: AI_THINK() } } } });
+  if (!raw) throw new Error("المساعد رجّع رد فاضي. جرّب تكتب الطلب بصيغة تانية.");
   contents.push({ role: "model", parts: [{ text: raw }] });
   try { localStorage.setItem(GH, JSON.stringify(contents.slice(-16))); } catch {} setDoc(doc(db, "settings", "aiChat"), { hist: contents.slice(-16) }).catch(() => {});
   return tryJ(raw.replace(/```json|```/g, "").trim()); }
@@ -788,8 +830,8 @@ const imgB64 = file => new Promise((res, rej) => { const img = new Image(), url 
 async function scanImage(file) {                        // photo / scan of a paper note → Gemini → values for the matching HSE form (reviewed by the person before saving)
   const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("مفتاح Gemini مش متضاف. المطوّر لازم يضيفه من المساعد ويفعّل مشاركة المفتاح.");
   const b64 = await imgB64(file), spec = Object.fromEntries(Object.entries(TPL).map(([k, v]) => [k, v.map(x => x.split(":")[0])]));
-  const j = await gemPost(key, { contents: [{ role: "user", parts: [{ inlineData: { mimeType: "image/jpeg", data: b64 } }, { text: `Read this paper note or log (Arabic or English, handwritten or printed). Pick the best matching form type from this JSON of form types and their field labels: ${JSON.stringify(spec)}. Reply ONLY with JSON {"type":"<exact form type>","values":["one value per field, same order; empty string if not found; dates as YYYY-MM-DD"]}.` }] }], generationConfig: { responseMimeType: "application/json" } });
-  const o = tryJ((j.candidates?.[0]?.content?.parts?.[0]?.text || "{}").replace(/```json|```/g, "").trim()), type = TPL[o.type] ? o.type : Object.keys(TPL)[0];
+  const raw = await callGeminiWithFallback({ key, fallbackBody: { contents: [{ role: "user", parts: [{ inlineData: { mimeType: "image/jpeg", data: b64 } }, { text: `Read this paper note or log (Arabic or English, handwritten or printed). Pick the best matching form type from this JSON of form types and their field labels: ${JSON.stringify(spec)}. Reply ONLY with JSON {"type":"<exact form type>","values":["one value per field, same order; empty string if not found; dates as YYYY-MM-DD"]}.` }] }], generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: AI_THINK() } } } });
+  const o = tryJ((raw || "{}").replace(/```json|```/g, "").trim()), type = TPL[o.type] ? o.type : Object.keys(TPL)[0];
   return { type, values: fields(type).map((_, i) => String(o.values?.[i] ?? "")) }; }
 const scanPicked = inp => { const f = inp.files[0]; inp.value = ""; if (!f || S.scanning) return; S.scanning = true; guard(async () => { let r; $("#spinT").textContent = "جارٍ قراءة الصورة…"; $("#spin").classList.remove("hidden");
   try { r = await scanImage(f); } finally { $("#spin").classList.add("hidden"); S.scanning = false; } hseForm(r.type, { values: r.values }); toast("Form filled from the image — review it, then save.", 1); })(); };
@@ -850,17 +892,46 @@ const REF = () => `<div class="grid gap-5" dir="rtl">
 window.addEventListener("popstate", () => { if (location.hash !== "#ai") $("#chat").classList.add("hidden"); });
 
 const regHtml = () => `<div class="grid gap-2" dir="rtl"><div class="flex gap-2 flex-wrap items-center"><input id="regQ" type="search" class="i !mt-0 grow" placeholder="بحث بالاسم أو الكود"><span id="regN" class="text-sm text-slate-500"></span></div>
-  <div class="overflow-auto max-h-[60vh]"><table class="rt"><thead><tr><th>مسلسل</th><th>كود</th><th>اسم</th><th>القسم</th><th>وظيفة</th><th>أنواع الأمراض</th><th>القائمة العاملة</th></tr></thead><tbody id="regB"></tbody></table></div></div>`;
+  <div class="regw overflow-auto max-h-[78vh]"><table class="rt"><thead><tr><th>مسلسل</th><th>كود</th><th>اسم</th><th>القسم</th><th>وظيفة</th><th>أنواع الأمراض</th><th>القائمة العاملة</th></tr></thead><tbody id="regB"></tbody></table></div></div>`;
 function renderReg() {                                  // Registered Workers table (live): every worker of this factory, whether or not shown in the working list
   const b = $("#regB"); if (!b) return; const q = ($("#regQ")?.value || "").trim().toLowerCase(), r = [...S.workers].sort(cmp.serial).filter(w => !q || `${w.name}`.toLowerCase().includes(q) || `${w.code}`.toLowerCase().includes(q));
   b.innerHTML = r.map((w, i) => `<tr><td>${esc(w.serial || i + 1)}</td><td>${esc(w.code)}</td><td>${esc(w.name)}</td><td>${esc(w.dept)}</td><td>${esc(w.profession)}</td><td>${hasText(w.chronic) ? esc(w.chronic) : "—"}</td>
     <td class="whitespace-nowrap">${w.listed === false ? "غير ظاهر" : "ظاهر"} <button data-act="regTog" data-id="${w.id}" class="${sm}">${w.listed === false ? "إظهار" : "إخفاء"}</button> <button data-act="edit" data-id="${w.id}" class="${sm}">تعديل</button></td></tr>`).join("")
     || `<tr><td colspan="7" class="text-center text-slate-500 py-6">لا يوجد عمال مسجلين</td></tr>`; $("#regN").textContent = `${r.length} عامل`; }
 document.addEventListener("input", e => { if (e.target.id === "regQ") renderReg(); });
+const EXPO_G = [["TWA", "المتوسط الموزون على 8 ساعات", "الرقم اللي المتوسط بتاعك طول الوردية ما يعدّاوش. مثال: تركيز الأسيتون في الورشة بيتغيّر خلال اليوم، والمتوسط بالزمن هو اللي بيتقارن بالحد."],
+  ["STEL", "حد التعرض القصير (15 دقيقة)", "أقصى متوسط مسموح لأي 15 دقيقة، بحد أقصى 4 مرات في اليوم وبينهم ساعة على الأقل. مثال: فتح فرن الدهان وقت التنظيف."],
+  ["Ceiling (C)", "الحد السقفي", "رقم ممنوع يتعدّى ولا لحظة. مثال: تنظيف خزان بمادة فيها تركيز عالي — لو الجهاز قرأ فوق السقف اطلع فورًا."],
+  ["ppm", "جزء في المليون", "بنقيس بيه الغازات والأبخرة. 1 ppm = 1 سم³ غاز في كل متر مكعب هوا. مثال: غاز البوتاجاز أو أبخرة المذيبات."],
+  ["mg/m³", "ملليجرام في المتر المكعب", "بنقيس بيه الأتربة والأدخنة. مثال: أتربة الصنفرة أو دخان اللحام."],
+  ["IDLH", "تركيز خطر على الحياة والصحة فورًا", "لو التركيز وصل له، ممنوع تدخل من غير جهاز تنفس مستقل (SCBA). مثال: دخول خزان مغلق أو بدروم فيه تسريب غاز."]];
+const xN = id => { const v = parseFloat(String(document.getElementById(id)?.value ?? "").replace(",", ".")); return isFinite(v) ? v : NaN; };
+const xR = (id, h) => { const e = document.getElementById(id); if (e) e.innerHTML = h; };
+const xF = n => (Math.round(n * 1000) / 1000).toString();
+const EXPO = () => `<div class="grid gap-4" dir="rtl">
+  <section class="xc"><h3 class="font-bold mb-2">📖 اتعرّف على المصطلحات</h3><div class="grid gap-2">${EXPO_G.map(g => `<div><b dir="ltr">${g[0]}</b> — ${g[1]}<div class="text-sm opacity-80">${g[2]}</div></div>`).join("")}</div></section>
+  <section class="xc"><h3 class="font-bold mb-2">⏱️ حاسبة TWA (8 ساعات)</h3><div class="grid grid-cols-2 gap-2 text-sm"><b>التركيز</b><b>المدة (ساعة)</b>${[1, 2, 3].map(n => `<input id="xt${n}c" class="i !mt-0" inputmode="decimal" dir="ltr" placeholder="ppm"><input id="xt${n}h" class="i !mt-0" inputmode="decimal" dir="ltr" placeholder="h">`).join("")}</div>
+    <label class="text-sm block mt-2">الحد المسموح (TWA)<input id="xtL" class="i" inputmode="decimal" dir="ltr" placeholder="ppm"></label><div id="xtR" class="mt-2 font-semibold"></div><button type="button" data-act="xEx" data-id="twa" class="b xbtn mt-2">مثال جاهز</button></section>
+  <section class="xc"><h3 class="font-bold mb-2">🕒 تعديل الحد لوردية أطول (RF)</h3><label class="text-sm block">ساعات الوردية<input id="xrH" class="i" inputmode="decimal" dir="ltr" placeholder="12"></label><label class="text-sm block">الحد الأصلي (8 ساعات)<input id="xrL" class="i" inputmode="decimal" dir="ltr"></label>
+    <div id="xrR" class="mt-2 font-semibold"></div><p class="text-xs opacity-70">RF = (8 ÷ ساعات الوردية) × ((24 − ساعات الوردية) ÷ 16) — طريقة Brief & Scala.</p><button type="button" data-act="xEx" data-id="rf" class="b xbtn mt-2">مثال جاهز</button></section>
+  <section class="xc"><h3 class="font-bold mb-2">🧪 حاسبة الخليط (Em)</h3><div class="grid grid-cols-2 gap-2 text-sm"><b>التركيز الفعلي C</b><b>الحد L</b>${[1, 2, 3].map(n => `<input id="xm${n}c" class="i !mt-0" inputmode="decimal" dir="ltr"><input id="xm${n}l" class="i !mt-0" inputmode="decimal" dir="ltr">`).join("")}</div>
+    <div id="xmR" class="mt-2 font-semibold"></div><p class="text-xs opacity-70">Em = ΣCi÷Li — لو النتيجة أكبر من 1 يبقى الخليط عدّى الحد.</p><button type="button" data-act="xEx" data-id="em" class="b xbtn mt-2">مثال جاهز</button></section></div>`;
+function xCalc() {
+  let sum = 0, h = 0, ok = true; for (const n of [1, 2, 3]) { const c = xN(`xt${n}c`), t = xN(`xt${n}h`); if (isNaN(c) && isNaN(t)) continue; if (isNaN(c) || isNaN(t) || c < 0 || t < 0) ok = false; else { sum += c * t; h += t; } }
+  const L = xN("xtL"), tw = sum / 8;
+  xR("xtR", !ok || !h ? "" : h > 8 ? "<span class='xbad'>مجموع الساعات أكبر من 8 — استخدم حاسبة RF.</span>" : `TWA = ${xF(tw)}${isNaN(L) ? "" : tw <= L ? ` <span class="xok">✓ مطابق (الحد ${xF(L)})</span>` : ` <span class="xbad">✗ غير مطابق (الحد ${xF(L)})</span>`}`);
+  const H = xN("xrH"), L2 = xN("xrL"); xR("xrR", isNaN(H) || H <= 0 || H >= 24 ? "" : `RF = ${xF((8 / H) * ((24 - H) / 16))}${isNaN(L2) ? "" : ` → الحد المعدّل = ${xF(L2 * (8 / H) * ((24 - H) / 16))}`}`);
+  let em = 0, any = false, bad = false; for (const n of [1, 2, 3]) { const c = xN(`xm${n}c`), l = xN(`xm${n}l`); if (isNaN(c) && isNaN(l)) continue; if (isNaN(c) || isNaN(l) || c < 0 || l <= 0) bad = true; else { em += c / l; any = true; } }
+  xR("xmR", bad || !any ? "" : `Em = ${xF(em)} ${em <= 1 ? '<span class="xok">✓ مطابق</span>' : '<span class="xbad">✗ غير مطابق</span>'}`); }
+const X_EX = { twa: { xt1c: 50, xt1h: 4, xt2c: 120, xt2h: 2, xt3c: 20, xt3h: 2, xtL: 100 }, rf: { xrH: 12, xrL: 100 }, em: { xm1c: 50, xm1l: 100, xm2c: 100, xm2l: 400, xm3c: 20, xm3l: 200 } };
+document.addEventListener("input", e => { if (/^x[tmr]/.test(e.target.id || "") && e.target.closest("#mBox")) xCalc(); });
+
 const ACT = {
-  regList: need(() => { openModal("قائمة العمال المسجلين", regHtml(), true); renderReg(); }),
+  regList: need(() => { openModal("قائمة العمال المسجلين", regHtml(), true, true); renderReg(); }),
   async regTog(id) { const w = S.workers.find(x => x.id === id); if (!w) return; await run("Saving…", w.listed === false ? "تم إظهار العامل في القائمة العاملة." : "تم إخفاء العامل من القائمة العاملة.", () => updateDoc(doc(col("workers"), id), { listed: w.listed === false })); },
-  refs: () => openModal("Safety Guide", REF(), true),
+  refs: () => openModal("Safety Guide", REF(), true, true),
+  expo: () => openModal("حدود التعرض", EXPO(), true, true),
+  xEx: id => { Object.entries(X_EX[id] || {}).forEach(([k, v]) => { const e = document.getElementById(k); if (e) e.value = v; }); xCalc(); },
   scanCam() { const i = $("#scanIn"); i.setAttribute("capture", "environment"); i.click(); },
   scanPick() { const i = $("#scanIn"); i.removeAttribute("capture"); i.click(); },
   facs() { if (!S.dev) return; openModal("Factories Settings", `<form data-form="facs" class="grid gap-3">${FACTORIES.map((f, n) => `<div class="grid grid-cols-2 gap-2"><label class="text-xs font-semibold">${esc(f.id)} · English<input name="en${n}" value="${esc(f.en)}" class="i" required></label>
@@ -872,7 +943,7 @@ const ACT = {
   wfields() { if (!S.dev) return; openModal("Worker Fields Settings", `<form data-form="wfields" class="grid gap-2">${COLS.map(k => `<div class="flex items-center gap-2"><input name="l_${k}" value="${esc(S.cfg.labels?.[k] || "")}" placeholder="${esc(DEFLAB[k])}" class="i !mt-0" aria-label="${esc(DEFLAB[k])}">
     <label class="text-xs flex items-center gap-1 whitespace-nowrap"><input type="checkbox" name="h_${k}" ${(S.cfg.hide || []).includes(k) ? "" : "checked"} ${k === "code" || k === "name" ? "disabled checked" : ""}> Show in table</label></div>`).join("")}<button class="b bp">Save</button></form>`); },
   sys() { if (!S.dev) return; const y = S.cfg.sys || {}, e = S.cfg.est || {}; openModal("System Settings", `<form data-form="sys" class="grid sm:grid-cols-2 gap-2">${inp("appName", "App name", y.appName)}${inp("alertDays", "Recent-injury alert window (days)", y.alertDays || 30, "number")}
-    ${inp("dueSoon", "Due-soon window (days)", y.dueSoon || 7, "number")}${inp("examMax", "Max days between medical exams", y.examMax || 365, "number")}${inp("aiModel", "AI model", y.aiModel || AI_DEFAULT)}<h3 class="font-semibold sm:col-span-2 mt-2">Establishment (injury report header)</h3>
+    ${inp("dueSoon", "Due-soon window (days)", y.dueSoon || 7, "number")}${inp("examMax", "Max days between medical exams", y.examMax || 365, "number")}${inp("aiModel", "AI model", y.aiModel || AI_DEFAULT)}${inp("aiThink", "AI thinking level (low / medium / high)", y.aiThink || "low")}<h3 class="font-semibold sm:col-span-2 mt-2">Establishment (injury report header)</h3>
     ${inp("e_name", "Name", e.name)}${inp("e_activity", "Activity", e.activity)}${inp("e_address", "Address", e.address)}${inp("e_insNo", "Insurance no.", e.insNo)}${inp("e_crNo", "Commercial register no.", e.crNo)}<button class="b bp sm:col-span-2">Save</button></form>`); },
   colors() { if (!S.dev) return; openModal("Colors Studio", `<form data-form="studio" class="grid gap-3">${SECS.map(([k, l]) => { const o = S.ui.sec?.[k] || {}, d = sdef(k);
     return `<div class="flex flex-wrap items-center gap-3 border-b border-slate-100 pb-2"><span class="w-32 text-sm font-semibold">${l}</span><label class="text-xs flex items-center gap-1">Background<input type="color" name="${k}_bg" value="${o.bg ? hex2(o.bg) : d[0]}" class="w-10 h-8"></label>
@@ -960,7 +1031,7 @@ const FORMS = {
   facs: guard(async f => { const facs = {}; FACTORIES.forEach((x, n) => { facs[x.id] = { en: f.elements["en" + n].value.trim() || x.en, ar: f.elements["ar" + n].value.trim() || x.ar }; }); await saveCfg({ facs }); closeModal(); renderSel(); renderAll(); }),
   depts: guard(async f => { const v = [...new Set([...f.querySelectorAll("[name=d]")].map(x => x.value.trim()).filter(Boolean))]; if (!v.length) throw new Error("Keep at least one department."); await saveCfg({ depts: v }); closeModal(); renderAll(); }),
   wfields: guard(async f => { const labels = {}, hide = []; COLS.forEach(k => { labels[k] = f.elements["l_" + k].value.trim(); if (!f.elements["h_" + k].checked) hide.push(k); }); await saveCfg({ labels, hide }); closeModal(); renderAll(); }),
-  sys: guard(async f => { const g = n => f.elements[n].value.trim(); await saveCfg({ sys: { appName: g("appName"), alertDays: +g("alertDays") || 30, dueSoon: +g("dueSoon") || 7, examMax: +g("examMax") || 365, aiModel: g("aiModel") || AI_DEFAULT },
+  sys: guard(async f => { const g = n => f.elements[n].value.trim(); await saveCfg({ sys: { appName: g("appName"), alertDays: +g("alertDays") || 30, dueSoon: +g("dueSoon") || 7, examMax: +g("examMax") || 365, aiModel: g("aiModel") || AI_DEFAULT, aiThink: ["low", "medium", "high"].includes(g("aiThink").toLowerCase()) ? g("aiThink").toLowerCase() : "low" },
     est: { name: g("e_name"), activity: g("e_activity"), address: g("e_address"), insNo: g("e_insNo"), crNo: g("e_crNo") } }); closeModal(); renderAll(); }),
   studio: guard(async f => { S.ui.sec = readSec(f); await saveUi(); toast("Saved.", 1); closeModal(); }),
   creds: guard(async f => {
