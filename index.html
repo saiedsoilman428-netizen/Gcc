@@ -391,12 +391,12 @@ const cmp = { serial: (a, b) => (a.serial || 0) - (b.serial || 0), codeA: (a, b)
 const vis = () => base().filter(w => S.hf === "all" || health(w) === S.hf).sort(cmp[S.sort] || cmp.serial);
 const COLS = ["serial", "code", "name", "dept", "profession", "hireDate", "medical", "injuries", "chronic", "notes"];
 
+const tile = (act, ic, lb, o = {}) => `<button data-act="${act}" ${o.data ? `data-id="${esc(o.data)}"` : ""} class="tile ${o.pri ? "pri" : ""}" ${o.color ? `style="border-color:rgb(${rgbSafe(o.color)})"` : ""}><span class="tic">${esc(ic)}</span><span>${esc(lb)}</span>${o.sub ? `<span class="text-xs font-normal opacity-70">${o.sub}</span>` : ""}</button>`;   // home / department tile
 const renderDepts = () => { $("#wdepts").innerHTML = [...DEPTS, ...S.custom.filter(c => c.type === "menu").map(c => c.label)].map(d => tile("dept", "🏷️", d, { data: d, sub: `${S.workers.filter(w => w.listed !== false && w.dept === d).length} ${esc(t("workers"))}` })).join(""); };
 function renderNav() {
   $("#facNav").innerHTML = FACTORIES.map((f, i) => `<button data-act="fac" data-id="${i}" class="w-full flex items-center gap-2 ps-1 pe-3 py-1.5 rounded-full text-sm ${i === S.f ? "bp text-white font-semibold" : "bg-slate-100 hover:bg-slate-200 text-slate-800"}">${facIcon(f)}<span>${esc(fname(f))}</span>${S.dev || S.ok === i ? "" : "<span>🔒</span>"}</button>`).join("");
   $("#deptNav").innerHTML = ["All", ...DEPTS, ...S.custom.filter(c => c.type === "menu").map(c => c.label)].map(d =>
     `<button data-act="dept" data-id="${esc(d)}" class="text-start w-full px-3 py-2 rounded-lg text-sm ${d === S.dept ? "bg-sky-100 text-sky-900 font-semibold" : "hover:bg-slate-100"}">${esc(d)}</button>`).join("");
-  const tile = (act, ic, lb, o = {}) => `<button data-act="${act}" ${o.data ? `data-id="${esc(o.data)}"` : ""} class="tile ${o.pri ? "pri" : ""}" ${o.color ? `style="border-color:rgb(${rgbSafe(o.color)})"` : ""}><span class="tic">${esc(ic)}</span><span>${esc(lb)}</span>${o.sub ? `<span class="text-xs font-normal opacity-70">${o.sub}</span>` : ""}</button>`;
   $("#tiles").innerHTML = tile("workers", "👷", "Workers", { pri: 1 }) + allItems().filter(x => !x.hide).map(x => tile(x.act, x.icon, x.label || x.t || x.id, { data: x.data, color: x.color })).join("");
   renderDepts();
   $("#home").classList.toggle("hidden", S.view !== "home"); $("#wv").classList.toggle("hidden", S.view === "home"); $("#wdepts").classList.toggle("hidden", S.view !== "wdepts"); $("#wlist").classList.toggle("hidden", S.view !== "wlist"); $("#nback").classList.toggle("hidden", S.view === "home" || !can()); $("#bell").classList.toggle("hidden", !can());
