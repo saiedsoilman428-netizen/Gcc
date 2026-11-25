@@ -1103,7 +1103,7 @@ $("#search").addEventListener("input", e => { S.q = e.target.value.trim().toLowe
    password (re-checked by Firebase Auth every time). Its developer ("car developer" = car@gcc.local) signs in on a SECOND Firebase app,
    so the two developer sessions never mix and the main developer has no access here. No passwords or secrets live in this file.
    Roles: inspector ADDS vehicles + inspects · supervisor = dashboard/reports/inspectors (UI role) · car developer ONLY edits/disables/deletes/restores. */
-const CAR_DEV = "car@gcc.local", VP = "vehicleInspection_", VK = "gcc.vview", VCARD = "vc";
+const CAR_DEV = "car@gcc.local", SUP_DEV = "supervisor@gcc.local", VP = "vehicleInspection_", VK = "gcc.vview", VCARD = "vc";
 const VCHK = [["lic1", "رخصة سائق السيارة", "doc"], ["lic2", "رخصة السيارة", "doc"], ["brk", "حالة الفرامل / فرامل اليد", "eq"], ["tyr", "الحالة العامة للإطارات", "eq"], ["mir", "المرايات", "eq"], ["lgt", "الإضاءة الرئيسية", "eq"], ["rev", "صفارات الإنذار الخلفية", "eq"],
   ["hrn", "آلة التنبيه", "eq"], ["sts", "حالة المقاعد / الكراسي", "eq"], ["gls", "حالة الزجاج", "eq"], ["ext", "إسطوانة الإطفاء", "eq"], ["tri", "مثلث عاكس", "eq"], ["spr", "وجود إسبير (إطار)", "eq"], ["gen", "الحالة العامة", "gen"]];
 const GEN_MIN = 50, VPCT = [40, 50, 60, 70, 80, 90, 100];                           // general condition pills: below 50% = red (non-compliant), 50% and above = green
@@ -1121,7 +1121,7 @@ const VT = { insp: [["insp", "البحث"]], sup: [["dash", "المتابعة"],
 const V = { draft: null, tm: 0, fid: null, dev: false, role: "insp", tab: "dash", month: "", contractor: "", q: "", veh: [], con: [], chk: [], ins: [], insp: [], set: {} };
 let vApp = null, vAuth = null, vDb = null, VCACHE = {}, vRestored = false, vObs = null;
 const vInit = () => { if (!vApp) { vApp = initializeApp(firebaseConfig, "veh"); vAuth = getAuth(vApp); vDb = initializeFirestore(vApp, { experimentalForceLongPolling: true }); } };   // second app = separate session
-const vdb = () => (V.dev ? vDb : db), vcol = n => collection(vdb(), VP + "factories", V.fid, n), vdoc = (n, id) => doc(vdb(), VP + "factories", V.fid, n, id);
+const vdb = () => (V.dev || V.role === "sup" ? vDb : db), vcol = n => collection(vdb(), VP + "factories", V.fid, n), vdoc = (n, id) => doc(vdb(), VP + "factories", V.fid, n, id);
 const nowM = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"); };
 const vn = x => String(x ?? "").toLowerCase().normalize("NFKD").replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/[۰-۹]/g, d => d.charCodeAt(0) - 1776).replace(/[\u064B-\u065F\u0640]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").trim();
 const vcode = v => [v.code, ...(v.linked || [])].join("/");                            // linked codes = ONE physical vehicle (e.g. 66/67)
@@ -1147,7 +1147,7 @@ async function vload(force) {                          // inspections are NEVER 
 const vLoadSet = async () => { try { V.set = (await getDoc(doc(vdb(), VP + "settings", "main"))).data() || {}; } catch (e) { console.error(e); V.set = {}; } vTheme(); };
 const vSaveView = () => { try { sessionStorage.setItem(VK, JSON.stringify({ f: S.f, fid: V.fid, dev: V.dev, role: V.role, tab: V.tab, month: V.month, contractor: V.contractor })); } catch {} };
 function vOpen(st = {}) {                              // st = saved view (after a refresh) or {dev:true} when the car developer signs in
-  V.fid = st.fid || FACTORIES[S.f].id; V.dev = !!st.dev; V.role = st.role || "insp"; V.tab = st.tab || (V.dev ? "dveh" : V.role === "sup" ? "dash" : "insp");
+  V.fid = st.fid || FACTORIES[S.f].id; V.dev = !!st.dev; V.role = st.role === "sup" && vAuth?.currentUser?.email === SUP_DEV ? "sup" : "insp"; V.tab = st.tab || (V.dev ? "dveh" : V.role === "sup" ? "dash" : "insp");
   V.month = st.month || nowM(); V.contractor = st.contractor || ""; V.q = ""; VCACHE = {};
   $("#veh").classList.remove("hidden"); document.body.style.overflow = "hidden"; document.body.classList.add("inveh"); setSide(false);   // side dropdown menu is hidden inside this section
   vLoadSet().then(() => vShow()); }
@@ -1155,7 +1155,7 @@ function vehClose() { V.draft = null; vDraftSave(); clearInterval(V.tm); if (vAu
   $("#veh").classList.add("hidden"); document.body.style.overflow = ""; document.body.classList.remove("inveh"); vReturn(); }
 async function vRestore() {                            // a refresh keeps the user inside the vehicle section (same tab/month/role); closing it clears this
   if (vRestored) return; vRestored = true; let sv; try { sv = JSON.parse(sessionStorage.getItem(VK)); } catch {} if (!sv || sv.f !== S.f || S.dev) return;
-  if (sv.dev) { vInit(); const u = await new Promise(r => { const un = onAuthStateChanged(vAuth, x => { un(); r(x); }); }); if (u?.email !== CAR_DEV) return; }
+  if (sv.dev || sv.role === "sup") { vInit(); const u = await new Promise(r => { const un = onAuthStateChanged(vAuth, x => { un(); r(x); }); }); if (u?.email !== (sv.dev ? CAR_DEV : SUP_DEV)) { if (sv.dev) return; sv.role = "insp"; } }
   vOpen(sv); }
 const VIC = { insp: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.5-4.5", dash: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z", rep: "M7 3h8l4 4v14H7zM15 3v4h4M10 12h6M10 16h6", insps: "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M17 5.5a3 3 0 0 1 0 5.5M21 20c0-2.4-1.5-4.4-3.5-5.3",
   dveh: "M5 16V9l2-4h10l2 4v7M3 16h18M7 19h.01M17 19h.01", dcon: "M4 8h16v11H4zM9 8V5h6v3", dchk: "M5 12l4 4 10-10", dnote: "M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7M10 20h4", dann: "M4 10v4h3l7 4V6L7 10zM17 9a4 4 0 0 1 0 6", dset: "M4 6h16M4 12h16M4 18h16M9 4v4M15 10v4M8 16v4" };
@@ -1211,11 +1211,12 @@ function vFormPage() {                                 // "فحص جديد" (lay
       ${fld("اسم الفاحص", act.length ? `<select name="inspector" class="vi" required><option value="">-- اختر الفاحص --</option>${act.map(i => `<option ${i.name === d.inspector ? "selected" : ""}>${esc(i.name)}</option>`).join("")}</select>` : `<input name="inspector" class="vi" required placeholder="اكتب اسم الفاحص" value="${esc(d.inspector)}">`, 1)}</section>
     <section class="vc">${title("chk", "بنود الفحص", "text-emerald-500")}<div class="vtb"><div class="vth"><span class="text-center">م</span><span>بند الفحص</span><span>النتيجة</span></div>${V.chk.map((c, i) => vRow(c, i, d)).join("")}</div></section>
     <section class="vc">${title("pen", "ملاحظات عامة")}<textarea name="notes" rows="3" class="vi" placeholder="ملاحظات إضافية...">${esc(d.notes)}</textarea></section>
-    <p class="err hidden text-sm text-red-500" role="alert"></p><button id="vSaveBtn" class="vgo w-full !py-4 flex items-center justify-center gap-2">${vIc("sav", "w-6 h-6")}<span>حفظ</span></button></form>`;
+    <p class="err hidden text-sm text-red-500" role="alert"></p>${V.dev ? "" : `<button id="vSaveBtn" class="vgo w-full !py-4 flex items-center justify-center gap-2">${vIc("sav", "w-6 h-6")}<span>حفظ</span></button>`}</form>`;
   vChips(); vTimer(); vFab(); }
-const vFab = () => { vObs?.disconnect(); const b = $("#vSaveBtn"), f = $("#vFab"); if (!b || !f) return f?.classList.add("hidden");       // floating save button while the real one is out of view
+const vFab = () => { vObs?.disconnect(); const b = $("#vSaveBtn"), f = $("#vFab"); if (V.dev || !b || !f) return f?.classList.add("hidden");       // floating save button while the real one is out of view
   vObs = new IntersectionObserver(([e]) => f.classList.toggle("hidden", e.isIntersecting), { root: $("#veh") }); vObs.observe(b); };
 async function vOpenInsp(v, code) {
+  if (V.dev) return;                                   // developer: edit / delete / disable / restore only
   [V.veh, V.con, V.ins] = await Promise.all([vget("vehicles"), vget("contractors"), vget("inspectors")]); const p = v?.plate || "";
   V.draft = { vid: v?.id || null, code: v ? v.code : code, linked: [], pending: [], plateL: p.replace(/[0-9٠-٩]/g, "").replace(/\s+/g, " ").trim(), plateN: p.replace(/[^0-9٠-٩]/g, ""), type: v?.type || "", contractor: v?.contractor || "", route: v?.route || "", inspector: localStorage.getItem("vi.insp") || "", items: {}, notes: "", t0: Date.now() };
   vDraftSave(); vFormPage(); $("#veh").scrollTo({ top: 0 }); }
@@ -1376,25 +1377,32 @@ const VACT = {
     catch (e) { $("#vDiag").innerHTML = vDiagHtml() + `<div class="text-red-700">✗ فشل الاتصال (${esc(e.code || e.message)})</div>`; } }
 };
 for (const k in VACT) ACT[k] = guard(VACT[k]);
+const vAuthMsg = e => ({ "auth/invalid-credential": "كلمة السر غير صحيحة.", "auth/wrong-password": "كلمة السر غير صحيحة.", "auth/user-not-found": "الحساب غير موجود في Firebase Authentication.", "auth/invalid-email": "البريد الإلكتروني غير صالح.", "auth/user-disabled": "هذا الحساب موقوف.",
+  "auth/too-many-requests": "محاولات كثيرة. انتظر بضع دقائق ثم حاول مجدداً.", "auth/network-request-failed": "لا يوجد اتصال بالإنترنت. تحقق من الشبكة.", "auth/operation-not-allowed": "فعّل Email/Password من Firebase ← Authentication." }[e.code] || "تعذر تسجيل الدخول. حاول مرة أخرى.");
+const vSupLogin = () => { openModal("دخول المشرف", `<form data-form="vsup" dir="rtl" class="grid gap-3"><input class="i !mt-0" value="${SUP_DEV}" readonly dir="ltr" aria-label="اسم المستخدم"><input name="pw" type="password" class="i !mt-0" required autocomplete="off" placeholder="كلمة سر المشرف" aria-label="كلمة سر المشرف"><p class="err hidden text-sm text-red-700"></p><button class="b bp">دخول</button></form>`); $("#modal").classList.add("vgm"); $("[data-form=vsup] [name=pw]").focus(); };
 const vFail = (f, m) => { const el = f.querySelector(".err"); el.textContent = m; el.classList.remove("hidden"); };
 const VFORMS = {
   vgate: guard(async f => { const u = auth.currentUser, btn = f.querySelector("button:not([type])");
     if (!u || u.email !== em(FACTORIES[S.f].id)) return vFail(f, "الجلسة لا تخص هذا المصنع. سجّل الدخول مرة أخرى.");
     btn.disabled = true;
     try { await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, f.elements.pw.value)); }   // live check: follows every change of the factory's main password
-    catch (e) { btn.disabled = false; return vFail(f, authMsg(e)); }
+    catch (e) { btn.disabled = false; return vFail(f, vAuthMsg(e)); }
     vOpen(); closeModal(); }),
   vdev: guard(async f => { const btn = f.querySelector("button:not([type])"); btn.disabled = true; vInit();
     try { await signInWithEmailAndPassword(vAuth, CAR_DEV, f.elements.pw.value); }
-    catch (e) { btn.disabled = false; return vFail(f, authMsg(e, true)); }
+    catch (e) { btn.disabled = false; return vFail(f, vAuthMsg(e)); }
     vOpen({ dev: true }); closeModal(); }),
+  vsup: guard(async f => { const btn = f.querySelector("button:not([type])"); btn.disabled = true; vInit();
+    try { await signInWithEmailAndPassword(vAuth, SUP_DEV, f.elements.pw.value); }
+    catch (e) { btn.disabled = false; return vFail(f, vAuthMsg(e)); }
+    V.role = "sup"; VCACHE = {}; closeModal(); vShow(VT.sup[0][0]); }),
   vlook: guard(async f => { const raw = f.elements.code.value.trim(), c = vn(raw), out = $("#vOut"); if (!c) return;
     [V.veh, V.chk, V.ins] = await Promise.all([vget("vehicles"), vchk(), vget("inspectors")]); const v = V.veh.find(x => [x.code, ...(x.linked || [])].some(k => vn(k) === c));
     if (!v) return out.innerHTML = `<div class="${VCARD} grid gap-2"><p class="text-red-500 font-semibold">الكود ${esc(raw)} غير مسجل.</p><div class="flex flex-wrap gap-2"><button data-act="vAddVeh" data-id="${esc(raw)}" class="b bp">+ فحص مركبة جديدة (إضافة)</button><button data-act="vNotify" data-id="${esc(raw)}" class="b">إبلاغ المطور</button></div></div>`;
     if (vst(v) !== "on") return out.innerHTML = `<div class="${VCARD} text-amber-500">هذه المركبة ${VS[vst(v)]}.</div>`;
     const done = await getDoc(vdoc("inspections", `${v.id}_${V.month}`));
     if (done.exists()) return out.innerHTML = `<div class="${VCARD} text-amber-500 font-semibold">تم فحص المركبة ${esc(vcode(v))} بالفعل في هذا الشهر.</div>`; out.innerHTML = ""; await vOpenInsp(v); }),
-  vsave: guard(async f => { vSync(f); const d = V.draft; if (!d) return; const v = vOf(d), btn = f.querySelector("#vSaveBtn"), er = f.querySelector("p.err"), code = d.code.trim(), row = id => $(`[data-row="${id}"]`);
+  vsave: guard(async f => { if (V.dev) throw new Error("مطور المركبات لا يضيف ولا يحفظ فحوصات. التعديل فقط."); vSync(f); const d = V.draft; if (!d) return; const v = vOf(d), btn = f.querySelector("#vSaveBtn"), er = f.querySelector("p.err"), code = d.code.trim(), row = id => $(`[data-row="${id}"]`);
     const fail = (m, el) => { er.textContent = m; er.classList.remove("hidden"); (el || er).scrollIntoView({ block: "center", behavior: "smooth" }); };
     if (!code) return fail("كود السيارة مطلوب.", f.elements.code); if (!d.plateL.trim() || !d.plateN.trim()) return fail("رقم اللوحة لهذا الشهر مطلوب (حروف وأرقام).", !d.plateL.trim() ? f.elements.plateL : f.elements.plateN); if (!d.contractor) return fail("اختر المقاول.", f.elements.contractor); if (!d.route.trim()) return fail("الخط مطلوب.", f.elements.route); if (!d.inspector.trim()) return fail("اختر اسم الفاحص.", f.elements.inspector);
     const miss = V.chk.filter(c => !(c.kind === "gen" ? d.items[c.id]?.pct != null : d.items[c.id]?.st)); miss.forEach(c => row(c.id)?.classList.add("err")); if (miss.length) return fail(`أكمل كل بنود الفحص (${miss.length} متبقي).`, row(miss[0].id));
@@ -1435,7 +1443,10 @@ Object.assign(FORMS, VFORMS);
 document.addEventListener("change", e => { const t = e.target, fs = t.closest?.("[data-form=vsave]"); if (fs) vSync(fs);
   if (t.id === "vMonth" && t.value) { V.month = t.value; if (V.tab === "insp") { vSaveView(); const o = $("#vOut"); if (o) o.innerHTML = ""; } else vShow(); } if (t.id === "vCon") { V.contractor = t.value; vSaveView(); vPaint(); }
   if (t.id === "vFac") { closeModal(); V.fid = t.value; VCACHE = {}; vLoadSet().then(() => vShow()); }
-  if (t.id === "vRole") { closeModal(); V.role = t.value; vShow(VT[V.role][0][0]); } });
+  if (t.id === "vRole") { closeModal(); const live = vAuth?.currentUser?.email === SUP_DEV;
+    if (t.value === "sup" && !live) return vSupLogin();
+    if (t.value !== "sup" && live) signOut(vAuth).catch(() => {});
+    V.role = t.value === "sup" ? "sup" : "insp"; VCACHE = {}; vShow(VT[V.role][0][0]); } });
 document.addEventListener("input", e => { const f = e.target.closest?.("[data-form=vsave]"); if (f) vSync(f); if (e.target.id === "vQ") { V.q = e.target.value; vPaint(); } if (e.target.id === "vQD") { V.q = e.target.value; vDevPaint(); } });
 
 window.addEventListener("scroll", () => $("#upBtn").classList.toggle("hidden", scrollY < 300), { passive: true });
