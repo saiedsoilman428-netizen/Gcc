@@ -279,7 +279,7 @@ html.dark input,html.dark select,html.dark textarea{background:#14161B;color:#e5
     <button data-act="aiUndo" class="hb" aria-label="Undo last patch" title="Undo last patch">↩</button><button data-act="aiClear" class="hb" aria-label="Remove all patches" title="Remove all patches">🗑</button>
   </div>
   <div id="aiKeyBox" class="hidden p-3 border-b border-slate-200 grid gap-2"><label class="text-sm font-semibold">Gemini API key<input id="gk" type="password" class="i" autocomplete="off"></label>
-    <label class="text-xs flex items-center gap-1"><input type="checkbox" id="aiShare"> Share key with factory devices (needed for image scanning)</label><button data-act="aiKey" class="b bp justify-self-start">Save key</button></div>
+    <button data-act="aiKey" class="b bp justify-self-start">Save key</button></div>
   <div id="aiLog" class="flex-1 overflow-auto p-3 grid content-start gap-3"></div>
   <div class="p-2 border-t border-slate-200 flex gap-2 items-end"><textarea id="aiQ" rows="2" class="i !mt-0 flex-1" placeholder="Describe the change you want"></textarea><button id="aiSendBtn" data-act="aiSend" class="b bp">Send</button></div>
 </div>
@@ -352,7 +352,7 @@ const parseDates = s => { const o = [];            // accepts YYYY-MM-DD and DD/
   String(s || "").replace(/(\d{4})-(\d{1,2})-(\d{1,2})|(\d{1,2})\/(\d{1,2})\/(\d{4})/g, (m, y, mo, d, d2, mo2, y2) => { o.push(y ? new Date(+y, +mo - 1, +d) : new Date(+y2, +mo2 - 1, +d2)); return m; });
   return o.filter(d => !isNaN(d)); };
 
-const S = { cfg: {}, gk: "", sort: "serial", f: 0, dept: "All", view: "home", tool: "", hf: "all", dev: false, ok: null, q: "", custom: [], workers: [], forms: [], alerts: [] };
+const S = { cfg: {}, sort: "serial", f: 0, dept: "All", view: "home", tool: "", hf: "all", dev: false, ok: null, q: "", custom: [], workers: [], forms: [], alerts: [] };
 const VIEWS = ["home", "wdepts", "wlist"], TOOLS = ["hse", "injury", "refs", "expo"], NAV_KEY = "gcc.nav";   // remembers the last factory + department across refreshes
 const recall = () => { try { return JSON.parse(localStorage.getItem(NAV_KEY)); } catch { return null; } };
 const remember = () => { try { localStorage.setItem(NAV_KEY, JSON.stringify({ f: S.f, dept: S.dept, v: S.view, t: S.tool })); } catch {} };
@@ -472,7 +472,6 @@ const sm = "b !px-2 !py-0.5 text-xs";
 
 function hseMenu() {
   openModal("HSE custom forms", `<div class="grid sm:grid-cols-3 gap-2">${Object.keys(TPL).map(k => `<button data-act="hnew" data-id="${esc(k)}" class="b text-start">+ ${esc(k)}</button>`).join("")}</div>
-    <div class="mt-3 flex flex-wrap items-center gap-2"><button data-act="scanCam" class="b">📷 Scan with camera</button><button data-act="scanPick" class="b">🖼 Upload image</button><input id="scanIn" type="file" accept="image/*" class="hidden"></div>
     <div class="flex items-center gap-2 mt-4"><h3 class="font-semibold me-auto">Saved forms</h3><select id="hF" class="b"><option value="">All</option><option value="open">Open</option><option value="overdue">Overdue</option><option value="closed">Closed</option></select></div>
     <div id="hseL" class="mt-2 overflow-x-auto"></div>`, true);
   renderForms();
@@ -596,7 +595,7 @@ const saveUi = async () => { try { localStorage.setItem(UI_KEY, JSON.stringify(S
 let unsubSet = null;
 function subSettings(on) {                              // live settings (colours, names, AI patches) — only for signed-in accounts
   unsubSet?.(); unsubSet = null; if (!on) return;
-  unsubSet = onSnapshot(doc(db, "settings", "system"), s => { const d = s.data() || {}; if (d.custom) S.custom = d.custom; S.gk = d.gk || ""; if (d.cfg) applyCfg(d.cfg); applyPatches(d.patches || []);
+  unsubSet = onSnapshot(doc(db, "settings", "system"), s => { const d = s.data() || {}; if (d.custom) S.custom = d.custom; if (d.cfg) applyCfg(d.cfg); applyPatches(d.patches || []);
     if (d.ui) { S.ui = mergeUi(d.ui); try { localStorage.setItem(UI_KEY, JSON.stringify(S.ui)); } catch {} }
     applyUi(); renderSel(); renderAll(); }, () => {});
 }
@@ -667,9 +666,9 @@ Object.assign(AR, { "Occupational Safety and Health Department (HSE)": "إدار
   "Save & sync to all devices": "حفظ ومزامنة لكل الأجهزة", "Undo last patch": "تراجع عن آخر تعديل", "Remove all patches": "حذف كل التعديلات", "Include JavaScript in synced patch": "تضمين JavaScript في التعديل المتزامن",
   "Sort": "ترتيب", "Dark mode": "الوضع الداكن",
   "Factories Settings": "إعدادات المصانع", "Departments Settings": "إعدادات الأقسام", "Worker Fields Settings": "إعدادات الأسماء والحقول", "System Settings": "إعدادات النظام", "Passwords Settings": "إعدادات كلمة السر",
-  "Colors Studio": "إعدادات الألوان", "Layout & Icons": "إعدادات مكان الأيقونات", "Safety Guide": "دليل السلامة", "📷 Scan with camera": "📷 مسح بالكاميرا", "🖼 Upload image": "🖼 رفع صورة",
+  "Colors Studio": "إعدادات الألوان", "Layout & Icons": "إعدادات مكان الأيقونات", "Safety Guide": "دليل السلامة", 
   "+ Add": "+ إضافة", "Show in table": "إظهار في الجدول", "Icons": "الأيقونات", "Reset": "إعادة", "Main area": "المنطقة الرئيسية", "Sidebar": "القائمة الجانبية", "Table": "الجدول", "Footer": "التذييل",
-  "Save key": "حفظ المفتاح", "Share key with factory devices (needed for image scanning)": "مشاركة المفتاح مع أجهزة المصانع (لازم لقراءة الصور)", "Total hours worked": "إجمالي ساعات العمل", "Search substance": "ابحث عن مادة",
+  "Save key": "حفظ المفتاح", "Total hours worked": "إجمالي ساعات العمل", "Search substance": "ابحث عن مادة",
   "App name": "اسم التطبيق", "Recent-injury alert window (days)": "مدة تنبيه الإصابة الحديثة (أيام)", "Due-soon window (days)": "مدة التنبيه قبل الاستحقاق (أيام)", "Max days between medical exams": "أقصى مدة بين الفحوص الطبية (أيام)",
   "Establishment (injury report header)": "بيانات المنشأة (ترويسة تقرير الإصابات)", "Address": "العنوان", "Activity": "النشاط", "Insurance no.": "رقم التأمينات", "Commercial register no.": "رقم السجل التجاري",
   "Back": "رجوع", "API key": "مفتاح API", "New chat": "محادثة جديدة", "Undo last patch": "تراجع عن آخر تعديل", "Remove all patches": "حذف كل التعديلات" });
@@ -731,7 +730,7 @@ async function changePw(mail, oldPw, newPw) {           // signs in on a throw-a
   const app2 = initializeApp(firebaseConfig, "pw" + Date.now()), a2 = getAuth(app2);
   try { const c = await signInWithEmailAndPassword(a2, mail, oldPw); await updatePassword(c.user, newPw); }
   catch (e) { throw new Error(`${mail}: ${authMsg(e)}`); } finally { signOut(a2).catch(() => {}); deleteApp(app2).catch(() => {}); } }
-const cleanupLegacy = () => setDoc(doc(db, "settings", "system"), { pw: deleteField(), dev: deleteField() }, { merge: true }).catch(() => {});   // removes old plain-text passwords
+const cleanupLegacy = () => setDoc(doc(db, "settings", "system"), { pw: deleteField(), dev: deleteField(), gk: deleteField() }, { merge: true }).catch(() => {});   // removes old plain-text passwords
 
 /* ======================= 10) ACTIONS (one delegated listener) ======================= */
 const need = fn => (...a) => can() ? fn(...a) : toast("Sign in to a factory first.");
@@ -742,6 +741,7 @@ const HUB = [["facs", "🏭", "Factories Settings"], ["depts", "🏷️", "Depar
   ["creds", "🔑", "Passwords Settings"], ["colors", "🎨", "Colors Studio"], ["settings", "🧩", "Layout & Icons"], ["ai", "✨", "AI Assistant"]];
 function renderHub() { $("#devHub").innerHTML = `<h2 class="font-bold text-lg mb-3">${t("Developer hub")}</h2><div class="grid grid-cols-2 lg:grid-cols-4 gap-3">${HUB.map(([a, i, l]) =>
   `<button data-act="${a}" class="b !p-6 flex flex-col items-center gap-2 text-center"><span class="text-4xl">${i}</span><span class="font-semibold">${l}</span></button>`).join("")}</div>`; }
+const aiKeyGet = () => (S.dev ? localStorage.getItem(GK) || "" : "");   // Gemini key: developer session only (browser + dev-only doc settings/aiKey)
 const GK = "gcc.gkey", GH = "gcc.aihist"; let patches = [], appliedN = 0, pend = null, deferredInstall = null;
 const tryJ = x => { try { return JSON.parse(x); } catch { return { explain: x }; } };
 const ALLOW_JS_PATCHES = false;                        // SECURITY: false = AI "js" patches from the database are never executed (CSS patches still apply). Set true only if Firestore rules limit settings/* writes to the developer.
@@ -805,7 +805,7 @@ async function callGeminiWithFallback({ key, promptText, fallbackBody }) {
 }
 const gemHistoryPrompt = (sys, contents) => sys + "\n\n" + contents.map(c => (c.role === "model" ? "Assistant: " : "User: ") + (c.parts?.[0]?.text || "")).join("\n") + "\nAssistant:";   // flattens chat history for the text-only Interactions payload
 async function askAi(text) {
-  const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("ضيف مفتاح Gemini الأول من زر 🔑.");
+  const key = aiKeyGet(); if (!key) throw new Error("ضيف مفتاح Gemini الأول من زر 🔑 (للمطوّر فقط).");
   if (!navigator.onLine) throw new Error("مفيش اتصال بالإنترنت. تأكد من الشبكة وجرّب تاني.");
   const hist = tryJ(localStorage.getItem(GH) || "[]"), contents = [...(Array.isArray(hist) ? hist : []), { role: "user", parts: [{ text }] }];
   const raw = await callGeminiWithFallback({ key, promptText: gemHistoryPrompt(SYS, contents), fallbackBody: { systemInstruction: { parts: [{ text: SYS }] }, contents, generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: AI_THINK() } } } });
@@ -823,7 +823,7 @@ function renderAiLog() { const el = $("#aiLog"); if (!el) return; const h = tryJ
 const savePatches = (p, label) => run("Saving…", label, () => setDoc(doc(db, "settings", "system"), { patches: p }, { merge: true }));
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferredInstall = e; $("#installBtn").classList.remove("hidden"); });
 
-/* ---- Developer config (factories · departments · fields · system), colour studio, OCR scan, injury register, safety guide ---- */
+/* ---- Developer config (factories · departments · fields · system), colour studio, injury register, safety guide ---- */
 function applyCfg(c) { S.cfg = c || {}; FACTORIES.forEach(f => { const o = S.cfg.facs?.[f.id]; if (o) { f.en = o.en || f.en; f.ar = o.ar || f.ar; } });
   if (Array.isArray(S.cfg.depts) && S.cfg.depts.length) DEPTS.splice(0, DEPTS.length, ...S.cfg.depts);
   const y = S.cfg.sys || {}; ALERT_DAYS = +y.alertDays || 30; DUE_SOON_DAYS = +y.dueSoon || 7; EXAM_MAX_DAYS = +y.examMax || 365; document.title = y.appName ? `${y.appName} | HSE` : "Gas Cooker Complex | مجمع البوتاجاز"; }
@@ -838,19 +838,6 @@ function applySec(sec) { let st = document.getElementById("secCss"); if (!st) { 
   bg("#wt tbody tr", "table"); bg("footer", "footer"); ic("footer", "footer"); st.textContent = R.join(""); }
 const dpRow = d => `<div class="flex gap-2"><input name="d" value="${esc(d)}" class="i !mt-0"><button type="button" data-act="dpRm" class="b !text-red-700" aria-label="Remove">✕</button></div>`;
 const inp = (n, l, v, type = "text") => `<label class="text-sm font-semibold">${l}<input name="${n}" type="${type}" value="${esc(v ?? "")}" class="i"></label>`;
-
-const imgB64 = file => new Promise((res, rej) => { const img = new Image(), url = URL.createObjectURL(file);
-  img.onload = () => { const r = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement("canvas"); c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
-    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg", .85).split(",")[1]); };
-  img.onerror = () => rej(new Error("Could not read this image.")); img.src = url; });
-async function scanImage(file) {                        // photo / scan of a paper note → Gemini → values for the matching HSE form (reviewed by the person before saving)
-  const key = localStorage.getItem(GK) || S.gk; if (!key) throw new Error("مفتاح Gemini مش متضاف. المطوّر لازم يضيفه من المساعد ويفعّل مشاركة المفتاح.");
-  const b64 = await imgB64(file), spec = Object.fromEntries(Object.entries(TPL).map(([k, v]) => [k, v.map(x => x.split(":")[0])]));
-  const raw = await callGeminiWithFallback({ key, fallbackBody: { contents: [{ role: "user", parts: [{ inlineData: { mimeType: "image/jpeg", data: b64 } }, { text: `Read this paper note or log (Arabic or English, handwritten or printed). Pick the best matching form type from this JSON of form types and their field labels: ${JSON.stringify(spec)}. Reply ONLY with JSON {"type":"<exact form type>","values":["one value per field, same order; empty string if not found; dates as YYYY-MM-DD"]}.` }] }], generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: AI_THINK() } } } });
-  const o = tryJ((raw || "{}").replace(/```json|```/g, "").trim()), type = TPL[o.type] ? o.type : Object.keys(TPL)[0];
-  return { type, values: fields(type).map((_, i) => String(o.values?.[i] ?? "")) }; }
-const scanPicked = inp => { const f = inp.files[0]; inp.value = ""; if (!f || S.scanning) return; S.scanning = true; guard(async () => { let r; $("#spinT").textContent = "جارٍ قراءة الصورة…"; $("#spin").classList.remove("hidden");
-  try { r = await scanImage(f); } finally { $("#spin").classList.add("hidden"); S.scanning = false; } hseForm(r.type, { values: r.values }); toast("Form filled from the image — review it, then save.", 1); })(); };
 
 function officialBlock(a, from, to) {                   // register-style section of the injury report (establishment · case list · rates · signatures)
   const e = S.cfg.est || {}, h = +($("#rH")?.value) || 0, c = x => `<td>${esc(x) || "—"}</td>`, rows = S.workers.flatMap(w => parseDates(w.injuries).filter(d => d >= from && d < to).map(d => ({ d, w }))).sort((p, q) => p.d - q.d);
@@ -949,8 +936,6 @@ const ACT = {
   refs: () => openModal("Safety Guide", REF(), true, true),
   expo: () => openModal("حدود التعرض", EXPO(), true, true),
   xEx: id => { Object.entries(X_EX[id] || {}).forEach(([k, v]) => { const e = document.getElementById(k); if (e) e.value = v; }); xCalc(); },
-  scanCam() { const i = $("#scanIn"); i.setAttribute("capture", "environment"); i.click(); },
-  scanPick() { const i = $("#scanIn"); i.removeAttribute("capture"); i.click(); },
   facs() { if (!S.dev) return; openModal("Factories Settings", `<form data-form="facs" class="grid gap-3">${FACTORIES.map((f, n) => `<div class="grid grid-cols-2 gap-2"><label class="text-xs font-semibold">${esc(f.id)} · English<input name="en${n}" value="${esc(f.en)}" class="i" required></label>
     <label class="text-xs font-semibold">العربية<input name="ar${n}" value="${esc(f.ar)}" class="i" required></label></div>`).join("")}<button class="b bp">Save</button></form>`); },
   depts() { if (!S.dev) return; openModal("Departments Settings", `<form data-form="depts" class="grid gap-2"><div id="dpL" class="grid gap-2">${DEPTS.map(dpRow).join("")}</div><button type="button" data-act="dpAdd" class="b justify-self-start">+ Add</button>
@@ -987,10 +972,10 @@ const ACT = {
       <label class="text-xs flex items-center gap-1"><input type="checkbox" data-show> Show passwords</label><button class="b bp">Save credentials</button></form>`); },
   async ai() { if (!S.dev) return; $("#chat").classList.remove("hidden"); if (location.hash !== "#ai") history.pushState(null, "", "#ai");
     const h = tryJ(localStorage.getItem(GH) || "[]"); if (!Array.isArray(h) || !h.length) { try { const sn = await getDoc(doc(db, "settings", "aiChat")); if (sn.exists()) localStorage.setItem(GH, JSON.stringify(sn.data().hist || [])); } catch {} }
-    $("#gk").value = localStorage.getItem(GK) || ""; $("#aiShare").checked = !!S.gk; renderAiLog(); $("#aiQ").focus(); },
+    $("#gk").value = localStorage.getItem(GK) || ""; if (!$("#gk").value) getDoc(doc(db, "settings", "aiKey")).then(sn => { const k = sn.data()?.k; if (k) { try { localStorage.setItem(GK, k); } catch {} $("#gk").value = k; } }).catch(() => {}); renderAiLog(); $("#aiQ").focus(); },
   aiBack() { if (location.hash === "#ai") history.back(); else $("#chat").classList.add("hidden"); },
   aiKeys: () => $("#aiKeyBox").classList.toggle("hidden"),
-  async aiKey() { const k = $("#gk").value.trim(); try { localStorage.setItem(GK, k); } catch {} await run("Saving…", "Key saved.", () => setDoc(doc(db, "settings", "system"), { gk: $("#aiShare").checked ? k : "" }, { merge: true })); },
+  async aiKey() { const k = $("#gk").value.trim(); try { localStorage.setItem(GK, k); } catch {} await run("Saving…", "Key saved.", () => setDoc(doc(db, "settings", "aiKey"), { k })); },
   aiNew() { try { localStorage.removeItem(GH); } catch {} setDoc(doc(db, "settings", "aiChat"), { hist: [] }).catch(() => {}); pend = null; renderAiLog(); },
   async aiSend() { const q = $("#aiQ").value.trim(); if (!q || S.thinking) return; S.thinking = q; $("#aiQ").value = ""; pend = null; aiBusy(true); renderAiLog();
     try { pend = await askAi(q); } catch (e) { $("#aiQ").value = q; throw e; } finally { S.thinking = null; aiBusy(false); renderAiLog(); } },
@@ -1090,7 +1075,7 @@ const FORMS = {
 
 document.addEventListener("click", e => { if (!e.target.closest("#side,#sideTab")) setSide(false); if (!e.target.closest("#gres") && e.target.id !== "search") $("#gres").classList.add("hidden"); if (e.target.id === "cfm") return cfmDone(false); if (e.target.id === "modal") return closeModal(); const b = e.target.closest("[data-act]"); if (b) ACT[b.dataset.act]?.(b.dataset.id, b); });
 document.addEventListener("submit", e => { const h = FORMS[e.target.dataset.form]; if (h) { e.preventDefault(); h(e.target); } });
-document.addEventListener("change", e => { if (e.target.closest("#rc")) renderReport(e); if (e.target.id === "hF") renderForms(); if (e.target.id === "scanIn") scanPicked(e.target); if (e.target.id === "sortSel") { S.sort = e.target.value; renderTable(); }
+document.addEventListener("change", e => { if (e.target.closest("#rc")) renderReport(e); if (e.target.id === "hF") renderForms(); if (e.target.id === "sortSel") { S.sort = e.target.value; renderTable(); }
   if (e.target.dataset.show !== undefined) e.target.form.querySelectorAll(".pwf").forEach(x => x.type = e.target.checked ? "text" : "password");
   const fk = e.target.dataset.fill; if (fk && e.target.value) { const el = e.target.form.elements[fk]; el.value = el.type === "date" ? "" : e.target.value; e.target.value = ""; } if (e.target.id === "logoFile") uploadLogo(e.target.files[0]); });
 document.addEventListener("input", e => { const f = e.target.closest?.("[data-form=theme]"); if (f) previewUi(f);
@@ -1144,10 +1129,10 @@ async function vchk(force) { const c = (await vget("config", force)).find(r => r
 async function vload(force) {                          // inspections are NEVER cached (monthly status must be exact)
   [V.veh, V.con, V.chk] = await Promise.all([vget("vehicles", force), vget("contractors", force), vchk(force)]);
   V.insp = (await getDocs(query(vcol("inspections"), where("month", "==", V.month)))).docs.map(d => ({ id: d.id, ...d.data() })); }
-const vLoadSet = async () => { try { V.set = (await getDoc(doc(vdb(), VP + "settings", "main"))).data() || {}; } catch (e) { console.error(e); V.set = {}; } vTheme(); };
+const vLoadSet = async () => { try { V.set = (await getDoc(doc(vdb(), VP + "settings", "main"))).data() || {}; } catch (e) { console.error(e); } vTheme(); };   // a failed read never overwrites good settings with {}
 const vSaveView = () => { try { sessionStorage.setItem(VK, JSON.stringify({ f: S.f, fid: V.fid, dev: V.dev, role: V.role, tab: V.tab, month: V.month, contractor: V.contractor })); } catch {} };
 function vOpen(st = {}) {                              // st = saved view (after a refresh) or {dev:true} when the car developer signs in
-  V.fid = st.fid || FACTORIES[S.f].id; V.dev = !!st.dev; V.role = st.role === "sup" && vAuth?.currentUser?.email === SUP_DEV ? "sup" : "insp"; V.tab = st.tab || (V.dev ? "dveh" : V.role === "sup" ? "dash" : "insp");
+  V.fid = st.fid || FACTORIES[S.f].id; V.dev = !!st.dev; V.role = st.role === "sup" && vAuth?.currentUser?.email === SUP_DEV ? "sup" : "insp"; { const T = (V.dev ? VT.dev : VT[V.role]).map(x => x[0]); V.tab = T.includes(st.tab) ? st.tab : T[0]; }
   V.month = st.month || nowM(); V.contractor = st.contractor || ""; V.q = ""; VCACHE = {};
   $("#veh").classList.remove("hidden"); document.body.style.overflow = "hidden"; document.body.classList.add("inveh"); setSide(false);   // side dropdown menu is hidden inside this section
   vLoadSet().then(() => vShow()); }
@@ -1169,7 +1154,7 @@ const vMonthSel = (full, cls = "i w-full !mt-1 !py-3") => { const o = [], d = ne
 async function vShow(tab, force) {
   if (tab) V.tab = tab; vSaveView(); vTabs(); vTick(); $("#vBody").innerHTML = `<p class="text-center text-slate-500 py-10" role="status">جارٍ التحميل…</p>`;
   try { await vRender(force); }
-  catch (e) { console.error(e); $("#vBody").innerHTML = `<div class="${VCARD} text-center grid gap-2"><p class="text-red-700">تعذر تحميل البيانات (${esc(e.code || e.message)}). تحقق من الاتصال.</p><button data-act="vRefresh" class="b bp justify-self-center">إعادة المحاولة</button></div>`; } }
+  catch (e) { console.error(e); $("#vBody").innerHTML = `<div class="${VCARD} text-center grid gap-2"><p class="text-red-700">${e.code === "permission-denied" ? "لا توجد صلاحية قراءة لهذا الحساب. تأكد من نشر قواعد Firestore المحدّثة وإعادة تسجيل الدخول." : `تعذر تحميل البيانات (${esc(e.code || e.message)}). تحقق من الاتصال.`}</p><button data-act="vRefresh" class="b bp justify-self-center">إعادة المحاولة</button></div>`; } }
 function vPaint() {
   const L = vlist(), n = L.length, st = L.map(vstate), ins = st.filter(s => s !== "no").length, bad = st.filter(s => s === "bad").length, pct = n ? Math.round(ins / n * 100) : 0;
   const k = (v, l, c = "") => `<div class="rounded-lg border border-slate-200 p-3 text-center ${c}"><div class="text-2xl font-bold">${v}</div><div class="text-xs text-slate-500">${l}</div></div>`;
@@ -1211,12 +1196,12 @@ function vFormPage() {                                 // "فحص جديد" (lay
       ${fld("اسم الفاحص", act.length ? `<select name="inspector" class="vi" required><option value="">-- اختر الفاحص --</option>${act.map(i => `<option ${i.name === d.inspector ? "selected" : ""}>${esc(i.name)}</option>`).join("")}</select>` : `<input name="inspector" class="vi" required placeholder="اكتب اسم الفاحص" value="${esc(d.inspector)}">`, 1)}</section>
     <section class="vc">${title("chk", "بنود الفحص", "text-emerald-500")}<div class="vtb"><div class="vth"><span class="text-center">م</span><span>بند الفحص</span><span>النتيجة</span></div>${V.chk.map((c, i) => vRow(c, i, d)).join("")}</div></section>
     <section class="vc">${title("pen", "ملاحظات عامة")}<textarea name="notes" rows="3" class="vi" placeholder="ملاحظات إضافية...">${esc(d.notes)}</textarea></section>
-    <p class="err hidden text-sm text-red-500" role="alert"></p>${V.dev ? "" : `<button id="vSaveBtn" class="vgo w-full !py-4 flex items-center justify-center gap-2">${vIc("sav", "w-6 h-6")}<span>حفظ</span></button>`}</form>`;
+    <p class="err hidden text-sm text-red-500" role="alert"></p>${V.dev || V.role === "sup" ? "" : `<button id="vSaveBtn" class="vgo w-full !py-4 flex items-center justify-center gap-2">${vIc("sav", "w-6 h-6")}<span>حفظ</span></button>`}</form>`;
   vChips(); vTimer(); vFab(); }
-const vFab = () => { vObs?.disconnect(); const b = $("#vSaveBtn"), f = $("#vFab"); if (V.dev || !b || !f) return f?.classList.add("hidden");       // floating save button while the real one is out of view
+const vFab = () => { vObs?.disconnect(); const b = $("#vSaveBtn"), f = $("#vFab"); if (V.dev || V.role === "sup" || !b || !f) return f?.classList.add("hidden");       // floating save button while the real one is out of view
   vObs = new IntersectionObserver(([e]) => f.classList.toggle("hidden", e.isIntersecting), { root: $("#veh") }); vObs.observe(b); };
 async function vOpenInsp(v, code) {
-  if (V.dev) return;                                   // developer: edit / delete / disable / restore only
+  if (V.dev || V.role === "sup") return;               // developer = edit/delete/disable/restore only · supervisor = read-only
   [V.veh, V.con, V.ins] = await Promise.all([vget("vehicles"), vget("contractors"), vget("inspectors")]); const p = v?.plate || "";
   V.draft = { vid: v?.id || null, code: v ? v.code : code, linked: [], pending: [], plateL: p.replace(/[0-9٠-٩]/g, "").replace(/\s+/g, " ").trim(), plateN: p.replace(/[^0-9٠-٩]/g, ""), type: v?.type || "", contractor: v?.contractor || "", route: v?.route || "", inspector: localStorage.getItem("vi.insp") || "", items: {}, notes: "", t0: Date.now() };
   vDraftSave(); vFormPage(); $("#veh").scrollTo({ top: 0 }); }
@@ -1395,14 +1380,14 @@ const VFORMS = {
   vsup: guard(async f => { const btn = f.querySelector("button:not([type])"); btn.disabled = true; vInit();
     try { await signInWithEmailAndPassword(vAuth, SUP_DEV, f.elements.pw.value); }
     catch (e) { btn.disabled = false; return vFail(f, vAuthMsg(e)); }
-    V.role = "sup"; VCACHE = {}; closeModal(); vShow(VT.sup[0][0]); }),
+    V.role = "sup"; VCACHE = {}; V.draft = null; vDraftSave(); closeModal(); vShow(VT.sup[0][0]); }),
   vlook: guard(async f => { const raw = f.elements.code.value.trim(), c = vn(raw), out = $("#vOut"); if (!c) return;
     [V.veh, V.chk, V.ins] = await Promise.all([vget("vehicles"), vchk(), vget("inspectors")]); const v = V.veh.find(x => [x.code, ...(x.linked || [])].some(k => vn(k) === c));
     if (!v) return out.innerHTML = `<div class="${VCARD} grid gap-2"><p class="text-red-500 font-semibold">الكود ${esc(raw)} غير مسجل.</p><div class="flex flex-wrap gap-2"><button data-act="vAddVeh" data-id="${esc(raw)}" class="b bp">+ فحص مركبة جديدة (إضافة)</button><button data-act="vNotify" data-id="${esc(raw)}" class="b">إبلاغ المطور</button></div></div>`;
     if (vst(v) !== "on") return out.innerHTML = `<div class="${VCARD} text-amber-500">هذه المركبة ${VS[vst(v)]}.</div>`;
     const done = await getDoc(vdoc("inspections", `${v.id}_${V.month}`));
     if (done.exists()) return out.innerHTML = `<div class="${VCARD} text-amber-500 font-semibold">تم فحص المركبة ${esc(vcode(v))} بالفعل في هذا الشهر.</div>`; out.innerHTML = ""; await vOpenInsp(v); }),
-  vsave: guard(async f => { if (V.dev) throw new Error("مطور المركبات لا يضيف ولا يحفظ فحوصات. التعديل فقط."); vSync(f); const d = V.draft; if (!d) return; const v = vOf(d), btn = f.querySelector("#vSaveBtn"), er = f.querySelector("p.err"), code = d.code.trim(), row = id => $(`[data-row="${id}"]`);
+  vsave: guard(async f => { if (V.dev || V.role === "sup") throw new Error(V.dev ? "مطور المركبات لا يضيف ولا يحفظ فحوصات. التعديل فقط." : "المشرف للمتابعة والتقارير فقط (قراءة)."); vSync(f); const d = V.draft; if (!d) return; const v = vOf(d), btn = f.querySelector("#vSaveBtn"), er = f.querySelector("p.err"), code = d.code.trim(), row = id => $(`[data-row="${id}"]`);
     const fail = (m, el) => { er.textContent = m; er.classList.remove("hidden"); (el || er).scrollIntoView({ block: "center", behavior: "smooth" }); };
     if (!code) return fail("كود السيارة مطلوب.", f.elements.code); if (!d.plateL.trim() || !d.plateN.trim()) return fail("رقم اللوحة لهذا الشهر مطلوب (حروف وأرقام).", !d.plateL.trim() ? f.elements.plateL : f.elements.plateN); if (!d.contractor) return fail("اختر المقاول.", f.elements.contractor); if (!d.route.trim()) return fail("الخط مطلوب.", f.elements.route); if (!d.inspector.trim()) return fail("اختر اسم الفاحص.", f.elements.inspector);
     const miss = V.chk.filter(c => !(c.kind === "gen" ? d.items[c.id]?.pct != null : d.items[c.id]?.st)); miss.forEach(c => row(c.id)?.classList.add("err")); if (miss.length) return fail(`أكمل كل بنود الفحص (${miss.length} متبقي).`, row(miss[0].id));
@@ -1446,7 +1431,7 @@ document.addEventListener("change", e => { const t = e.target, fs = t.closest?.(
   if (t.id === "vRole") { closeModal(); const live = vAuth?.currentUser?.email === SUP_DEV;
     if (t.value === "sup" && !live) return vSupLogin();
     if (t.value !== "sup" && live) signOut(vAuth).catch(() => {});
-    V.role = t.value === "sup" ? "sup" : "insp"; VCACHE = {}; vShow(VT[V.role][0][0]); } });
+    V.role = t.value === "sup" ? "sup" : "insp"; VCACHE = {}; V.draft = null; vDraftSave(); vShow(VT[V.role][0][0]); } });
 document.addEventListener("input", e => { const f = e.target.closest?.("[data-form=vsave]"); if (f) vSync(f); if (e.target.id === "vQ") { V.q = e.target.value; vPaint(); } if (e.target.id === "vQD") { V.q = e.target.value; vDevPaint(); } });
 
 window.addEventListener("scroll", () => $("#upBtn").classList.toggle("hidden", scrollY < 300), { passive: true });
