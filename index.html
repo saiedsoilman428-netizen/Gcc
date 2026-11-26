@@ -1112,7 +1112,7 @@ const GEN_MIN = 50, VPCT = [40, 50, 60, 70, 80, 90, 100];                       
 const VLT = ["خاصة", "أولى", "ثانية", "ثالثة"];
 const VOPT = { doc: [["ok", "✓"], ["wd", "مسحوبة"], ["miss", "لا توجد"], ["exp", "منتهية"]], eq: [["ok", "✓"], ["bad", "غير مطابق"]] };
 const VST = { bad: "غير مطابق", miss: "لا توجد", exp: "منتهية", wd: "مسحوبة" }, VDK = "gcc.vdraft";
-const vKind = l => l.trim() === "الحالة العامة" ? "gen" : /نوع رخصة/.test(l) ? "lt" : /رخصة/.test(l) ? "doc" : "eq";
+const vKind = l => l.trim() === "الحالة العامة" ? "gen" : /نوع\s*(ال)?رخصة/.test(l) ? "lt" : /رخصة/.test(l) ? "doc" : "eq";
 const vDep = () => V.chk.find(x => x.id === "lic1") || V.chk.find(x => x.kind === "doc");        // the licence-existence item the licence type depends on
 const vLtOn = d => d.items[vDep()?.id]?.st === "ok";
 const vLtFix = d => { if (!vLtOn(d)) V.chk.filter(c => c.kind === "lt").forEach(c => delete d.items[c.id]); };
@@ -1146,7 +1146,7 @@ async function vget(n, force) {                        // stable data is cached 
   const k = V.fid + n, c = VCACHE[k]; if (!force && c && Date.now() - c.t < 3e5) return c.rows;
   const rows = (await getDocs(vcol(n))).docs.map(d => ({ id: d.id, ...d.data() })); VCACHE[k] = { t: Date.now(), rows }; return rows; }
 const vinv = n => delete VCACHE[V.fid + n];
-async function vchk(force) { const c = (await vget("config", force)).find(r => r.id === "checklist"); return (c?.items?.length ? c.items : VCHK.map(([id, label, kind]) => ({ id, label, kind }))).map(x => ({ ...x, kind: x.kind || vKind(x.label) })); }
+async function vchk(force) { const c = (await vget("config", force)).find(r => r.id === "checklist"); return (c?.items?.length ? c.items : VCHK.map(([id, label, kind]) => ({ id, label, kind }))).map(x => ({ ...x, kind: vKind(x.label) === "lt" ? "lt" : x.kind === "lt" ? vKind(x.label) : x.kind || vKind(x.label) })); }
 async function vload(force) {                          // inspections are NEVER cached (monthly status must be exact)
   [V.veh, V.con, V.chk] = await Promise.all([vget("vehicles", force), vget("contractors", force), vchk(force)]);
   V.insp = (await getDocs(query(vcol("inspections"), where("month", "==", V.month)))).docs.map(d => ({ id: d.id, ...d.data() })); }
@@ -1445,7 +1445,7 @@ const VFORMS = {
   vins: guard(async f => { const name = f.elements.name.value.trim(); if (V.ins.some(c => vn(c.name) === vn(name))) throw new Error("المفتش موجود بالفعل");
     await run("جارٍ الحفظ…", "تمت الإضافة ✓", () => addDoc(vcol("inspectors"), { name, active: true })); vinv("inspectors"); vShow("insps"); }),
   vchk: guard(async f => { const old = V.chk, lines = f.elements.items.value.split("\n").map(x => x.trim()).filter(Boolean); if (!lines.length) throw new Error("أضف بنداً واحداً على الأقل");
-    const items = lines.map((label, i) => { const o = old.find(c => c.label === label); return { id: o?.id || "c" + Date.now().toString(36) + i, label, kind: o?.kind || vKind(label) }; });
+    const items = lines.map((label, i) => { const o = old.find(c => c.label === label); return { id: o?.id || "c" + Date.now().toString(36) + i, label, kind: vKind(label) === "lt" ? "lt" : o?.kind || vKind(label) }; });
     await run("جارٍ الحفظ…", "تم حفظ القائمة ✓", () => setDoc(vdoc("config", "checklist"), { items, ts: Date.now() })); vinv("config"); vShow("dchk"); }),
   vann: guard(async f => { await run("جارٍ النشر…", "تم النشر ✓", () => addDoc(vcol("announcements"), { text: f.elements.text.value.trim(), active: true, ts: Date.now() })); vinv("announcements"); vShow("dann"); }),
   vset: guard(async f => { const e = f.elements, facs = {}, accent = readRgb(f, "vaccent"); if (!accent) throw new Error("قيم RGB لازم تكون أرقام من 0 إلى 255.");
