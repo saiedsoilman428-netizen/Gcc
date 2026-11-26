@@ -163,6 +163,103 @@ html.dark input,html.dark select,html.dark textarea{background:#14161B;color:#e5
 #modal.vgm form>button,#modal.vgm #mBody>button{width:100%;min-height:2.75rem;justify-content:center}
 #vehBtn.go{pointer-events:none}header.brand{overflow-x:clip}
 </style>
+<style id="ux-pass">
+/* ===== UX/contrast/cohesion pass ===== */
+:root{--ease:cubic-bezier(.2,.8,.2,1);--r:16px}
+html{-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
+body{overflow-x:hidden;line-height:1.55}
+button,[data-act],.tile,.b,.hb,.vni,.vst{touch-action:manipulation;min-height:2.5rem}
+.b,.hb{min-height:2.75rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
+.b:disabled,.hb:disabled,button:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.4);pointer-events:none}
+.b{border-color:#94a3b8}.dark .b{border-color:rgba(255,255,255,.24)!important}
+.i,select,textarea{min-height:2.75rem;border-color:#94a3b8;font-size:1rem}
+.i:focus,.b:focus-visible,.hb:focus-visible,.tile:focus-visible{outline:2px solid #0ea5e9;outline-offset:2px}
+.i:disabled,.i[readonly]{background:#e2e8f0;color:#475569}.dark .i:disabled,.dark .i[readonly]{background:#0e1014!important;color:#94a3b8!important}
+.text-slate-500{color:#475569}.text-slate-400{color:#64748b}.dark .text-slate-400{color:#a3b0c2!important}
+.tile{border-width:1.5px;box-shadow:0 1px 2px rgba(15,23,42,.06);position:relative;overflow:hidden}
+.tile:active{transform:scale(.96)}
+.tile .tic{display:grid;place-items:center;width:3rem;height:3rem;border-radius:14px;background:rgba(59,130,246,.12);font-size:1.7rem}
+.tile,.wtw th,.wtw td{text-align:center}.wtw th,.wtw td{text-align:start}
+#tiles{gap:.75rem;padding-block:.25rem}
+.wtw{-webkit-overflow-scrolling:touch}
+#mBox{max-height:92vh;overflow:auto;overscroll-behavior:contain}
+header.brand .hb{background:rgba(255,255,255,.14)}header.brand .hb:hover{background:rgba(255,255,255,.22)}
+#topbar .tb{transition:transform .15s var(--ease),background .15s}#topbar .tb:active{transform:scale(.9)}#topbar .tb:hover{background:rgba(255,255,255,.2)}
+/* ===== Motion ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes shine{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
+@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(59,130,246,.45)}100%{box-shadow:0 0 0 14px rgba(59,130,246,0)}}
+#home:not(.hidden),#wv:not(.hidden),#wdepts:not(.hidden),#wlist:not(.hidden){animation:fadeUp .38s var(--ease) both}
+#tiles>*{animation:fadeUp .45s var(--ease) both}
+#tiles>*:nth-child(1){animation-delay:.03s}#tiles>*:nth-child(2){animation-delay:.07s}#tiles>*:nth-child(3){animation-delay:.11s}#tiles>*:nth-child(4){animation-delay:.15s}#tiles>*:nth-child(5){animation-delay:.19s}#tiles>*:nth-child(6){animation-delay:.23s}#tiles>*:nth-child(n+7){animation-delay:.27s}
+.tile .tic{transition:transform .3s var(--ease)}.tile:hover .tic{transform:scale(1.12) rotate(-6deg)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 70%);transform:translateX(-120%);pointer-events:none}
+.tile:hover::after{animation:shine .7s var(--ease)}.tile:hover{box-shadow:0 8px 20px rgba(15,23,42,.14)}
+.b,.hb,.vgo,.vst{transition:transform .15s var(--ease),box-shadow .2s,background-color .2s,filter .2s}
+.bp:not(:disabled):active,.vgo:active{transform:scale(.95)}
+.logo{animation:bob 4s ease-in-out infinite}
+#bell{transition:transform .2s}#bell:hover{transform:rotate(-12deg)}
+#badge:not(.hidden){animation:pulseRing 1.8s ease-out infinite}
+#modal:not(.hidden){animation:fadeIn .2s ease both}#modal:not(.hidden) #mBox{animation:popIn .28s var(--ease) both}
+#cfm:not(.hidden)>div,#pdo:not(.hidden)>div{animation:popIn .25s var(--ease) both}
+#side{transition:transform .35s var(--ease)}
+#chat:not(.hidden){animation:fadeUp .3s var(--ease) both}
+.wtw tbody tr{animation:fadeUp .3s var(--ease) both;transition:background-color .15s}
+#upBtn,#vTop{transition:transform .2s var(--ease),opacity .2s}#upBtn:hover,#vTop:hover{transform:translateY(-3px)}#upBtn:active,#vTop:active{transform:scale(.9)}
+/* ===== Vehicle Inspection — original identity: "Garage Console" (teal/amber, stripe cards, floating pill dock, pill status chips) ===== */
+#veh{--bg:#0b1416;--sf:#112024;--bd:#2f4a50;--tx:#eef7f6;--mu:#a3bcbe;--ac:13 148 136;--lt:94 234 212;--fl:#16292d;--fro:#0d1a1d;
+ background:radial-gradient(120% 60% at 100% 0,#10302f 0,transparent 60%),var(--bg)!important}
+#veh.vlight{--bg:#eef6f5;--sf:#fff;--bd:#b4cdca;--tx:#0b2a2a;--mu:#47635f;--fl:#f3f9f8;--fro:#e1ecea;--ac:15 118 110;background:linear-gradient(180deg,#dff1ee,var(--bg) 220px)!important}
+#veh .vhead{background:linear-gradient(135deg,rgb(var(--ac)),#0b4f55);color:#fff;border:0;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28);padding:.9rem .85rem 1.1rem}
+#veh .vhead .vmu{color:rgba(255,255,255,.85)}
+#veh .vhead .vsq{border-color:rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.12);border-radius:14px}
+#veh .vhead .vsw{background:rgba(0,0,0,.25);border-color:rgba(255,255,255,.4)}
+#veh .vsq,#veh .vsw{transition:transform .15s var(--ease),background .2s}#veh .vsq:active{transform:scale(.92)}
+#veh .vsw i{background:#fff;transition:left .25s var(--ease),background .2s}
+#veh .vtimer{background:#fbbf24;color:#2b1d00;border-radius:12px;animation:pulseRing 2s infinite}
+#veh .vc{border-radius:22px;border:1px solid var(--bd);border-inline-start:6px solid rgb(var(--lt));background:var(--sf);padding:1.1rem 1.15rem;box-shadow:0 6px 18px rgba(0,0,0,.16);animation:slideIn .4s var(--ease) both;transition:transform .2s var(--ease),box-shadow .2s}
+#veh.vlight .vc{border-inline-start-color:rgb(var(--ac))}
+#veh .vc:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.22)}
+#veh #vBody>:nth-child(2){animation-delay:.06s}#veh #vBody>:nth-child(3){animation-delay:.12s}#veh #vBody>:nth-child(n+4){animation-delay:.18s}
+#veh .vct{font-size:1.1rem;border-bottom:1px dashed var(--bd);color:var(--tx)}
+#veh .vct svg{color:rgb(var(--lt));background:rgba(94,234,212,.12);border-radius:10px;padding:.25rem;width:2rem;height:2rem}
+#veh.vlight .vct svg{color:rgb(var(--ac));background:rgba(15,118,110,.1)}
+#veh .vi,#veh .i{border-radius:14px!important;border:1.5px solid var(--bd)!important}
+#veh .vi:focus,#veh .i:focus{border-color:rgb(var(--lt))!important;box-shadow:0 0 0 3px rgba(94,234,212,.2)}
+#veh.vlight .vi:focus{border-color:rgb(var(--ac))!important;box-shadow:0 0 0 3px rgba(15,118,110,.18)}
+#veh .vcode{border:2px dashed rgb(var(--lt))!important;border-radius:16px!important;letter-spacing:.3em}
+#veh .vgo{background:linear-gradient(135deg,rgb(var(--ac)),#0e7490);border-radius:16px;min-height:3.2rem;box-shadow:0 6px 16px rgba(13,148,136,.35)}
+#veh .vgo:hover{filter:brightness(1.1);transform:translateY(-1px)}
+#veh .vgo:disabled{background:#475569;box-shadow:none;opacity:.7}
+#veh .vtb{border-radius:18px;background:var(--sf)}
+#veh .vtr{border-top:1px solid var(--bd);min-height:5rem;transition:background .2s}#veh .vtr:nth-child(odd){background:transparent}#veh .vtr:hover{background:var(--fl)}
+#veh .vst{border-radius:999px;border-width:1.5px;min-height:2.6rem;min-width:4.4rem;background:transparent;color:var(--mu);border-color:var(--bd)}
+#veh .vst.s-ok{background:rgba(34,197,94,.14);border-color:#22c55e;color:#4ade80}
+#veh .vst.s-bad,#veh .vst.s-miss{background:rgba(239,68,68,.14);border-color:#ef4444;color:#fca5a5}
+#veh .vst.s-exp{background:rgba(249,115,22,.14);border-color:#f97316;color:#fdba74}
+#veh .vst.s-wd{background:rgba(245,158,11,.14);border-color:#f59e0b;color:#fcd34d}
+#veh.vlight .vst.s-ok{color:#166534}#veh.vlight .vst.s-bad,#veh.vlight .vst.s-miss{color:#991b1b}#veh.vlight .vst.s-exp{color:#9a3412}#veh.vlight .vst.s-wd{color:#92400e}
+#veh .vst.on.s-ok{background:#16a34a;color:#fff}#veh .vst.on.s-bad,#veh .vst.on.s-miss{background:#dc2626;color:#fff}#veh .vst.on.s-exp{background:#ea580c;color:#fff}#veh .vst.on.s-wd{background:#d97706;color:#fff}
+#veh .vst.on{transform:scale(1.05);box-shadow:0 4px 12px rgba(0,0,0,.28);animation:popIn .22s var(--ease)}
+#veh .vst:active{transform:scale(.92)}
+#veh .vnav{left:.6rem;right:.6rem;bottom:.6rem;border:1px solid var(--bd);border-radius:22px;background:color-mix(in srgb,var(--sf) 92%,transparent);backdrop-filter:blur(10px);box-shadow:0 10px 28px rgba(0,0,0,.35);padding:.3rem .3rem calc(.3rem + env(safe-area-inset-bottom));gap:.2rem}
+#veh .vni{border-radius:16px;padding:.5rem .3rem;transition:background .2s,color .2s,transform .15s var(--ease)}
+#veh .vni::after{display:none}#veh .vni.on{background:rgba(94,234,212,.16);color:var(--ltc);font-weight:700}
+#veh.vlight .vni.on{background:rgba(15,118,110,.12)}
+#veh .vni.on svg{animation:bob 1.6s ease-in-out infinite}#veh .vni:active{transform:scale(.92)}
+#veh .vplus{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#2b1d00;bottom:6.4rem;animation:pulseRing 2.4s infinite}
+#veh .vtop{bottom:6.4rem}
+#veh .vchip{background:var(--fl)}
+#veh:not(.hidden){animation:fadeUp .35s var(--ease) both}
+#veh #vBody{padding-bottom:8rem}
+@media (max-width:380px){#veh .vres.gen{grid-template-columns:repeat(2,auto)}#veh .vst{min-width:3.8rem}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
 </head>
 <body class="bg-slate-100 text-slate-800">
 <div id="intro" style="display:none;position:fixed;inset:0;z-index:120;background:#000;align-items:center;justify-content:center">
@@ -210,9 +307,8 @@ html.dark input,html.dark select,html.dark textarea{background:#14161B;color:#e5
 <!-- ================= APP ================= -->
 <div id="app" class="hidden min-h-screen flex flex-col">
   <header class="brand bg-slate-800 text-white pt-16 pb-4">
-    <div class="flex flex-col items-center gap-3 px-4 text-center">
+    <div class="flex flex-col items-center gap-2 px-4 text-center">
       <div class="flex items-center gap-3"><span class="logo shrink-0" data-s="56"></span><div class="leading-tight text-start"><div class="font-bold text-lg">فريش للأجهزة الكهربائية</div><div class="text-xs text-slate-300">Fresh Electric</div></div></div>
-      <div class="flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5"><svg class="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="M12 8v8M8 12h8"/></svg><span class="font-bold tracking-wider">HSE</span><span class="text-xs sm:text-sm">Occupational Safety and Health Department (HSE)</span></div>
     </div>
     <div class="flex flex-wrap items-center gap-3 px-4 pt-5">
       <div class="leading-tight me-auto"><div id="title" class="font-semibold"></div><div id="role" class="text-xs text-slate-300"></div></div>
