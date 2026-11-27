@@ -530,19 +530,6 @@ header.brand::before,#veh .vhead::before,#hsep .hh::before{content:"";position:a
  background-image:linear-gradient(rgb(var(--g-lt) / .35) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--g-lt) / .35) 1px,transparent 1px);background-size:26px 20px;
  transform:perspective(220px) rotateX(58deg);transform-origin:50% 100%;-webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent)}
 #hsep .hh{isolation:isolate}
-/* HOME-ONLY perspective grid: fixed full-screen layer behind the factory selector; shown only while #login + #sel are visible (hidden at once on password step / inside any factory or sub-view) */
-#homeGrid{display:none;position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-body:has(#login:not(.hidden) #sel:not(.hidden)) #homeGrid{display:block}
-#homeGrid::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 50% at 50% 0,rgb(var(--g-ac,13 148 136) / .22),transparent 70%)}
-#homeGrid::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgb(var(--g-ad,15 118 110) / .16) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--g-ad,15 118 110) / .16) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 65%);mask-image:linear-gradient(to bottom,#000,transparent 65%)}
-#homeGrid i{position:absolute;inset:auto 0 0 0;height:62vh;overflow:hidden;-webkit-mask-image:linear-gradient(to top,#000 50%,transparent);mask-image:linear-gradient(to top,#000 50%,transparent)}
-#homeGrid i::before{content:"";position:absolute;left:-150%;right:-150%;bottom:0;height:300vh;background-image:linear-gradient(rgb(var(--g-ad,15 118 110) / .55) 2px,transparent 2px),linear-gradient(90deg,rgb(var(--g-ad,15 118 110) / .55) 2px,transparent 2px);background-size:60px 60px;
- transform:perspective(1200px) rotateX(68deg);transform-origin:50% 100%;animation:homeGridMove 5s linear infinite}
-html.dark #homeGrid::after{background-image:linear-gradient(rgb(var(--g-lt,94 234 212) / .14) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--g-lt,94 234 212) / .14) 1px,transparent 1px)}
-html.dark #homeGrid i::before{background-image:linear-gradient(rgb(var(--g-lt,94 234 212) / .5) 2px,transparent 2px),linear-gradient(90deg,rgb(var(--g-lt,94 234 212) / .5) 2px,transparent 2px)}
-@keyframes homeGridMove{to{background-position:0 60px}}
-#login{position:relative;z-index:1}
-html:not(.dark) #login:has(#sel:not(.hidden))>div{background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 /* accent surfaces keep white text contrast */
 .bp,#veh .vgo:not(.alt),#veh .vtimer{color:#fff}
 /* accent text on light surfaces uses the darker accent */
@@ -633,7 +620,6 @@ html:not(.dark) .tile .tic,html:not(.dark) #veh.vlight .vct svg{color:rgb(var(--
 </script>
 
 <!-- ================= LOGIN ================= -->
-<div id="homeGrid" aria-hidden="true"><i></i></div>
 <main id="login" class="min-h-screen grid place-items-center p-4">
   <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
     <div class="brand bg-slate-800 text-white p-5 flex items-center gap-3"><span class="logo shrink-0" data-s="44"></span>
