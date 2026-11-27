@@ -58,6 +58,10 @@
   [dir=rtl] .flip{transform:scaleX(-1)}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   @media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important}}
+  #printArea{direction:rtl;text-align:right;background:#fff}#printArea,#printArea *{color:#000!important}#printArea table{width:100%;border-collapse:collapse;margin:6px 0}
+  #printArea td,#printArea th{border:1px solid #444!important;padding:4px 6px;text-align:right;vertical-align:middle;background:#fff!important;overflow-wrap:anywhere}#printArea th{background:#e5e7eb!important;font-weight:700}
+  #printArea button,#printArea input,#printArea select,#printArea textarea,#printArea [data-act]{display:none!important}
+  .hbar{display:inline-flex;gap:.4rem;flex-wrap:wrap;align-items:center}.hbar .b{white-space:nowrap}
 </style>
 <style>
 /* vehicle button: hazard/headlight flash → realistic drift out to the right with tire skid marks, smoke and exhaust; drives back in when the module closes */
@@ -211,10 +215,10 @@ header.brand .hb{background:rgba(255,255,255,.14)}header.brand .hb:hover{backgro
 .wtw tbody tr{animation:fadeUp .3s var(--ease) both;transition:background-color .15s}
 #upBtn,#vTop{transition:transform .2s var(--ease),opacity .2s}#upBtn:hover,#vTop:hover{transform:translateY(-3px)}#upBtn:active,#vTop:active{transform:scale(.9)}
 /* ===== Vehicle Inspection — original identity: "Garage Console" (teal/amber, stripe cards, floating pill dock, pill status chips) ===== */
-#veh{--bg:#0b1416;--sf:#112024;--bd:#2f4a50;--tx:#eef7f6;--mu:#a3bcbe;--ac:13 148 136;--lt:94 234 212;--fl:#16292d;--fro:#0d1a1d;
- background:radial-gradient(120% 60% at 100% 0,#10302f 0,transparent 60%),var(--bg)!important}
-#veh.vlight{--bg:#eef6f5;--sf:#fff;--bd:#b4cdca;--tx:#0b2a2a;--mu:#47635f;--fl:#f3f9f8;--fro:#e1ecea;--ac:15 118 110;background:linear-gradient(180deg,#dff1ee,var(--bg) 220px)!important}
-#veh .vhead{background:linear-gradient(135deg,rgb(var(--ac)),#0b4f55);color:#fff;border:0;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28);padding:.9rem .85rem 1.1rem}
+#veh{--bg:var(--tD-bg);--sf:var(--tD-sf);--bd:var(--tD-bd);--tx:#eef7f6;--mu:#a3bcbe;--ac:var(--g-ac);--lt:var(--g-lt);--fl:var(--tD-fl);--fro:var(--tD-bg);
+ background:radial-gradient(120% 60% at 100% 0,var(--t-glow) 0,transparent 60%),var(--bg)!important}
+#veh.vlight{--bg:var(--tL-bg);--sf:#fff;--bd:var(--tL-bd);--tx:#0b2a2a;--mu:#47635f;--fl:var(--tL-fl);--fro:var(--tL-fl);--ac:var(--g-ad);background:linear-gradient(180deg,var(--t-tint),var(--bg) 220px)!important}
+#veh .vhead{background:linear-gradient(135deg,rgb(var(--ac)),var(--t-dk));color:#fff;border:0;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28);padding:.9rem .85rem 1.1rem}
 #veh .vhead .vmu{color:rgba(255,255,255,.85)}
 #veh .vhead .vsq{border-color:rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.12);border-radius:14px}
 #veh .vhead .vsw{background:rgba(0,0,0,.25);border-color:rgba(255,255,255,.4)}
@@ -226,13 +230,13 @@ header.brand .hb{background:rgba(255,255,255,.14)}header.brand .hb:hover{backgro
 #veh .vc:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.22)}
 #veh #vBody>:nth-child(2){animation-delay:.06s}#veh #vBody>:nth-child(3){animation-delay:.12s}#veh #vBody>:nth-child(n+4){animation-delay:.18s}
 #veh .vct{font-size:1.1rem;border-bottom:1px dashed var(--bd);color:var(--tx)}
-#veh .vct svg{color:rgb(var(--lt));background:rgba(94,234,212,.12);border-radius:10px;padding:.25rem;width:2rem;height:2rem}
-#veh.vlight .vct svg{color:rgb(var(--ac));background:rgba(15,118,110,.1)}
+#veh .vct svg{color:rgb(var(--lt));background:rgb(var(--g-lt) / .12);border-radius:10px;padding:.25rem;width:2rem;height:2rem}
+#veh.vlight .vct svg{color:rgb(var(--ac));background:rgb(var(--g-ad) / .1)}
 #veh .vi,#veh .i{border-radius:14px!important;border:1.5px solid var(--bd)!important}
-#veh .vi:focus,#veh .i:focus{border-color:rgb(var(--lt))!important;box-shadow:0 0 0 3px rgba(94,234,212,.2)}
-#veh.vlight .vi:focus{border-color:rgb(var(--ac))!important;box-shadow:0 0 0 3px rgba(15,118,110,.18)}
+#veh .vi:focus,#veh .i:focus{border-color:rgb(var(--lt))!important;box-shadow:0 0 0 3px rgb(var(--g-lt) / .2)}
+#veh.vlight .vi:focus{border-color:rgb(var(--ac))!important;box-shadow:0 0 0 3px rgb(var(--g-ad) / .18)}
 #veh .vcode{border:2px dashed rgb(var(--lt))!important;border-radius:16px!important;letter-spacing:.3em}
-#veh .vgo{background:linear-gradient(135deg,rgb(var(--ac)),#0e7490);border-radius:16px;min-height:3.2rem;box-shadow:0 6px 16px rgba(13,148,136,.35)}
+#veh .vgo{background:linear-gradient(135deg,rgb(var(--ac)),var(--t-ac2));border-radius:16px;min-height:3.2rem;box-shadow:0 6px 16px rgb(var(--g-ac) / .35)}
 #veh .vgo:hover{filter:brightness(1.1);transform:translateY(-1px)}
 #veh .vgo:disabled{background:#475569;box-shadow:none;opacity:.7}
 #veh .vtb{border-radius:18px;background:var(--sf)}
@@ -248,8 +252,8 @@ header.brand .hb{background:rgba(255,255,255,.14)}header.brand .hb:hover{backgro
 #veh .vst:active{transform:scale(.92)}
 #veh .vnav{left:.6rem;right:.6rem;bottom:.6rem;border:1px solid var(--bd);border-radius:22px;background:color-mix(in srgb,var(--sf) 92%,transparent);backdrop-filter:blur(10px);box-shadow:0 10px 28px rgba(0,0,0,.35);padding:.3rem .3rem calc(.3rem + env(safe-area-inset-bottom));gap:.2rem}
 #veh .vni{border-radius:16px;padding:.5rem .3rem;transition:background .2s,color .2s,transform .15s var(--ease)}
-#veh .vni::after{display:none}#veh .vni.on{background:rgba(94,234,212,.16);color:var(--ltc);font-weight:700}
-#veh.vlight .vni.on{background:rgba(15,118,110,.12)}
+#veh .vni::after{display:none}#veh .vni.on{background:rgb(var(--g-lt) / .16);color:var(--ltc);font-weight:700}
+#veh.vlight .vni.on{background:rgb(var(--g-ad) / .12)}
 #veh .vni.on svg{animation:bob 1.6s ease-in-out infinite}#veh .vni:active{transform:scale(.92)}
 #veh .vplus{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#2b1d00;bottom:6.4rem;animation:pulseRing 2.4s infinite}
 #veh .vtop{bottom:6.4rem}
@@ -302,10 +306,10 @@ tr[data-act]{min-height:0}
 </style>
 <style id="garage-system">
 /* ===== Garage Console design system — shared by every screen (same tokens/components as Vehicle Inspection) ===== */
-:root{--g-bg:#eef6f5;--g-sf:#fff;--g-fl:#f3f9f8;--g-bd:#b4cdca;--g-tx:#0b2a2a;--g-mu:#47635f;--g-ac:13 148 136;--g-lt:94 234 212;--g-sh:0 6px 18px rgba(0,0,0,.12);--cd:var(--g-sf);--bdr:var(--g-bd);--bl:#0d9488}
+:root{--g-bg:#eef6f5;--g-sf:#fff;--g-fl:#f3f9f8;--g-bd:#b4cdca;--g-tx:#0b2a2a;--g-mu:#47635f;--g-ac:13 148 136;--g-lt:94 234 212;--g-sh:0 6px 18px rgba(0,0,0,.12);--cd:var(--g-sf);--bdr:var(--g-bd);--bl:rgb(var(--g-ac))}
 html.dark{--g-bg:#0b1416;--g-sf:#112024;--g-fl:#16292d;--g-bd:#2f4a50;--g-tx:#eef7f6;--g-mu:#a3bcbe;--g-sh:0 6px 18px rgba(0,0,0,.3);--cd:var(--g-sf);--bdr:var(--g-bd)}
-html:not(.dark) body{background:linear-gradient(180deg,#dff1ee,var(--page,#eef6f5) 220px) fixed;color:var(--g-tx)}
-html.dark body{background:radial-gradient(120% 60% at 100% 0,#10302f 0,transparent 60%),#0b1416 fixed;color:var(--g-tx)}
+html:not(.dark) body{background:linear-gradient(180deg,var(--t-tint),var(--page,#eef6f5) 220px) fixed;color:var(--g-tx)}
+html.dark body{background:radial-gradient(120% 60% at 100% 0,var(--t-glow) 0,transparent 60%),#0b1416 fixed;color:var(--g-tx)}
 /* surfaces */
 .dark .bg-white,.dark .b{background:var(--g-sf)!important}.dark .bg-slate-100{background:var(--g-bg)!important}
 .dark .bg-slate-50,.dark tbody tr:nth-child(even){background:var(--g-fl)!important}
@@ -313,29 +317,29 @@ html.dark body{background:radial-gradient(120% 60% at 100% 0,#10302f 0,transpare
 .dark .border-slate-200,.dark .border-slate-300,.dark .border-slate-100,.dark .b{border-color:var(--g-bd)!important}
 .dark .i,html.dark input,html.dark select,html.dark textarea{background:var(--g-fl)!important;border-color:var(--g-bd)!important}
 /* headers */
-header.brand{background:linear-gradient(135deg,rgb(var(--g-ac)),var(--brand,#0b4f55))!important;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
-#topbar{background:linear-gradient(135deg,var(--brand,#0b4f55),rgb(var(--g-ac)))!important;border-bottom:0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+header.brand{background:linear-gradient(135deg,rgb(var(--g-ac)),var(--t-dk))!important;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+#topbar{background:linear-gradient(135deg,var(--t-dk),rgb(var(--g-ac)))!important;border-bottom:0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 #topbar .tb,header.brand .hb{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
 /* cards / tiles: stripe-accent */
 .tile,.xc,.wtw,#side,#sbar,.regw{background:var(--g-sf);border:1px solid var(--g-bd);color:var(--g-tx)}
 .tile{border-radius:22px;border-inline-start:6px solid rgb(var(--g-ac));box-shadow:var(--g-sh);animation:slideIn .4s var(--ease) both!important}
 .tile.pri{border-color:var(--g-bd);border-inline-start-color:#f59e0b}
-.tile .tic{background:rgba(94,234,212,.14)}html:not(.dark) .tile .tic{background:rgba(13,148,136,.1)}
+.tile .tic{background:rgb(var(--g-lt) / .14)}html:not(.dark) .tile .tic{background:rgb(var(--g-ac) / .1)}
 .tile:hover{transform:translateY(-2px)}
 .xc,#mBox.mdark .xc{border-radius:22px;padding:1rem 1.1rem;border-inline-start:6px solid rgb(var(--g-ac));background:var(--g-sf);box-shadow:var(--g-sh);animation:slideIn .4s var(--ease) both}
 /* controls */
 .b{border-radius:14px;border:1.5px solid var(--g-bd);background:var(--g-sf);color:var(--g-tx)}
 .b:hover{background:var(--g-fl)}.dark .hover\:bg-slate-100:hover,.dark .b:hover{background:var(--g-fl)!important}
-.bp,.dark .bp{background:linear-gradient(135deg,rgb(var(--g-ac)),#0e7490)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 6px 16px rgba(13,148,136,.3)}
+.bp,.dark .bp{background:linear-gradient(135deg,rgb(var(--g-ac)),var(--t-ac2))!important;border-color:transparent!important;color:#fff!important;box-shadow:0 6px 16px rgb(var(--g-ac) / .3)}
 .i,select,textarea,input:not([type=checkbox]):not([type=radio]){border-radius:14px;border:1.5px solid var(--g-bd);transition:border-color .2s,box-shadow .2s}
-.i:focus,select:focus,textarea:focus,input:focus{outline:0;border-color:rgb(var(--g-ac));box-shadow:0 0 0 3px rgba(13,148,136,.22)}
+.i:focus,select:focus,textarea:focus,input:focus{outline:0;border-color:rgb(var(--g-ac));box-shadow:0 0 0 3px rgb(var(--g-ac) / .22)}
 .dark .i:focus,.dark input:focus,.dark select:focus{border-color:rgb(var(--g-lt))}
 input[type=checkbox],input[type=radio]{accent-color:rgb(var(--g-ac))}
 /* tables */
 .wtw,.rt,.regw{border-radius:18px;overflow:auto}
 .wtw th,.rt th{background:var(--g-fl)!important;color:var(--g-mu);border-color:var(--g-bd)}
 .wtw td,.rt td{border-color:var(--g-bd)}
-.wtw tbody tr:hover td{background:rgba(13,148,136,.12)}
+.wtw tbody tr:hover td{background:rgb(var(--g-ac) / .12)}
 .wtw tbody tr:nth-child(n+13){animation:none}
 /* badges */
 .rounded-full.text-\[11px\]{border:1px solid currentColor;font-weight:700}
@@ -351,7 +355,7 @@ input[type=checkbox],input[type=radio]{accent-color:rgb(var(--g-ac))}
 #sbar{border-radius:22px 22px 0 0;border-bottom:0;box-shadow:0 -6px 18px rgba(0,0,0,.18)}
 #chat{background:var(--g-bg);color:var(--g-tx)}#chat .brand{border-radius:0 0 22px 22px}
 .dark #chat,.dark #chat .bg-white{background:var(--g-bg)!important}
-#spin{background:linear-gradient(135deg,rgb(var(--g-ac)),#0b4f55)}
+#spin{background:linear-gradient(135deg,rgb(var(--g-ac)),var(--t-dk))}
 div[role=status].fixed{border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.35);animation:popIn .25s var(--ease) both}
 #upBtn{background:rgb(var(--g-ac))}
 /* ===== shared motion: same feel as Vehicle Inspection ===== */
@@ -449,9 +453,9 @@ html.dark .i:focus,html.dark input:focus,html.dark select:focus,html.dark textar
 <style id="hse-page">
 /* HSE forms page — same Garage Console look & motion as Vehicle Inspection */
 #hsep{background:var(--g-bg);color:var(--g-tx);font-family:Cairo,system-ui,sans-serif;animation:fadeUp .35s var(--ease) both}
-html.dark #hsep{background:radial-gradient(120% 60% at 100% 0,#10302f 0,transparent 60%),#0b1416}
-html:not(.dark) #hsep{background:linear-gradient(180deg,#dff1ee,var(--g-bg) 220px)}
-#hsep .hh{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:.6rem;padding:.9rem .85rem 1.1rem;background:linear-gradient(135deg,rgb(var(--g-ac)),#0b4f55);color:#fff;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+html.dark #hsep{background:radial-gradient(120% 60% at 100% 0,var(--t-glow) 0,transparent 60%),#0b1416}
+html:not(.dark) #hsep{background:linear-gradient(180deg,var(--t-tint),var(--g-bg) 220px)}
+#hsep .hh{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:.6rem;padding:.9rem .85rem 1.1rem;background:linear-gradient(135deg,rgb(var(--g-ac)),var(--t-dk));color:#fff;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
 #hsep .hsub{color:rgba(255,255,255,.85)}
 #hsep .hq{flex:none;min-width:2.6rem;height:2.6rem;border-radius:14px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);display:grid;place-items:center;color:#fff;transition:transform .15s var(--ease)}
 #hsep button.hq:active{transform:scale(.92)}
@@ -460,7 +464,7 @@ html:not(.dark) #hsep{background:linear-gradient(180deg,#dff1ee,var(--g-bg) 220p
 #hsep .hct{display:flex;align-items:center;gap:.5rem;font-size:1.1rem;font-weight:800;padding-bottom:.7rem;margin-bottom:.8rem;border-bottom:1px dashed var(--g-bd);color:var(--g-tx)}
 #hsep .hbtn{display:grid;justify-items:center;align-content:center;gap:.25rem;min-height:6.2rem;padding:.7rem .4rem;border-radius:18px;border:1.5px solid var(--g-bd);background:var(--g-fl);color:var(--g-tx);text-align:center;animation:popIn .35s var(--ease) both;transition:transform .15s var(--ease),box-shadow .2s,border-color .2s}
 #hsep .hbtn:hover{border-color:rgb(var(--g-ac));box-shadow:0 8px 18px rgba(0,0,0,.16);transform:translateY(-2px)}#hsep .hbtn:active{transform:scale(.95)}
-#hsep .hic{display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:13px;background:rgba(13,148,136,.14);font-size:1.4rem;transition:transform .25s var(--ease)}#hsep .hic.sm{width:2.2rem;height:2.2rem;font-size:1.15rem;flex:none}
+#hsep .hic{display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:13px;background:rgb(var(--g-ac) / .14);font-size:1.4rem;transition:transform .25s var(--ease)}#hsep .hic.sm{width:2.2rem;height:2.2rem;font-size:1.15rem;flex:none}
 #hsep .hbtn:hover .hic{transform:scale(1.12) rotate(-6deg)}
 #hsep .hl{font-weight:800;font-size:.92rem;line-height:1.25}#hsep .ha{font-size:.68rem;color:var(--g-mu);line-height:1.2}
 #hsep .hrow{display:grid;gap:.55rem;padding:.85rem;border:1px solid var(--g-bd);border-radius:18px;background:var(--g-fl);animation:fadeUp .35s var(--ease) both;transition:transform .2s var(--ease),box-shadow .2s}#hsep .hrow:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.14)}
@@ -471,6 +475,45 @@ html:not(.dark) #hsep{background:linear-gradient(180deg,#dff1ee,var(--g-bg) 220p
 #hsep .i,#hsep select,#hsep textarea,#hsep input:not([type=checkbox]):not([type=radio]){background:var(--g-fl)!important;color:var(--g-tx)!important;border:1.5px solid var(--g-ibd)!important;-webkit-text-fill-color:var(--g-tx)}
 #hsep .sm,#hsep .b.\!px-2{min-height:2.2rem;font-size:.78rem}
 @media (prefers-reduced-motion:reduce){#hsep *{animation:none!important;transition:none!important}}
+</style>
+<style id="guide-fix">
+/* safety guide / exposure limits: crisp text, opaque legible table cells, no right-edge clipping in RTL */
+#mBox{padding-inline:1rem}#mBody{min-width:0;overflow-wrap:anywhere}
+#mBox section h3,#mBox h2,#mBox h3{color:var(--g-tx)!important;opacity:1!important;font-weight:800;font-size:1.05rem;line-height:1.4;margin-bottom:.5rem}
+#mBox section h3{padding-bottom:.35rem;border-bottom:2px solid rgb(var(--g-ac));display:flex;align-items:center;gap:.4rem}
+#mBox li,#mBox p,#mBox td,#mBox label{color:var(--g-tx);opacity:1}
+#mBox .text-slate-500,#mBox .text-xs.text-slate-500{color:var(--g-mu)!important;font-size:.78rem;line-height:1.55}
+#mBox ul{padding-inline-start:1.7rem;padding-inline-end:.25rem;list-style-position:outside;margin-block:.4rem}
+#mBox li{padding-inline-end:.15rem;line-height:1.65;overflow-wrap:anywhere}#mBox li::marker{color:rgb(var(--g-ac))}
+#mBox .rt,#mBox.mdark .rt{width:100%;border-collapse:collapse;table-layout:auto;border:1px solid var(--g-bd);border-radius:12px;font-size:.8rem;line-height:1.5}
+#mBox .rt td,#mBox .rt th,#mBox.mdark .rt td,#mBox.mdark .rt th{padding:.5rem .6rem;border:1px solid var(--g-bd)!important;vertical-align:top;white-space:normal;overflow-wrap:anywhere;word-break:normal;text-align:start}
+#mBox .rt th,#mBox.mdark .rt th{background:var(--g-fl)!important;color:var(--g-tx)!important;font-weight:800;opacity:1}
+#mBox .rt td,#mBox.mdark .rt td{background:var(--g-sf)!important;color:var(--g-tx)!important;opacity:1}
+#mBox .rt tr:nth-child(even) td{background:var(--g-fl)!important}
+#mBox .rt td[dir=ltr]{text-align:start;unicode-bidi:plaintext;min-width:5.5rem}
+#mBox .rt td:first-child{font-weight:700}
+#mBox .overflow-auto{max-width:100%;-webkit-overflow-scrolling:touch;border-radius:12px}
+#mBox .overflow-auto .rt{min-width:30rem}
+#mBox #pelQ{color:var(--g-tx)!important}
+</style>
+<style id="theme-ui">
+html.themeFade *,html.themeFade *::before,html.themeFade *::after{transition:background-color .4s ease,border-color .4s ease,color .4s ease,box-shadow .4s ease,fill .4s ease!important}
+/* picker */
+.thm{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;font-weight:700;position:relative}
+.thm-dot{flex:none;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid var(--g-tx)}
+.thm[aria-pressed=true]{border-color:rgb(var(--g-ac))!important;box-shadow:0 0 0 3px rgb(var(--g-ac) / .35)}
+.thm[aria-pressed=true]::after{content:"✓";position:absolute;top:.15rem;inset-inline-end:.4rem;font-size:.8rem;color:rgb(var(--g-ac))}
+html.dark .thm[aria-pressed=true]::after{color:rgb(var(--g-lt))}
+/* perspective grid in headers — accent-tinted, decorative, never over text (z-index below content) */
+header.brand,#veh .vhead{position:relative;isolation:isolate}
+header.brand::before,#veh .vhead::before,#hsep .hh::before{content:"";position:absolute;inset:auto 0 0 0;height:75%;border-radius:inherit;pointer-events:none;z-index:-1;opacity:var(--gA,.55);
+ background-image:linear-gradient(rgb(var(--g-lt) / .35) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--g-lt) / .35) 1px,transparent 1px);background-size:26px 20px;
+ transform:perspective(220px) rotateX(58deg);transform-origin:50% 100%;-webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent)}
+#hsep .hh{isolation:isolate}
+/* accent surfaces keep white text contrast */
+.bp,#veh .vgo:not(.alt),#veh .vtimer{color:#fff}
+/* accent text on light surfaces uses the darker accent */
+html:not(.dark) .tile .tic,html:not(.dark) #veh.vlight .vct svg{color:rgb(var(--g-ad))}
 </style>
 
 <style id="fx">
@@ -497,6 +540,36 @@ html:not(.dark) #hsep{background:linear-gradient(180deg,#dff1ee,var(--g-bg) 220p
   #veh .vhead .vsq[data-act=vehClose]{font-size:.8rem}
   #veh #vBody{padding-top:.75rem}
 }
+</style>
+<style id="fxt">
+#veh .thm{min-height:3.1rem}#veh .thm-dot{border-color:var(--tx)}
+#veh .thm[aria-pressed=true]{border-color:rgb(var(--g-ac))!important;box-shadow:0 0 0 3px rgb(var(--g-lt) / .4);background:rgb(var(--g-lt) / .14)!important}
+#veh .thm[aria-pressed=true]::after{color:var(--ltc)}
+#veh.vlight .thm[aria-pressed=true]{background:rgb(var(--g-ac) / .1)!important;box-shadow:0 0 0 3px rgb(var(--g-ac) / .28)}
+</style>
+<style id="mo">
+/* ===== motion polish: transform/opacity only, GPU-friendly, subtle depth, no layout thrash ===== */
+:root{--eo:cubic-bezier(.22,1,.36,1);--sh1:0 2px 8px rgba(0,0,0,.12);--sh2:0 12px 28px rgba(0,0,0,.2)}
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}#veh{scroll-behavior:smooth}
+  @keyframes moIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.99)}to{opacity:1;transform:none}}
+  @keyframes moFade{from{opacity:0}to{opacity:1}}
+  button,.b,.hb,.tile,.hbtn,.thm,.vst,.vni,.vsq,.vgo,.vtop,.vplus,#upBtn,#vTop{-webkit-tap-highlight-color:transparent;transition:transform .22s var(--eo),opacity .2s ease,box-shadow .25s ease,background-color .2s ease,border-color .2s ease,filter .2s ease}
+  .tile,#hsep .hbtn,#hsep .hc,#veh .vc{transition:transform .3s var(--eo),box-shadow .3s ease,border-color .2s ease}
+  .b:active,.hb:active,.vst:active,.vsq:active,.vni:active,.thm:active,.vgo:active,#hsep .hbtn:active,.tile:active{transform:scale(.97)}
+  @media (hover:hover){
+    .tile:hover,#hsep .hbtn:hover,#hsep .hc:hover,#veh .vc:hover{transform:translate3d(0,-2px,0);box-shadow:var(--sh2)}
+    .b:hover,.hb:hover,.thm:hover,.vsq:hover{transform:translate3d(0,-1px,0);box-shadow:var(--sh1)}
+  }
+  #veh:not(.hidden){animation:moFade .3s ease both}
+  #veh #vBody.mv>*{animation:moIn .42s var(--eo) backwards}
+  #veh #vBody.mv>*:nth-child(1){animation-delay:.02s}#veh #vBody.mv>*:nth-child(2){animation-delay:.06s}#veh #vBody.mv>*:nth-child(3){animation-delay:.1s}#veh #vBody.mv>*:nth-child(4){animation-delay:.14s}#veh #vBody.mv>*:nth-child(5){animation-delay:.18s}#veh #vBody.mv>*:nth-child(n+6){animation-delay:.22s}
+  #modal:not(.hidden) #mBox{animation:moIn .3s var(--eo) both}
+  #modal:not(.hidden){animation:moFade .2s ease both}
+  #mBox .xc,#mBox section{animation:moIn .35s var(--eo) backwards}
+  #upBtn,#veh .vtop{will-change:opacity}
+}
+@media (prefers-reduced-motion:reduce){html,#veh{scroll-behavior:auto}}
 </style>
 </head>
 <body class="bg-slate-100 text-slate-800">
@@ -572,7 +645,7 @@ html:not(.dark) #hsep{background:linear-gradient(180deg,#dff1ee,var(--g-bg) 220p
         <div id="wlist" class="hidden grid gap-3">
           <div class="flex flex-wrap items-center gap-2"><h2 id="deptTitle" class="font-bold text-lg me-auto"></h2><span id="count" class="text-sm text-slate-500"></span>
             <select id="sortSel" class="b" aria-label="Sort"><option value="serial">Sort: default</option><option value="codeA">Code ↑</option><option value="codeD">Code ↓</option><option value="nameA">Name A–Z</option><option value="nameD">Name Z–A</option></select>
-            <button data-act="regList" class="b">📋 قائمة العمال المسجلين</button><button data-act="add" class="b bp" aria-label="Add worker">+ Add worker</button></div>
+            <span class="hbar"><button type="button" data-act="xPrint" data-id="workers" class="b">🖨 طباعة</button><button type="button" data-act="xXls" data-id="workers" class="b">📊 Excel</button></span><button data-act="regList" class="b">📋 قائمة العمال المسجلين</button><button data-act="add" class="b bp" aria-label="Add worker">+ Add worker</button></div>
           <div id="hfBar" class="flex gap-2 overflow-x-auto pb-1" aria-label="Quick filters"></div>
           <div class="wtw"><table id="wt"><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
         </div>
@@ -723,7 +796,7 @@ const askPw = w => { return new Promise(res => { pwDone(false); pwRes = res; pwF
     openModal("Password required", `<form data-form="pw" class="grid gap-3"><div class="font-semibold">${esc(w.name)} · ${esc(w.code)}</div><div class="text-slate-500">Enter the password of this factory:</div><div class="font-bold">${esc(fname(FACTORIES[S.f]))}</div>
       <input name="pw" type="password" class="i" placeholder="Factory password" autocomplete="off" required><p class="err hidden text-sm text-red-700">Wrong password for this factory.</p><button class="b bp">Verify</button></form>`);
     $("[data-form=pw] [name=pw]").focus(); }); };
-const printDoc = (title, html) => { PD = { title, body: `<h1 style="font-weight:700">${esc(S.cfg.sys?.appName || "Gas Cooker Complex")} — ${esc(FACTORIES[S.f].en)}</h1><p style="margin-bottom:8px">${esc(title)} · ${new Date().toLocaleDateString()}</p>${html}` }; $("#pdo").classList.remove("hidden"); };
+const printDoc = (title, html) => { PD = { title, body: `<div dir="rtl" style="text-align:right"><h1 style="font-weight:700">${esc(S.cfg.sys?.appName || "Gas Cooker Complex")} — ${esc(FACTORIES[S.f].ar)} / ${esc(FACTORIES[S.f].en)}</h1><p style="margin-bottom:8px">${esc(title)} · ${new Date().toLocaleDateString("ar-EG")}</p>${html}</div>` }; $("#pdo").classList.remove("hidden"); };
 
 /* ====================== 4) AUTH & REALTIME DATA ====================== */
 const loginForm = (i = 0) => `<form data-form="login" class="grid gap-3"><select name="fid" class="i">${FACTORIES.map((f, k) => `<option value="${k}" ${k === i ? "selected" : ""}>${esc(f.en)} — ${esc(f.ar)}</option>`).join("")}</select>
@@ -761,7 +834,7 @@ function renderNav() {
   $("#facNav").innerHTML = FACTORIES.map((f, i) => `<button data-act="fac" data-id="${i}" class="w-full flex items-center gap-2 ps-1 pe-3 py-1.5 rounded-full text-sm ${i === S.f ? "bp text-white font-semibold" : "bg-slate-100 hover:bg-slate-200 text-slate-800"}">${facIcon(f)}<span>${esc(fname(f))}</span>${S.dev || S.ok === i ? "" : "<span>🔒</span>"}</button>`).join("");
   $("#deptNav").innerHTML = ["All", ...DEPTS, ...S.custom.filter(c => c.type === "menu").map(c => c.label)].map(d =>
     `<button data-act="dept" data-id="${esc(d)}" class="text-start w-full px-3 py-2 rounded-lg text-sm ${d === S.dept ? "bg-sky-100 text-sky-900 font-semibold" : "hover:bg-slate-100"}">${esc(d)}</button>`).join("");
-  $("#tiles").innerHTML = tile("workers", "👷", "Workers", { pri: 1 }) + allItems().filter(x => !x.hide).map(x => tile(x.act, x.icon, x.label || x.t || x.id, { data: x.data, color: x.color })).join("");
+  $("#tiles").innerHTML = tile("workers", "👷", "Workers", { pri: 1 }) + allItems().filter(x => !x.hide).map(x => tile(x.act, x.icon, x.label || x.t || x.id, { data: x.data, color: x.color, sub: x.sub && esc(x.sub) })).join("");
   renderDepts();
   $("#home").classList.toggle("hidden", S.view !== "home"); $("#wv").classList.toggle("hidden", S.view === "home"); $("#wdepts").classList.toggle("hidden", S.view !== "wdepts"); $("#wlist").classList.toggle("hidden", S.view !== "wlist"); $("#nback").classList.toggle("hidden", S.view === "home" || !can()); $("#bell").classList.toggle("hidden", !can());
   $("#title").textContent = S.dev ? t("Developer hub") : fname(FACTORIES[S.f]); $("#role").textContent = S.dev ? "Developer mode" : "Factory login"; $("#app").classList.toggle("dev", S.dev); if (S.dev) renderHub();
@@ -802,15 +875,6 @@ function workerForm(w = {}) {
       : `<input name="${k}" type="${k === "hireDate" ? "date" : "text"}" value="${esc(w[k])}" class="i" ${k === "code" || k === "name" ? "required" : ""}>`}${OPT.includes(k) ? fillSel(k) : ""}</label>`).join("")}
     ${w.id ? "" : `<p class="sm:col-span-2 text-xs text-slate-500">العامل الجديد بيتسجل في «قائمة العمال المسجلين» ومش بيظهر في القائمة العاملة غير لما تفعّله من هناك.</p>`}<button class="b bp sm:col-span-2">Save worker</button></form>`);
 }
-function exportCsv() {                                // current department + search filter → Excel-ready CSV (UTF-8 BOM keeps Arabic intact)
-  const rows = vis(); if (!rows.length) return toast("No rows to export in this view.");
-  const cell = v => { v = String(v ?? ""); if (/^[=+\-@]/.test(v)) v = "'" + v; return `"${v.replace(/"/g, '""')}"`; };   // blocks formula injection
-  const csv = "\ufeff" + [cols().map(lab), ...rows.map(w => cols().map(k => w[k]))].map(r => r.map(cell).join(",")).join("\r\n");
-  const a = document.createElement("a"), slug = S.dept.replace(/[^\w]+/g, "-").toLowerCase();
-  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = `${FACTORIES[S.f].id}-${slug}-${fmt(new Date())}.csv`;
-  a.click(); URL.revokeObjectURL(a.href); toast(`Exported ${rows.length} workers.`, 1);
-}
-
 /* ======================= 7) HSE FORMS ======================= */
 // "Label:d" = date field, "Label:a" = long text. A date field named "...due" / "Valid until" drives overdue alerts.
 const TPL = {
@@ -830,7 +894,7 @@ const HSEM = { "Incident / Accident Report": ["🚑", "تقرير حادث / إ�
 function hsePage(title, html, back) { $("#modal").classList.add("hidden"); $("#hsT").textContent = title; $("#hsB").innerHTML = html; $("#hsBack").dataset.act = back ? "hse" : "hseClose"; const p = $("#hsep"); p.classList.remove("hidden"); p.scrollTo({ top: 0 }); }
 function hseMenu() {
   hsePage("نماذج السلامة والصحة المهنية", `<section class="hc"><h2 class="hct">＋ نموذج جديد</h2><div class="grid grid-cols-2 gap-2">${Object.keys(TPL).map((k, i) => `<button data-act="hnew" data-id="${esc(k)}" class="hbtn" style="animation-delay:${i * 45}ms"><span class="hic">${(HSEM[k] || ["📄"])[0]}</span><span class="hl">${esc((HSEM[k] || [])[1] || k)}</span><span class="ha" dir="ltr">${esc(k)}</span></button>`).join("")}</div></section>
-    <section class="hc"><div class="flex items-center gap-2 mb-3"><h2 class="hct !m-0 !p-0 !border-0 me-auto">النماذج المحفوظة</h2><select id="hF" class="i !w-auto !mt-0" aria-label="تصفية"><option value="">الكل</option><option value="open">مفتوح</option><option value="overdue">متأخر</option><option value="closed">مغلق</option></select></div>
+    <section class="hc"><div class="flex items-center gap-2 mb-3"><h2 class="hct !m-0 !p-0 !border-0 me-auto">النماذج المحفوظة</h2>${hb("forms")}<select id="hF" class="i !w-auto !mt-0" aria-label="تصفية"><option value="">الكل</option><option value="open">مفتوح</option><option value="overdue">متأخر</option><option value="closed">مغلق</option></select></div>
     <div id="hseL" class="grid gap-2"></div></section>`);
   renderForms();
 }
@@ -866,15 +930,16 @@ function agg(ws, from, to) {
 }
 function injuryModal() {
   openModal("Injury reports", `<div id="rc" class="flex flex-wrap gap-2 items-center"><select id="rT" class="b">${Object.entries(PER).map(([k, p]) => `<option value="${k}">${p[1]} — ${p[0]}</option>`).join("")}</select>
-    <select id="rI" class="b"></select><input id="rY" type="number" value="${new Date().getFullYear()}" class="b w-24"><input id="rH" type="number" min="0" placeholder="Total hours worked" class="b w-44"><button data-act="rprint" class="b bp">🖨 Print</button></div><div id="rO" class="mt-3"></div>`, true);
+    <select id="rI" class="b"></select><input id="rY" type="number" value="${new Date().getFullYear()}" class="b w-24"><input id="rH" type="number" min="0" placeholder="Total hours worked" class="b w-44">${hb("injury")}</div><div id="rO" class="mt-3"></div>`, true);
   renderReport();
 }
+let RPT = null, VH = null;
 function renderReport(e) {
   const t = $("#rT").value, [ar, en, n, m, tag] = PER[t];
   if (!e || e.target.id === "rT") { $("#rI").innerHTML = Array.from({ length: n }, (_, i) => `<option value="${i}">${tag}${i + 1}</option>`).join("");
     $("#rI").value = Math.floor(new Date().getMonth() / m); $("#rI").classList.toggle("hidden", n === 1); }
   const y = +$("#rY").value, i = +$("#rI").value || 0, from = new Date(y, i * m, 1), a = agg(S.workers, from, new Date(y, (i + 1) * m, 1)), p = agg(S.workers, new Date(y, i * m - m, 1), from);
-  const d = a.total - p.total, max = Math.max(1, ...a.months.map(x => x.n));
+  const d = a.total - p.total, max = Math.max(1, ...a.months.map(x => x.n)); RPT = { a, d, ttl: `${ar} — ${en} · ${n === 1 ? y : tag + (i + 1) + " " + y}` };
   const card = (v, l, c = "") => `<div class="border rounded-lg p-3 ${c}"><div class="text-2xl font-bold">${v}</div><div class="text-xs text-slate-600">${l}</div></div>`;
   $("#rO").innerHTML = `<h3 style="font-weight:700">${ar} — ${en} · ${n === 1 ? y : tag + (i + 1) + " " + y}</h3><div class="grid grid-cols-2 sm:grid-cols-3 gap-2 my-3">
     ${card(a.total, `Total injuries (${d ? (d > 0 ? "▲ " : "▼ ") + Math.abs(d) + " vs previous period" : "same as previous period"})`)}${card(a.hurt, "Workers injured")}${card(a.rate.toFixed(1) + "%", "Workers injured per 100")}
@@ -949,6 +1014,83 @@ const getUi = () => { try { const t = JSON.parse(localStorage.getItem(UI_KEY)); 
   const o = JSON.parse(localStorage.getItem("gcc.theme")); if (o) return mergeUi({ colors: { brand: o.brand, accent: o.accent }, logo: o.logo }); } catch {} return defUi(); };
 S.ui = getUi();
 const paintLogo = () => document.querySelectorAll(".logo").forEach(e => e.innerHTML = `<img src="${esc(S.ui.logo || FRESH)}" alt="Fresh" class="rounded-md" style="height:${+e.dataset.s}px;width:auto">`);
+const THEMES = {   // ac: buttons/stripes (white-text safe) · ad: accent text on light · lt: accent text on dark · D/L: [bg, surface/fill, fill2, border]
+  teal: { n: "تركوازي", ac: "15 118 110", ad: "17 94 89", lt: "94 234 212", dk: "#0b4f55", ac2: "#0e7490", glow: "#10302f", tint: "#dff1ee", D: ["#0b1416", "#112024", "#16292d", "#2f4a50"], L: ["#eef6f5", "#f3f9f8", "#b4cdca"] },
+  blue: { n: "أزرق", ac: "37 99 235", ad: "29 78 216", lt: "147 197 253", dk: "#1e3a8a", ac2: "#0369a1", glow: "#12294f", tint: "#dbe7fb", D: ["#0a1220", "#101b30", "#16243d", "#2c4166"], L: ["#eef3fb", "#f4f7fd", "#b8c8e4"] },
+  purple: { n: "بنفسجي", ac: "109 40 217", ad: "91 33 182", lt: "196 181 253", dk: "#4c1d95", ac2: "#7e22ce", glow: "#2a1458", tint: "#e6dcfa", D: ["#110b1f", "#1a1230", "#231a3f", "#43366b"], L: ["#f3effc", "#f8f5fe", "#cfc3ea"] },
+  magenta: { n: "أرجواني", ac: "162 28 175", ad: "134 25 143", lt: "240 171 252", dk: "#701a75", ac2: "#be185d", glow: "#4a1450", tint: "#f6dcf7", D: ["#1a0b1a", "#261226", "#321a33", "#5c2f5e"], L: ["#fbeffb", "#fdf5fd", "#e4c0e6"] },
+  black: { n: "أسود", ac: "63 63 70", ad: "39 39 42", lt: "228 228 231", dk: "#18181b", ac2: "#3f3f46", glow: "#1f1f23", tint: "#e4e4e7", D: ["#050506", "#111114", "#1b1b1f", "#3a3a40"], L: ["#f4f4f5", "#fafafa", "#c4c4cc"] },
+  emerald: { n: "زمردي", ac: "4 120 87", ad: "6 95 70", lt: "110 231 183", dk: "#064e3b", ac2: "#0f766e", glow: "#0d3a2a", tint: "#d8f0e4", D: ["#07140f", "#0f201a", "#152c24", "#2b4a3e"], L: ["#edf7f2", "#f4fbf8", "#b5d6c6"] },
+  cyan: { n: "سماوي", ac: "14 116 144", ad: "21 94 117", lt: "103 232 249", dk: "#164e63", ac2: "#0369a1", glow: "#0b3a4a", tint: "#d6edf5", D: ["#08141a", "#0e2029", "#14303c", "#29495a"], L: ["#ecf6fa", "#f3fafc", "#b6d4e0"] },
+  amber: { n: "ذهبي / عنبري", ac: "180 83 9", ad: "146 64 14", lt: "252 211 77", dk: "#78350f", ac2: "#a16207", glow: "#4a3010", tint: "#f6e8c4", D: ["#161008", "#21180c", "#2d2110", "#52401f"], L: ["#fbf5e8", "#fdf9f0", "#e2d1a8"] } }, THEME_KEY = "gcc.theme";
+const curTheme = () => { try { const k = localStorage.getItem(THEME_KEY); return THEMES[k] ? k : "teal"; } catch { return "teal"; } };
+/* ===== automatic contrast & readability enforcement (tokens + runtime DOM scan) ===== */
+const hmRgb = c => Array.isArray(c) ? c : /^#/.test(c) ? (c.length === 4 ? [...c.slice(1)].map(h => parseInt(h + h, 16)) : [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16))) : String(c).match(/[\d.]+/g).slice(0, 3).map(Number);
+const hmLum = c => { const [r, g, b] = c.map(v => (v /= 255) <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4); return .2126 * r + .7152 * g + .0722 * b; };
+const hmCr = (a, b) => { const x = hmLum(a), y = hmLum(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
+const hmMix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+const hmHex = c => "#" + c.map(v => v.toString(16).padStart(2, "0")).join("");
+const hmMin = (c, bgs) => Math.min(...bgs.map(b => hmCr(c, b)));
+function hmFg(fg, bgs, min) {                         // nudge a text colour toward ink / paper until it reaches `min` on every background
+  const c = hmRgb(fg); if (hmMin(c, bgs) >= min) return c;
+  const tgt = bgs.reduce((s, b) => s + hmLum(b), 0) / bgs.length > .4 ? [0, 0, 0] : [255, 255, 255];
+  for (let t = .04; t <= 1.001; t += .04) { const m = hmMix(c, tgt, t); if (hmMin(m, bgs) >= min) return m; } return tgt; }
+function hmBg(bg, fg, min) {                          // calibrate a surface/accent so `fg` text on it reaches `min`
+  const c = hmRgb(bg), f = hmRgb(fg), tgt = hmLum(f) > .5 ? [0, 0, 0] : [255, 255, 255];
+  for (let t = 0; t <= 1.001; t += .04) { const m = hmMix(c, tgt, t); if (hmCr(m, f) >= min) return m; } return tgt; }
+let hmFixes = 0;
+const hmInfoText = () => "🔍 فحص التباين تلقائي عند التشغيل وعند تغيير النمط أو الوضع: " + (hmFixes ? `اتضبط ${hmFixes} عنصر عشان القراءة تفضل واضحة.` : "كل النصوص واضحة.");
+function harmonize() {                                // design tokens per theme, light + dark
+  const t = THEMES[curTheme()] || THEMES.teal, W = [255, 255, 255], D = t.D.map(hmRgb), Ds = D.slice(0, 3), L = [hmRgb(t.L[0]), hmRgb(t.L[1]), W];
+  const ac = hmBg(t.ac, W, 4.5), ac2 = hmBg(t.ac2, W, 4.5), dk = hmBg(t.dk, W, 4.5), ad = hmBg(hmFg(t.ad, L, 4.5), W, 4.5), lt = hmFg(t.lt, Ds, 4.5);
+  const ltx = hmFg("#0b2a2a", L, 7), lmu = hmFg("#47635f", L, 4.5), dtx = hmFg("#eef7f6", Ds, 7), dmu = hmFg("#a3bcbe", Ds, 4.5);
+  const lok = hmFg("#15803d", L, 4.5), lbad = hmFg("#b91c1c", L, 4.5), dok = hmFg("#4ade80", Ds, 4.5), dbad = hmFg("#f87171", Ds, 4.5), dph = hmFg("#9db6b8", [D[2]], 4.5);
+  let gA = .55; while (gA > .15 && [ac, ad, dk].some(h => hmCr(W, hmMix(h, lt, .35 * gA)) < 4.5)) gA = +(gA - .05).toFixed(2);   // perspective grid never lowers header text contrast
+  const j = c => c.join(" "), x = hmHex;
+  let el = $("#hmCss"); if (!el) { el = document.createElement("style"); el.id = "hmCss"; document.body.appendChild(el); }
+  el.textContent = `:root{--g-ac:${j(ac)};--g-ad:${j(ad)};--g-lt:${j(lt)};--t-dk:${x(dk)};--t-ac2:${x(ac2)};--g-tx:${x(ltx)};--g-mu:${x(lmu)};--g-ok:${x(lok)};--g-bad:${x(lbad)};--gA:${gA}}html.dark{--g-tx:${x(dtx)};--g-mu:${x(dmu)};--g-ok:${x(dok)};--g-bad:${x(dbad)};--g-ph:${x(dph)}}#veh{--tx:${x(dtx)};--mu:${x(dmu)}}#veh.vlight{--tx:${x(ltx)};--mu:${x(lmu)}}`;
+}
+const HM_SEL = "h1,h2,h3,h4,h5,label,p,li,td,th,span,small,b,strong,a,button,summary,legend,input,select,textarea";
+let hmRun = 0, hmTimer = 0, hmLast = "";
+const hmIdle = f => window.requestIdleCallback ? requestIdleCallback(f, { timeout: 700 }) : setTimeout(f, 30);
+const hmCols = s => (String(s).match(/rgba?\([^)]*\)/g) || []).map(x => { const n = x.match(/[\d.]+/g).map(Number); return { c: n.slice(0, 3), a: n.length > 3 ? n[3] : 1 }; });
+function hmReset() {
+  document.querySelectorAll("[data-hm]").forEach(e => { for (const [p, k] of [["color", "hmc"], ["-webkit-text-fill-color", "hmf"], ["opacity", "hmo"]]) { const v = e.dataset[k]; v ? e.style.setProperty(p, v) : e.style.removeProperty(p); delete e.dataset[k]; } delete e.dataset.hm; }); }
+function hmScan() {                                   // element-level pass: effective background (incl. gradients / translucency) vs real text colour, in time-sliced chunks
+  const id = ++hmRun; hmReset();
+  const list = [...document.querySelectorAll(HM_SEL)].slice(0, 3000), memo = new WeakMap(), page = document.documentElement.classList.contains("dark") ? [11, 20, 22] : [255, 255, 255]; let fixes = 0;
+  const bgs = e => { if (!e) return [page]; if (memo.has(e)) return memo.get(e);
+    const cs = getComputedStyle(e), up = bgs(e.parentElement); let r = up;
+    if (/gradient/.test(cs.backgroundImage)) { const st = hmCols(cs.backgroundImage).filter(x => x.a > .2); if (st.length) r = st.map(x => hmMix(up[0], x.c, x.a)); }
+    else { const b = hmCols(cs.backgroundColor)[0]; if (b && b.a > .02) r = b.a >= .99 ? [b.c] : up.map(u => hmMix(u, b.c, b.a)); }
+    memo.set(e, r); return r; };
+  const step = i => { if (id !== hmRun) return;
+    for (let k = i, end = Math.min(i + 150, list.length); k < end; k++) { const e = list[k]; if (e.disabled || !e.getClientRects().length) continue;
+      const form = /^(INPUT|SELECT|TEXTAREA)$/.test(e.tagName); if (form ? /checkbox|radio|range|file|color|hidden/.test(e.type || "") : ![...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) continue;
+      const cs = getComputedStyle(e), f = hmCols(cs.webkitTextFillColor || cs.color)[0]; if (!f || f.a < .02) continue;
+      const bg = bgs(e), fs = parseFloat(cs.fontSize), min = fs >= 24 || (fs >= 18.66 && +cs.fontWeight >= 700) ? 3 : 4.5, op = cs.pointerEvents === "none" || cs.animationName !== "none" ? 1 : parseFloat(cs.opacity) || 1;
+      if (Math.min(...bg.map(b => hmCr(hmMix(b, f.c, f.a * op), b))) >= min) continue;
+      const hx = hmHex(hmFg(f.c, bg, min));
+      e.dataset.hm = 1; e.dataset.hmc = e.style.getPropertyValue("color"); e.dataset.hmf = e.style.getPropertyValue("-webkit-text-fill-color"); e.dataset.hmo = e.style.getPropertyValue("opacity");
+      e.style.setProperty("color", hx, "important"); e.style.setProperty("-webkit-text-fill-color", hx, "important"); if (op < 1) e.style.setProperty("opacity", "1", "important"); fixes++; }
+    if (i + 150 < list.length) hmIdle(() => step(i + 150)); else { hmFixes = fixes; const n = $("#hmInfo"); if (n) n.textContent = hmInfoText(); } };
+  step(0); }
+const hmSig = () => [document.documentElement.classList.contains("dark"), $("#veh")?.classList.contains("vlight"), curTheme()].join();
+const hmSchedule = fast => { clearTimeout(hmTimer); hmTimer = setTimeout(() => hmIdle(hmScan), fast ? 80 : 450); };
+new MutationObserver(() => { const s = hmSig(); if (s !== hmLast) { hmLast = s; hmSchedule(true); } }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+if ($("#veh")) new MutationObserver(() => { hmLast = hmSig(); hmSchedule(true); }).observe($("#veh"), { attributes: true, attributeFilter: ["class"] });
+new MutationObserver(() => hmSchedule()).observe(document.body, { childList: true, subtree: true });
+document.fonts?.ready.then(() => hmSchedule());
+function applyTheme(id, fade) {
+  const t = THEMES[id] || THEMES.teal, h = document.documentElement; let el = $("#themeCss");
+  if (!el) { el = document.createElement("style"); el.id = "themeCss"; document.body.appendChild(el); }
+  if (fade && !matchMedia("(prefers-reduced-motion: reduce)").matches) { h.classList.add("themeFade"); setTimeout(() => h.classList.remove("themeFade"), 450); }
+  el.textContent = `:root{--g-ac:${t.ac};--g-ad:${t.ad};--g-lt:${t.lt};--t-dk:${t.dk};--t-ac2:${t.ac2};--t-glow:${t.glow};--t-tint:${t.tint};--tL-bg:${t.L[0]};--tL-fl:${t.L[1]};--tL-bd:${t.L[2]};--tD-bg:${t.D[0]};--tD-sf:${t.D[1]};--tD-fl:${t.D[2]};--tD-bd:${t.D[3]};--g-bg:${t.L[0]};--g-fl:${t.L[1]};--g-bd:${t.L[2]}}html.dark{--g-bg:${t.D[0]};--g-sf:${t.D[1]};--g-fl:${t.D[2]};--g-bd:${t.D[3]}}`;
+  document.querySelector("meta[name=theme-color]")?.setAttribute("content", t.dk);
+  harmonize(); hmLast = hmSig(); hmSchedule(true);          // calibrate tokens, then re-check every visible text
+}
+const themePicker = (cls = "xc") => `<section class="${cls} grid gap-2" id="thmBox"><h3 class="font-bold">🎨 نمط وألوان التطبيق</h3><p class="text-xs text-slate-500">يُطبَّق على الأزرار والتمييز والخلفيات والشبكة، ويُحفظ على هذا الجهاز.</p><p id="hmInfo" class="text-xs text-slate-500">${hmInfoText()}</p>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">${Object.entries(THEMES).map(([k, t]) => `<button type="button" data-act="theme" data-id="${k}" class="thm b" aria-pressed="${k === curTheme()}"><span class="thm-dot" style="background:linear-gradient(135deg,rgb(${t.ac}) 50%,${t.dk} 50%)"></span><span>${t.n}</span></button>`).join("")}</div></section>`;
 const applyUi = () => { const r = document.documentElement.style; for (const k in DEF) r.setProperty("--" + k, `rgb(${rgbSafe(S.ui.colors[k])})`); paintLogo(); applySec(S.ui.sec); };
 const saveUi = async () => { try { localStorage.setItem(UI_KEY, JSON.stringify(S.ui)); } catch {} applyUi(); await setDoc(doc(db, "settings", "system"), { ui: S.ui }, { merge: true }); };
 let unsubSet = null;
@@ -997,8 +1139,8 @@ const uploadLogo = file => { if (!file) return; if (!file.type.startsWith("image
 
 /* ---- Factory icons + header icon list (built-in + custom, reorderable by the developer) ---- */
 const FIC = { small: "🧰", gas: "🔥", metals: "⚙️", atlantic: "🌊" };
-const BASE = [{ id: "hse", icon: "🦺", label: "HSE Forms", act: "hse" }, { id: "injury", icon: "🩹", label: "Injury Reports", act: "injury" },
-  { id: "export", icon: "📊", label: "Export to Excel", act: "export" }, { id: "print", icon: "🖨", label: "Print", act: "print" }, { id: "refs", icon: "📚", label: "Safety Guide", act: "refs" }, { id: "expo", icon: "🧮", label: "حدود التعرض", act: "expo" }];
+const BASE = [{ id: "hse", icon: "🦺", label: "HSE Forms", act: "hse" }, { id: "injury", icon: "🩹", label: "Injury Reports", act: "injury", sub: "تسجيل ومتابعة حوادث وإصابات العمل داخل المصنع" },
+  { id: "refs", icon: "📚", label: "Safety Guide", act: "refs" }, { id: "expo", icon: "🧮", label: "حدود التعرض", act: "expo" }];
 const allItems = () => { const o = S.ui.order, all = [...BASE, ...S.custom.filter(c => c.type === "button").map(c => ({ id: "c:" + c.label, icon: c.icon || "⭐", label: c.label, act: "cust", data: c.label }))];
   return all.map(x => ({ ...x, ...S.ui.items[x.id] })).sort((a, b) => (o.indexOf(a.id) + 1 || 99) - (o.indexOf(b.id) + 1 || 99)); };
 const facIcon = (f, big) => { const o = S.ui.fac[f.id] || {};
@@ -1048,6 +1190,7 @@ function i18n(root = document.body, force) {            // swaps known UI string
 }
 let q18; new MutationObserver(() => { cancelAnimationFrame(q18); q18 = requestAnimationFrame(() => i18n()); }).observe(document.body, { childList: true, subtree: true });
 const fname = f => LANG === "ar" ? f.ar : f.en;
+try { applyTheme(curTheme()); } catch {}
 const applyDark = () => { document.documentElement.classList.toggle("dark", DARK); $("#darkBtn").textContent = DARK ? "☀️" : "🌙"; };
 const applyLang = () => { document.documentElement.lang = LANG; document.documentElement.dir = LANG === "ar" ? "rtl" : "ltr"; $("#langBtn").textContent = LANG === "ar" ? "EN" : "ع"; renderSel(); renderAll(); i18n(document.body, true); };
 
@@ -1254,7 +1397,7 @@ const REF = () => `<div class="grid gap-5" dir="rtl">
 
 window.addEventListener("popstate", () => { if (location.hash !== "#ai") $("#chat").classList.add("hidden"); });
 
-const regHtml = () => `<div class="grid gap-2" dir="rtl"><div class="flex gap-2 flex-wrap items-center"><input id="regQ" type="search" class="i !mt-0 grow" placeholder="بحث بالاسم أو الكود"><span id="regN" class="text-sm text-slate-500"></span></div>
+const regHtml = () => `<div class="grid gap-2" dir="rtl"><div class="flex gap-2 flex-wrap items-center"><input id="regQ" type="search" class="i !mt-0 grow" placeholder="بحث بالاسم أو الكود"><span id="regN" class="text-sm text-slate-500"></span>${hb("reg")}</div>
   <div class="regw overflow-auto max-h-[78vh]"><table class="rt"><thead><tr><th>مسلسل</th><th>كود</th><th>اسم</th><th>القسم</th><th>وظيفة</th><th>أنواع الأمراض</th><th>القائمة العاملة</th></tr></thead><tbody id="regB"></tbody></table></div></div>`;
 function renderReg() {                                  // Registered Workers table (live): every worker of this factory, whether or not shown in the working list
   const b = $("#regB"); if (!b) return; const q = ($("#regQ")?.value || "").trim().toLowerCase(), r = [...S.workers].sort(cmp.serial).filter(w => !q || `${w.name}`.toLowerCase().includes(q) || `${w.code}`.toLowerCase().includes(q));
@@ -1307,9 +1450,10 @@ const ACT = {
   sys() { if (!S.dev) return; const y = S.cfg.sys || {}, e = S.cfg.est || {}; openModal("System Settings", `<form data-form="sys" class="grid sm:grid-cols-2 gap-2">${inp("appName", "App name", y.appName)}${inp("alertDays", "Recent-injury alert window (days)", y.alertDays || 30, "number")}
     ${inp("dueSoon", "Due-soon window (days)", y.dueSoon || 7, "number")}${inp("examMax", "Max days between medical exams", y.examMax || 365, "number")}${inp("aiModel", "AI model", y.aiModel || AI_DEFAULT)}${inp("aiThink", "AI thinking level (low / medium / high)", y.aiThink || "low")}<h3 class="font-semibold sm:col-span-2 mt-2">Establishment (injury report header)</h3>
     ${inp("e_name", "Name", e.name)}${inp("e_activity", "Activity", e.activity)}${inp("e_address", "Address", e.address)}${inp("e_insNo", "Insurance no.", e.insNo)}${inp("e_crNo", "Commercial register no.", e.crNo)}<button class="b bp sm:col-span-2">Save</button></form>`); },
-  colors() { if (!S.dev) return; openModal("Colors Studio", `<form data-form="studio" class="grid gap-3">${SECS.map(([k, l]) => { const o = S.ui.sec?.[k] || {}, d = sdef(k);
+  colors() { if (!S.dev) return; openModal("Colors Studio", `${themePicker()}<form data-form="studio" class="grid gap-3">${SECS.map(([k, l]) => { const o = S.ui.sec?.[k] || {}, d = sdef(k);
     return `<div class="flex flex-wrap items-center gap-3 border-b border-slate-100 pb-2"><span class="w-32 text-sm font-semibold">${l}</span><label class="text-xs flex items-center gap-1">Background<input type="color" name="${k}_bg" value="${o.bg ? hex2(o.bg) : d[0]}" class="w-10 h-8"></label>
     <label class="text-xs flex items-center gap-1">Icons<input type="color" name="${k}_ic" value="${o.ic ? hex2(o.ic) : d[1]}" class="w-10 h-8"></label><button type="button" data-act="secReset" data-id="${k}" class="b !px-2 !py-0.5 text-xs">Reset</button></div>`; }).join("")}<button class="b bp">Save</button></form>`); },
+  theme(id) { if (!THEMES[id]) return; try { localStorage.setItem(THEME_KEY, id); } catch {} applyTheme(id, true); document.querySelectorAll(".thm").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === id))); toast("تم تطبيق النمط: " + THEMES[id].n, 1); },
   async secReset(k) { S.ui.sec ||= {}; delete S.ui.sec[k]; await saveUi(); ACT.colors(); },
   side: () => setSide(!$("#side").classList.contains("open")),
   workers: need(() => go("wdepts", "All")),
@@ -1323,7 +1467,7 @@ const ACT = {
   pdoX: () => $("#pdo").classList.add("hidden"),
   pdoPrint() { $("#pdo").classList.add("hidden"); $("#printArea").innerHTML = PD.body; window.print(); },
   pdoDl() { $("#pdo").classList.add("hidden");
-    const h = `<!doctype html><html lang="${LANG}" dir="${document.documentElement.dir}"><head><meta charset="utf-8"><title>${esc(PD.title)}</title><style>body{font-family:Cairo,system-ui,sans-serif;padding:16px}table{border-collapse:collapse;width:100%;font-size:12px}td,th{border:1px solid #666;padding:4px;text-align:start}th{background:#e2e8f0}</style></head><body>${PD.body}</body></html>`;
+    const h = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc(PD.title)}</title><style>body{font-family:Cairo,system-ui,sans-serif;padding:16px}table{border-collapse:collapse;width:100%;font-size:12px}td,th{border:1px solid #666;padding:4px;text-align:right;vertical-align:middle}th{background:#e2e8f0}</style></head><body>${PD.body}</body></html>`;
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([h], { type: "text/html;charset=utf-8" })); a.download = `${FACTORIES[S.f].id}-${fmt(new Date())}.html`; a.click(); URL.revokeObjectURL(a.href); toast("Downloaded.", 1); },
   creds() { if (!S.dev) return;
     const row = (id, label) => `<div class="grid grid-cols-2 gap-2"><div class="col-span-2 text-sm font-semibold" dir="auto">${label}</div>
@@ -1373,8 +1517,8 @@ const ACT = {
     if (await confirmBox(`حذف العامل ${w.name} (${w.code}) نهائيًا؟ لا يمكن التراجع.`, "حذف")) { await run("جارٍ الحذف…", "تم حذف العامل ✓", () => deleteDoc(doc(col("workers"), id))); S.workers = S.workers.filter(x => x.id !== id); if (S.unl === id) S.unl = null; renderAll(); refreshAlerts(); }
     if (reg) ACT.regList(); },
   regDel(id) { return ACT.del(id, true); },
-  export: need(exportCsv),
-  print: need(() => { const t = $("#wt").cloneNode(true); t.className = "rt"; printDoc($("#deptTitle").textContent, t.outerHTML); }),
+  xPrint: id => { const s = SNAP[id]?.(); if (!s || !xHas(s)) return toast("لا توجد بيانات للطباعة."); printSnap(s); },
+  xXls: id => { const s = SNAP[id]?.(); if (!s || !xHas(s)) return toast("لا توجد بيانات للتصدير."); dlX(xRows(s), `${s.sheet || id}-${fmt(new Date())}`, s.sheet); },
   alerts: need(() => { openModal("Notifications", `<div id="alertL" class="grid gap-2"></div>`); renderAlertList(); }),
   async review(key) { const a = S.alerts.find(x => x.key === key), w = S.workers.find(x => x.id === a?.w), f = hf(a?.f); markRead(key); refreshAlerts(); if (w) { if (await askPw(w)) workerForm(w); } else if (f) hseForm(f.type, f); },
   hse: need(hseMenu), hseClose: () => $("#hsep").classList.add("hidden"), hnew: need(t => hseForm(t)), hopen: id => hseForm(hf(id).type, hf(id)),
@@ -1382,7 +1526,7 @@ const ACT = {
   hformprint() { const f = $("[data-form=hform]"), t = f.elements.type.value; printDoc(t, formTable(fields(t), fields(t).map((_, i) => f.elements["f" + i].value))); },
   async htoggle(id) { await updateDoc(doc(col("hseForms"), id), { status: hf(id).status === "closed" ? "open" : "closed", updatedAt: serverTimestamp() }); },
   async hdel(id) { if (await confirmBox(`Delete this ${hf(id).type}? This cannot be undone.`)) await run("Deleting…", "Form deleted.", () => deleteDoc(doc(col("hseForms"), id))); },
-  injury: need(injuryModal), rprint: () => printDoc($("#rO h3").textContent, $("#rO").innerHTML),
+  injury: need(injuryModal),
   cust: l => openModal(l, `<p class="text-slate-500">This custom section is ready for its content.</p>`),
   settings() { if (!S.dev) return; openModal("Developer settings", settingsHtml(), true); },
   async rm(i) { S.custom.splice(+i, 1); await saveSettings(); renderNav(); ACT.settings(); }
@@ -1490,8 +1634,10 @@ const vFeat = k => V.set.feat?.[k] !== false;                                   
 const vFacs = () => { const o = V.set.facs || {};
   return [...FACTORIES.map(f => ({ id: f.id, ar: o[f.id]?.ar || f.ar, off: !!o[f.id]?.off })), ...Object.entries(o).filter(([id, x]) => x.extra && !FACTORIES.some(f => f.id === id)).map(([id, x]) => ({ id, ar: x.ar, off: !!x.off, extra: 1 }))]; };
 const vFacName = id => vFacs().find(f => f.id === id)?.ar || id;
-const vTheme = () => { const e = $("#veh").style, a = (V.set.theme?.accent || [47, 95, 154]).map(n => Math.max(0, Math.min(255, Math.round(+n) || 0)));      // accent (default: the blue of the reference design); the light tone is derived from it
-  e.setProperty("--ac", a.join(" ")); e.setProperty("--lt", a.map(c => Math.round(c + (255 - c) * .5)).join(" ")); $("#veh").classList.toggle("vlight", localStorage.getItem("vi.theme") === "light"); $("#vTheme").setAttribute("aria-checked", localStorage.getItem("vi.theme") !== "light"); };
+const vAccCustom = () => { const th = V.set.theme || {}, a = th.accent; return Array.isArray(a) && (th.custom ?? a.join() !== "47,95,154") ? a : null; };   // old saves without the flag: the former default blue counts as "no custom colour"
+const vTheme = () => { const e = $("#veh").style, a = vAccCustom()?.map(n => Math.max(0, Math.min(255, Math.round(+n) || 0)));
+  if (a) { e.setProperty("--ac", a.join(" ")); e.setProperty("--lt", a.map(c => Math.round(c + (255 - c) * .5)).join(" ")); } else { e.removeProperty("--ac"); e.removeProperty("--lt"); }
+  $("#veh").classList.toggle("vlight", localStorage.getItem("vi.theme") === "light"); $("#vTheme").setAttribute("aria-checked", localStorage.getItem("vi.theme") !== "light"); };
 async function vget(n, force) {                        // stable data is cached 5 min (manual refresh bypasses); a failed read throws and is never cached as "empty"
   const k = V.fid + n, c = VCACHE[k]; if (!force && c && Date.now() - c.t < 3e5) return c.rows;
   const rows = (await getDocs(vcol(n))).docs.map(d => ({ id: d.id, ...d.data() })); VCACHE[k] = { t: Date.now(), rows }; return rows; }
@@ -1523,9 +1669,10 @@ function vTabs() { const T = V.dev ? VT.dev : VT[V.role];
 const vMonLabel = (ym, full) => { const [y, m] = ym.split("-"), d = new Date(+y, +m - 1, 1); return d.toLocaleDateString("ar-EG", { month: "long" }) + (full || +y !== new Date().getFullYear() ? " " + y : ""); };
 const vMonthSel = (full, cls = "i w-full !mt-1 !py-3") => { const o = [], d = new Date(); d.setDate(1); for (let i = 0; i < 12; i++) { o.push(d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0")); d.setMonth(d.getMonth() - 1); } if (!o.includes(V.month)) o.push(V.month);
   return `<select id="vMonth" class="${cls}" aria-label="شهر الفحص">${o.map(m => `<option value="${m}" ${m === V.month ? "selected" : ""}>${vMonLabel(m, full)}</option>`).join("")}</select>`; };
+const vMotion = () => { const b = $("#vBody"); b.classList.remove("mv"); void b.offsetWidth; b.classList.add("mv"); clearTimeout(vMotion.t); vMotion.t = setTimeout(() => b.classList.remove("mv"), 800); };
 async function vShow(tab, force) {
   if (tab) V.tab = tab; V.home = false; vPlusUpd(); vSaveView(); vTabs(); vTick(); $("#vBody").innerHTML = `<p class="text-center text-slate-500 py-10" role="status">جارٍ التحميل…</p>`;
-  try { await vRender(force); vPlusUpd(); }
+  try { await vRender(force); vPlusUpd(); vMotion(); }
   catch (e) { V.home = false; vPlusUpd(); console.error(e); $("#vBody").innerHTML = `<div class="${VCARD} text-center grid gap-2"><p class="text-red-700">${e.code === "permission-denied" ? "لا توجد صلاحية قراءة لهذا الحساب. تأكد من نشر قواعد Firestore المحدّثة وإعادة تسجيل الدخول." : `تعذر تحميل البيانات (${esc(e.code || e.message)}). تحقق من الاتصال.`}</p><button data-act="vRefresh" class="b bp justify-self-center">إعادة المحاولة</button></div>`; } }
 function vPaint() {
   const L = vlist(), n = L.length, st = L.map(vstate), ins = st.filter(s => s !== "no").length, bad = st.filter(s => s === "bad").length, pct = n ? Math.round(ins / n * 100) : 0;
@@ -1592,7 +1739,7 @@ async function vRender(force) {
         <label class="text-xs font-semibold">الشهر${vMonthSel()}</label>
         <label class="text-xs font-semibold">المقاول<select id="vCon" class="i !mt-0"><option value="">الكل</option>${V.con.filter(c => c.active !== false).map(c => `<option ${c.name === V.contractor ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></label>
         <label class="text-xs font-semibold grow basis-[15rem]">بحث<input id="vQ" type="search" value="${esc(V.q)}" class="i !mt-0" placeholder="الكود / الاسم / اللوحة / المقاول"></label>
-        <button data-act="vRefresh" class="b">↻ تحديث</button></div><div id="vKpi"></div></div>
+        <button data-act="vRefresh" class="b">↻ تحديث</button>${hbV("vrows")}</div><div id="vKpi"></div></div>
       <div class="${VCARD} overflow-x-auto"><table class="rt"><thead><tr><th>الكود</th><th>الاسم</th><th>اللوحة</th><th>المقاول</th><th>الحالة</th><th>آخر فحص</th></tr></thead><tbody id="vRows"></tbody></table></div>`; vPaint(); }
   else if (M === "insp") { [V.veh, V.chk, V.ins, V.con] = await Promise.all([vget("vehicles", force), vchk(force), vget("inspectors", force), vget("contractors", force)]);
     V.draft ||= vDraftLoad(); if (V.draft?.vid && !vOf(V.draft)) V.draft = null; if (V.draft) return vFormPage();
@@ -1609,13 +1756,14 @@ async function vRender(force) {
     B.innerHTML = `<div class="${VCARD} grid gap-3"><form data-form="vins" class="flex gap-2"><input name="name" class="i !mt-0 grow" required inputmode="text" autocapitalize="words" autocomplete="off" placeholder="اسم المفتش"><button class="b bp">+ إضافة</button></form>
       <ul class="grid gap-1">${V.ins.map(c => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto ${c.active === false ? "line-through text-slate-400" : ""}">${esc(c.name)}</span><button data-act="vInsTog" data-id="${c.id}" class="b !py-0.5 text-xs">${c.active === false ? "استعادة" : "تعطيل"}</button></li>`).join("") || "<li class=\"text-slate-500\">لا يوجد مفتشون (يمكن كتابة الاسم يدويًا وقت الفحص)</li>"}</ul></div>`; }
   else if (M === "dveh") { [V.veh, V.con] = await Promise.all([vget("vehicles", force), vget("contractors", force)]);
-    B.innerHTML = `<div class="${VCARD} grid gap-3"><div class="flex gap-2"><input id="vQD" type="search" value="${esc(V.q)}" class="i !mt-0 grow" placeholder="بحث بالكود أو الاسم أو اللوحة أو المقاول"><button data-act="vRefresh" class="b">↻</button></div>
+    B.innerHTML = `<div class="${VCARD} grid gap-3"><div class="flex gap-2"><input id="vQD" type="search" value="${esc(V.q)}" class="i !mt-0 grow" placeholder="بحث بالكود أو الاسم أو اللوحة أو المقاول"><button data-act="vRefresh" class="b">↻</button>${hbV("vdev")}</div>
       <p class="text-xs text-slate-500">${V.dev ? "المطور يعطّل / يحذف / يستعيد ويعدّل. إضافة المركبات الجديدة تتم من المفتشين." : "المشرف يعدّل بيانات المركبات (طلبات التعديل تصل إليك). التعطيل والحذف والاستعادة لمطور المركبات. الإضافة من المفتشين فقط."}</p>
       <div class="overflow-x-auto"><table class="rt"><thead><tr><th>الكود</th><th>الاسم</th><th>اللوحة</th><th>المقاول</th><th>الحالة</th><th></th></tr></thead><tbody id="vDRows"></tbody></table></div></div>`; vDevPaint(); }
   else if (M === "dcon") { [V.con, V.veh] = await Promise.all([vget("contractors", force), vget("vehicles", force)]);
     const mig = [...new Set(V.veh.map(v => (v.contractor || "").trim()).filter(Boolean))].filter(n => !V.con.some(c => vn(c.name) === vn(n)));
     B.innerHTML = `<div class="${VCARD} grid gap-3"><form data-form="vcon" class="flex gap-2"><input name="name" class="i !mt-0 grow" required inputmode="text" autocapitalize="words" autocomplete="off" placeholder="اسم المقاول"><button class="b bp">+ إضافة</button></form>
       ${mig.length ? `<button data-act="vMigrate" class="b justify-self-start">⇪ ترحيل ${mig.length} اسم مقاول مكتوب نصًا في المركبات إلى القائمة المُدارة</button>` : ""}
+      <div class="flex items-center gap-2"><h3 class="font-bold me-auto">المقاولون</h3>${hbV("vcon")}</div>
       <ul class="grid gap-1">${V.con.map(c => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto ${c.active === false ? "line-through text-slate-400" : ""}">${esc(c.name)}</span><button data-act="vConTog" data-id="${c.id}" class="b !py-0.5 text-xs">${c.active === false ? "استعادة" : "تعطيل"}</button></li>`).join("") || "<li class=\"text-slate-500\">لا يوجد مقاولون</li>"}</ul></div>`; }
   else if (M === "dchk") { V.chk = await vchk(force);
     B.innerHTML = `<form data-form="vchk" class="${VCARD} grid gap-3"><p class="text-sm text-slate-500">بند واحد في كل سطر. التعديل لا يغيّر الفحوصات السابقة المحفوظة.</p><textarea name="items" rows="8" class="i">${esc(V.chk.map(c => c.label).join("\n"))}</textarea><button class="b bp justify-self-start">حفظ القائمة</button></form>`; }
@@ -1625,11 +1773,11 @@ async function vRender(force) {
   else if (M === "dann") { const an = await vget("announcements", force);
     B.innerHTML = `<div class="${VCARD} grid gap-3"><form data-form="vann" class="grid gap-2"><textarea name="text" rows="2" class="i" required placeholder="نص الإعلان لهذا المصنع"></textarea><button class="b bp justify-self-start">نشر</button></form>
       <ul class="grid gap-1">${an.map(a => `<li class="flex items-center gap-2 border-b border-slate-100 py-1"><span class="me-auto whitespace-pre-wrap">${esc(a.text)}</span><button data-act="vAnnDel" data-id="${a.id}" class="b !py-0.5 text-xs">حذف</button></li>`).join("") || "<li class=\"text-slate-500\">لا توجد إعلانات</li>"}</ul></div>`; }
-  else if (M === "dset") { const th = V.set.theme || {};
-    B.innerHTML = `<form data-form="vset" class="${VCARD} grid gap-3"><h3 class="font-bold">المصانع (إعادة تسمية / إيقاف / استعادة)</h3>${vFacs().map(vSetRow).join("")}
+  else if (M === "dset") { const base = THEMES[curTheme()].ac.split(" ").map(Number);
+    B.innerHTML = `${themePicker(VCARD)}<form data-form="vset" class="${VCARD} grid gap-3"><h3 class="font-bold">المصانع (إعادة تسمية / إيقاف / استعادة)</h3>${vFacs().map(vSetRow).join("")}
       <input name="newfac" class="i !mt-0" placeholder="اسم مصنع جديد (يظهر للمطور؛ دخول المفتشين يحتاج حساب Firebase له)">
       <h3 class="font-bold">المزايا</h3><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_excel" ${vFeat("excel") ? "checked" : ""}> تصدير Excel</label><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="f_pdf" ${vFeat("pdf") ? "checked" : ""}> تقارير PDF / طباعة</label>
-      <h3 class="font-bold">ألوان الوحدة (RGB)</h3>${rgbRow("vaccent", "لون الواجهة", th.accent || [47, 95, 154])}<button class="b bp justify-self-start">حفظ الإعدادات</button></form>
+      <h3 class="font-bold">لون مخصص للوحدة (اختياري)</h3><p class="text-xs vmu">النمط المختار فوق هو الأساس. اللون المخصص بيغطّي عليه في وحدة المركبات بس.</p>${rgbRow("vaccent", "لون الواجهة", vAccCustom() || base)}<label class="flex items-center gap-2 text-sm"><input type="checkbox" name="vaccReset"> استخدام لون النمط المختار (إلغاء المخصص)</label><button class="b bp justify-self-start">حفظ الإعدادات</button></form>
       <div class="${VCARD} grid gap-2"><h3 class="font-bold">التشخيص</h3><div id="vDiag" class="text-sm grid gap-1">${vDiagHtml()}</div><button data-act="vDiag" class="b justify-self-start">فحص الاتصال</button></div>`; } }
 const vDiagHtml = () => { const n = s => V.veh.filter(v => vst(v) === s).length;
   return `<div>الحساب: <b dir="ltr">${esc(vAuth?.currentUser?.email || "—")}</b></div><div>المصنع: ${esc(vFacName(V.fid))} (<span dir="ltr">${esc(V.fid)}</span>)</div><div>المركبات: ${n("on")} فعّالة · ${n("off")} معطلة · ${n("hid")} مخفية · ${n("del")} محذوفة</div>
@@ -1686,16 +1834,48 @@ function zipStore(files) {
   return new Blob([...loc, ...cen, new Uint8Array([0x50, 0x4b, 5, 6, 0, 0, 0, 0, ...u16(files.length), ...u16(files.length), ...u32(cs), ...u32(off), 0, 0])], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }
 const xmlE = x => String(x ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, "");
-function xlsx(rows) {                                    // rows: arrays of strings / numbers; first row is the bold header
-  const col = i => String.fromCharCode(65 + i), cell = (v, r, i) => typeof v === "number" ? `<c r="${col(i)}${r}"><v>${v}</v></c>` : `<c r="${col(i)}${r}" t="inlineStr"${r === 1 ? ' s="1"' : ""}><is><t>${xmlE(v)}</t></is></c>`;
+function xlsx(rows, name = "Sheet1") {                   // rows: arrays; row.t = title, row.h = header (first row is a header by default). RTL sheet, bordered, right-aligned, vertically centred, auto-fit columns
+  const cn = i => { let c = ""; for (i++; i; i = (i - 1) / 26 | 0) c = String.fromCharCode(65 + (i - 1) % 26) + c; return c; }, sty = (r, j) => r.t ? 3 : r.h || j === 0 ? 1 : 2;
+  const cell = (v, j, i, r) => { const a = `${cn(i)}${j + 1}`, z = sty(r, j); return typeof v === "number" ? `<c r="${a}" s="${z}"><v>${v}</v></c>` : `<c r="${a}" s="${z}" t="inlineStr"><is><t xml:space="preserve">${xmlE(v)}</t></is></c>`; };
+  const W = []; rows.forEach((r, j) => { if (!r.t) r.forEach((v, i) => { const l = [...String(v ?? "")].reduce((n, ch) => n + (ch.charCodeAt(0) > 255 ? 1.25 : 1), 0); W[i] = Math.max(W[i] || 0, l); }); });
   const X = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>', N = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"', R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const sh = xmlE(String(name).replace(/[\[\]:*?\/\\]/g, "").slice(0, 31) || "Sheet1"), al = '<alignment horizontal="right" vertical="center" wrapText="1" readingOrder="2"/>';
   return zipStore([["[Content_Types].xml", `${X}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`],
     ["_rels/.rels", `${X}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
-    ["xl/workbook.xml", `${X}<workbook ${N} xmlns:r="${R}"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>`],
+    ["xl/workbook.xml", `${X}<workbook ${N} xmlns:r="${R}"><sheets><sheet name="${sh}" sheetId="1" r:id="rId1"/></sheets></workbook>`],
     ["xl/_rels/workbook.xml.rels", `${X}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/styles" Target="styles.xml"/></Relationships>`],
-    ["xl/styles.xml", `${X}<styleSheet ${N}><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" applyFont="1"/></cellXfs></styleSheet>`],
-    ["xl/worksheets/sheet1.xml", `${X}<worksheet ${N}><sheetViews><sheetView rightToLeft="1" workbookViewId="0"/></sheetViews><cols><col min="1" max="5" width="22" customWidth="1"/></cols><sheetData>${rows.map((r, j) => `<row r="${j + 1}">${r.map((v, i) => cell(v, j + 1, i)).join("")}</row>`).join("")}</sheetData></worksheet>`]]);
+    ["xl/styles.xml", `${X}<styleSheet ${N}><fonts count="3"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><name val="Arial"/></font><font><b/><sz val="14"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFD9E2F3"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border/><border><left style="thin"><color rgb="FF808080"/></left><right style="thin"><color rgb="FF808080"/></right><top style="thin"><color rgb="FF808080"/></top><bottom style="thin"><color rgb="FF808080"/></bottom><diagonal/></border></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="4"><xf/><xf fontId="1" fillId="2" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">${al}</xf><xf borderId="1" applyBorder="1" applyAlignment="1">${al}</xf><xf fontId="2" applyFont="1" applyAlignment="1"><alignment horizontal="right" vertical="center" readingOrder="2"/></xf></cellXfs></styleSheet>`],
+    ["xl/worksheets/sheet1.xml", `${X}<worksheet ${N}><sheetViews><sheetView rightToLeft="1" workbookViewId="0"/></sheetViews><sheetFormatPr defaultRowHeight="20"/>${W.length ? `<cols>${W.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${Math.min(70, Math.max(14, Math.ceil(w * 1.15) + 6))}" customWidth="1"/>`).join("")}</cols>` : ""}<sheetData>${rows.map((r, j) => `<row r="${j + 1}"${r.t ? ' ht="26" customHeight="1"' : ""}>${r.map((v, i) => cell(v, j, i, r)).join("")}</row>`).join("")}</sheetData><pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/></worksheet>`]]);
 }
+
+/* ---- contextual header actions (طباعة / Excel) on every table & report view: read-only RTL print sheet + formatted RTL .xlsx ---- */
+const hb = (k, p = true, x = true) => p || x ? `<span class="hbar" role="group" aria-label="طباعة وتصدير">${p ? `<button type="button" data-act="xPrint" data-id="${k}" class="b !py-0.5 text-xs">🖨 طباعة</button>` : ""}${x ? `<button type="button" data-act="xXls" data-id="${k}" class="b !py-0.5 text-xs">📊 Excel</button>` : ""}</span>` : "";
+const hbV = k => hb(k, vFeat("pdf"), vFeat("excel"));
+const xHas = s => !!s.html || s.parts.some(p => p.rows.length);
+const roTbl = (h, r) => `<table class="rt">${h.length ? `<thead><tr>${h.map(x => `<th>${esc(x)}</th>`).join("")}</tr></thead>` : ""}<tbody>${r.map(a => `<tr>${a.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+const roClean = h => { const d = new DOMParser().parseFromString(`<div>${h}</div>`, "text/html"); d.querySelectorAll("button,input,select,textarea,script").forEach(x => x.remove()); d.querySelectorAll("[data-act],[contenteditable]").forEach(x => { x.removeAttribute("data-act"); x.removeAttribute("contenteditable"); }); return d.body.innerHTML; };
+const printSnap = s => printDoc(s.title, `${s.meta ? `<p style="margin-bottom:6px">${esc(s.meta)}</p>` : ""}${s.html ? roClean(s.html) : s.parts.map(p => (p.rows.length ? (p.h ? `<h3 style="margin:10px 0 4px;font-weight:700">${esc(p.h)}</h3>` : "") + roTbl(p.head, p.rows) : "")).join("")}`);
+const xRows = s => { const R = [], f = (a, k) => (a[k] = 1, a); R.push(f([s.title], "t")); if (s.meta) R.push(f([s.meta], "t")); R.push([]);
+  s.parts.forEach(p => { if (!p.rows.length) return; if (p.h) R.push(f([p.h], "t")); if (p.head.length) R.push(f([...p.head], "h")); p.rows.forEach(r => R.push([...r])); R.push([]); }); return R; };
+const dlX = (rows, file, sheet) => { const a = document.createElement("a"); a.href = URL.createObjectURL(xlsx(rows, sheet)); a.download = file + ".xlsx"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast("تم تنزيل ملف Excel ✓", 1); };
+const vMeta = () => `المصنع: ${vFacName(V.fid)} · الشهر: ${V.month}${V.contractor ? " · المقاول: " + V.contractor : ""}`;
+const SNAP = {
+  workers: () => ({ title: $("#deptTitle").textContent, sheet: "العمال", parts: [{ head: WCOLS.map(([k, l]) => S.cfg.labels?.[k] || l), rows: vis().map((w, i) => [w.serial || i + 1, w.code, w.name, w.dept, w.profession, hasText(w.chronic) ? w.chronic : "—"]) }] }),
+  reg: () => { const q = ($("#regQ")?.value || "").trim().toLowerCase(); return { title: "قائمة العمال المسجلين", sheet: "العمال المسجلين", parts: [{ head: ["مسلسل", "كود", "الاسم كامل", "القسم", "وظيفة", "أنواع الأمراض", "القائمة العاملة"],
+    rows: [...S.workers].sort(cmp.serial).filter(w => !q || `${w.name}`.toLowerCase().includes(q) || `${w.code}`.toLowerCase().includes(q)).map((w, i) => [w.serial || i + 1, w.code, w.name, w.dept, w.profession, hasText(w.chronic) ? w.chronic : "—", w.listed === false ? "غير مفعّل" : "مفعّل"]) }] }; },
+  forms: () => { const flt = $("#hF")?.value; return { title: "النماذج المحفوظة", sheet: "نماذج السلامة", parts: [{ head: ["النموذج", "النوع", "التاريخ", "تاريخ الاستحقاق", "الحالة"],
+    rows: S.forms.filter(f => !flt || statusOf(f) === flt || (flt === "open" && f.status !== "closed")).map(f => [(HSEM[f.type] || [])[1] || f.type, f.type, f.values?.[0] || "—", dueInfo(f).value || "—", HSEST[statusOf(f)]]) }] }; },
+  injury: () => { if (!RPT || !$("#rO")) return null; const { a, d, ttl } = RPT, o = $("#rO").cloneNode(true), parts = [{ h: "المؤشرات", head: ["المؤشر", "القيمة"], rows: [["إجمالي الإصابات", a.total], ["الفرق عن الفترة السابقة", d], ["عمال مصابون", a.hurt], ["نسبة المصابين لكل 100 عامل", a.rate.toFixed(1) + "%"], ["حالات مزمنة", a.chronic], ["مزمنة مصابة", a.chronicHurt], ["تنبيهات السجل الطبي", a.noMed], ["إصابات بدون تاريخ صالح", a.noDate], ["عمال تكررت إصابتهم", a.repeat || 0]] }];
+    o.querySelectorAll("table").forEach(t => { const r = [...t.rows].map(x => [...x.cells].map(c => c.textContent.trim())), p = t.previousElementSibling, hd = r.length && t.rows[0].querySelector("th");
+      parts.push({ h: p && /^H\d$/.test(p.tagName) ? p.textContent.trim() : "", head: hd ? r.shift() : [], rows: r }); });
+    parts.push({ h: "الإصابات حسب الشهر", head: ["الشهر", "عدد الإصابات"], rows: a.months.map(x => [x.l, x.n]) });
+    return { title: ttl, sheet: "تقرير الإصابات", html: $("#rO").innerHTML.replace(/^\s*<h3[\s\S]*?<\/h3>/, ""), parts }; },
+  vrows: () => { const L = vlist(), st = L.map(vstate), ins = st.filter(x => x !== "no").length, bad = st.filter(x => x === "bad").length; return { title: "سجل المركبات", sheet: "المركبات", meta: vMeta(), parts: [
+    { head: ["الكود", "الاسم", "اللوحة", "المقاول", "الحالة", "آخر فحص"], rows: L.map(v => { const i = V.insp.find(x => x.vehicleId === v.id); return [vcode(v), v.name, v.plate, v.contractor, VB[vstate(v)][0], i?.clientTs ? new Date(i.clientTs).toLocaleDateString("ar-EG") : "—"]; }) },
+    { h: "الملخص العام", head: ["إجمالي المركبات", "تم فحصها", "لم تُفحص", "مطابقة", "غير مطابقة", "نسبة الإنجاز"], rows: L.length ? [[L.length, ins, L.length - ins, ins - bad, bad, Math.round(ins / L.length * 100) + "%"]] : [] }] }; },
+  vdev: () => ({ title: "بيانات المركبات", sheet: "المركبات", meta: `المصنع: ${vFacName(V.fid)}`, parts: [{ head: ["الكود", "الاسم", "اللوحة", "المقاول", "الحالة"], rows: V.veh.filter(v => !V.q || vBlob(v).includes(vn(V.q))).map(v => [vcode(v), v.name, v.plate, v.contractor, VS[vst(v)]]) }] }),
+  vcon: () => ({ title: "المقاولون", sheet: "المقاولون", meta: `المصنع: ${vFacName(V.fid)}`, parts: [{ head: ["المقاول", "الحالة", "عدد المركبات"], rows: V.con.map(c => [c.name, c.active === false ? "معطّل" : "فعّال", V.veh.filter(v => vn(v.contractor) === vn(c.name)).length]) }] }),
+  vhist: () => VH && { title: `سجل الفحص — ${vcode(VH.v)}`, sheet: "سجل الفحص", meta: `${VH.v.name || ""} · ${VH.v.plate || ""} · ${VH.v.contractor || ""}`, parts: [{ head: ["الشهر", "النتيجة", "المفتش", "بنود غير مطابقة"], rows: VH.R.map(r => [r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, vBad(r)]) }] } };
 
 const VACT = {
   veh() { if (!can()) return toast("Sign in to a factory first."); vDrive(vOpen); },
@@ -1721,7 +1901,7 @@ const VACT = {
   vTab: id => vShow(id), vRefresh: () => { closeModal(); vShow(null, true); }, vDis(id) { localStorage.setItem("vi.dis." + V.fid, JSON.stringify([...vdis(), id])); vShow(); },
   async vHist(id) { const v = V.veh.find(x => x.id === id); if (!v) return;
     const R = (await getDocs(query(vcol("inspections"), where("vehicleId", "==", id)))).docs.map(d => d.data()).sort((a, b) => b.month.localeCompare(a.month));
-    openModal(`سجل الفحص — ${vcode(v)}`, `<div dir="rtl">${R.length ? vTbl(["الشهر", "النتيجة", "المفتش", "بنود غير مطابقة"], R.map(r => [r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, vBad(r)])) : "<p>لا توجد فحوصات سابقة</p>"}
+    VH = { v, R }; openModal(`سجل الفحص — ${vcode(v)}`, `<div dir="rtl"><div class="flex items-center gap-2 mb-2"><b class="me-auto">${esc(v.name || vcode(v))}</b>${hbV("vhist")}</div>${R.length ? vTbl(["الشهر", "النتيجة", "المفتش", "بنود غير مطابقة"], R.map(r => [r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, vBad(r)])) : "<p>لا توجد فحوصات سابقة</p>"}
       ${(v.driverName || v.driverPhone || v.supName || v.supPhone) ? `<p class="text-sm mt-2">${v.driverName || v.driverPhone ? `🚐 السائق: ${esc(v.driverName)} ${v.driverPhone ? `<a dir="ltr" href="tel:${esc(v.driverPhone)}">${esc(v.driverPhone)}</a>` : ""}` : ""}${v.supName || v.supPhone ? ` · 👤 المشرف: ${esc(v.supName)} ${v.supPhone ? `<a dir="ltr" href="tel:${esc(v.supPhone)}">${esc(v.supPhone)}</a>` : ""}` : ""}</p>` : ""}
       ${V.dev ? "" : V.role === "sup" ? `<button data-act="vVeh" data-id="${v.id}" class="b mt-3">تعديل بيانات المركبة</button>` : `<button data-act="vReq" data-id="${esc(vcode(v))}" class="b mt-3">طلب تعديل بيانات المركبة من المشرف</button>`}</div>`, true); },
   vReq(code) { openModal("طلب تعديل", `<form data-form="vreq" dir="rtl" class="grid gap-2"><input type="hidden" name="code" value="${esc(code)}"><p>المركبة: <b dir="ltr">${esc(code)}</b></p><textarea name="note" rows="3" class="i" required maxlength="300" placeholder="ما التعديل المطلوب؟ (بدون بيانات شخصية)"></textarea><button class="b bp">إرسال للمشرف</button></form>`); },
@@ -1821,7 +2001,8 @@ const VFORMS = {
   vset: guard(async f => { const e = f.elements, facs = {}, accent = readRgb(f, "vaccent"); if (!accent) throw new Error("قيم RGB لازم تكون أرقام من 0 إلى 255.");
     vFacs().forEach(x => { facs[x.id] = { ar: e["fn_" + x.id].value.trim() || x.ar, off: e["fd_" + x.id].checked, ...(x.extra ? { extra: true } : {}) }; });
     const nf = e.newfac.value.trim(); if (nf) facs["x" + Date.now().toString(36)] = { ar: nf, off: false, extra: true };
-    const set = { facs, feat: { excel: e.f_excel.checked, pdf: e.f_pdf.checked }, theme: { accent } };
+    const base = THEMES[curTheme()].ac.split(" ").map(Number), custom = !e.vaccReset.checked && accent.join() !== base.join();
+    const set = { facs, feat: { excel: e.f_excel.checked, pdf: e.f_pdf.checked }, theme: custom ? { accent, custom: true } : {} };
     await run("جارٍ الحفظ…", "تم حفظ الإعدادات ✓", () => setDoc(doc(vDb, VP + "settings", "main"), set)); V.set = set; vTheme(); vShow("dset"); })
 };
 Object.assign(FORMS, VFORMS);
