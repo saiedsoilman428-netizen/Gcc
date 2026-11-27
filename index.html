@@ -364,6 +364,26 @@ div[role=status].fixed{border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.35)
 .logo{animation:bob 4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<style id="veh-add">
+/* inspector main screen: no search bar — one large centered add button; hidden in sub-views/forms (vPlusUpd) */
+#veh .vnav.hidden{display:none}
+#veh .vdock:not(:has(>:not(.hidden))){display:none}
+#veh .vdock:has(.vnav.hidden){background:linear-gradient(to top,var(--bg) 55%,transparent);border-top:0;box-shadow:none;padding:1.25rem 3.5rem calc(.6rem + env(safe-area-inset-bottom));justify-content:center}
+#veh .vdock #vPlus{flex:0 1 22rem;width:auto;min-width:11rem;height:3.75rem;margin-inline:auto;padding:0 1.6rem;border-radius:22px;display:flex;align-items:center;justify-content:center;gap:.7rem;font:800 1.2rem/1 inherit;font-family:Cairo,system-ui,sans-serif;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#2b1d00;box-shadow:0 10px 26px rgba(245,158,11,.4)}
+#veh .vdock #vPlus.hidden{display:none}
+#veh .vdock #vPlus .vpl{font-size:2.4rem;font-weight:700;line-height:1;margin-top:-.2rem}
+#veh .vdock #vPlus:active{transform:scale(.95)}
+#veh .vdock .vtop{position:absolute;inset-inline-start:.75rem;bottom:calc(.5rem + env(safe-area-inset-bottom))}
+#veh .vdock .vtop.hidden{display:none}
+/* centered label in "بحث" and other .vgo buttons */
+#veh .vgo{display:flex;align-items:center;justify-content:center;text-align:center;padding-inline:1.2rem;white-space:nowrap}
+</style>
+<style id="veh-look">
+#veh .vlk{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+#veh .vlk .vgo{min-width:0;min-height:3.3rem;padding:.4rem .5rem;font-size:1rem;line-height:1.2;white-space:normal;text-align:center;justify-content:center;gap:.3rem}
+#veh .vgo.alt{background:transparent;border:2px solid rgb(var(--ac));color:var(--ltc);box-shadow:none}
+@media (max-width:360px){#veh .vlk .vgo{font-size:.9rem}}
+</style>
 
 <style id="fx">
 /* ===== layout clearance / overlap fixes ===== */
@@ -509,7 +529,7 @@ div[role=status].fixed{border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.35)
     <button data-act="vGear" class="vsq" aria-label="الإعدادات"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button data-act="vehClose" class="vsq" aria-label="العودة إلى HSE">HSE</button></header>
   <div id="vBody" class="px-3 pt-4 pb-28 max-w-3xl mx-auto grid gap-3 content-start"></div>
-  <div class="vdock"><button id="vTop" data-act="vTop" class="vtop hidden" aria-label="للأعلى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><nav id="vTabs" class="vnav" aria-label="أقسام فحص المركبات"></nav><button id="vPlus" data-act="vPlus" class="vplus hidden" aria-label="إضافة مركبة للفحص" title="إضافة مركبة للفحص">+</button></div>
+  <div class="vdock"><button id="vTop" data-act="vTop" class="vtop hidden" aria-label="للأعلى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><nav id="vTabs" class="vnav" aria-label="أقسام فحص المركبات"></nav><button id="vPlus" data-act="vPlus" class="vplus hidden" aria-label="إضافة مركبة للفحص" title="إضافة مركبة للفحص"><span class="vpl">+</span><span>إضافة فحص</span></button></div>
 </div>
 <div id="chat" class="hidden fixed inset-0 z-[60] flex flex-col bg-white">
   <div class="brand text-white flex items-center gap-2 px-3 py-3">
@@ -1363,6 +1383,8 @@ const vInit = () => { if (!vApp) { vApp = initializeApp(firebaseConfig, "veh"); 
 const vdb = () => (V.dev || V.role === "sup" ? vDb : db), vcol = n => collection(vdb(), VP + "factories", V.fid, n), vdoc = (n, id) => doc(vdb(), VP + "factories", V.fid, n, id);
 const nowM = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"); };
 const vn = x => String(x ?? "").toLowerCase().normalize("NFKD").replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/[۰-۹]/g, d => d.charCodeAt(0) - 1776).replace(/[\u064B-\u065F\u0640]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").trim();
+const vKeys = x => String(x ?? "").split(/[\/\\,،]+/).map(t => vn(t).replace(/[\s\-_.]+/g, "")).filter(Boolean);   // "٤٩٣٠" / "4930" / "49-30" / "66/67" → comparable keys
+const vMatch = (v, raw) => { const q = new Set(vKeys(raw)); return [v.code, ...(v.linked || [])].some(k => vKeys(k).some(x => q.has(x))); };
 const vcode = v => [v.code, ...(v.linked || [])].join("/");                            // linked codes = ONE physical vehicle (e.g. 66/67)
 const vst = v => v.deleted ? "del" : v.active === false ? "off" : v.hidden ? "hid" : "on";
 const vstate = v => { const i = V.insp.find(x => x.vehicleId === v.id); return i ? (i.ok ? "ok" : "bad") : "no"; };
@@ -1401,6 +1423,7 @@ const VIC = { insp: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.5-4.5", dash:
 const vFirst = () => (V.dev ? VT.dev : VT[V.role])[0][0];
 function vTabs() { const T = V.dev ? VT.dev : VT[V.role];
   $("#vTabs").innerHTML = T.map(([k, l]) => `<button data-act="vTab" data-id="${k}" class="vni ${V.tab === k ? "on" : ""}" ${V.tab === k ? 'aria-current="page"' : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${VIC[k]}"/></svg><span>${l}</span></button>`).join("");
+  $("#vTabs").classList.toggle("hidden", T.length < 2);   // single-tab roles (inspector) get the big + button instead of a search bar
   $("#vTitle").textContent = vFacName(V.fid) + (V.dev ? " · مطور المركبات" : V.role === "sup" ? " · مشرف" : ""); }
 const vMonLabel = (ym, full) => { const [y, m] = ym.split("-"), d = new Date(+y, +m - 1, 1); return d.toLocaleDateString("ar-EG", { month: "long" }) + (full || +y !== new Date().getFullYear() ? " " + y : ""); };
 const vMonthSel = (full, cls = "i w-full !mt-1 !py-3") => { const o = [], d = new Date(); d.setDate(1); for (let i = 0; i < 12; i++) { o.push(d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0")); d.setMonth(d.getMonth() - 1); } if (!o.includes(V.month)) o.push(V.month);
@@ -1481,7 +1504,7 @@ async function vRender(force) {
     V.home = true;
     B.innerHTML = `<div><label class="vmu text-sm" for="vMonth">شهر الفحص:</label>${vMonthSel()}</div>
       <form data-form="vlook" class="vc grid gap-4 text-center"><h2 class="vlt text-xl font-bold flex items-center justify-center gap-2"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="${VIC.insp}"/></svg>فحص كود السيارة</h2>
-        <div class="flex gap-3 items-stretch"><input name="code" class="vcode grow min-w-0" required autocomplete="off" dir="ltr" placeholder="أدخل الكود..." aria-label="كود المركبة"><button class="vgo">بحث</button></div><p class="vmu text-sm">يقبل أرقام عربية وإنجليزية</p></form><div id="vOut" class="grid gap-3"></div>`; }
+        <input name="code" class="vcode w-full min-w-0" required autocomplete="off" dir="ltr" placeholder="أدخل الكود..." aria-label="كود المركبة"><div class="vlk"><button type="button" data-act="vLookS" class="vgo">✔ حالة الفحص</button><button type="button" data-act="vLookR" class="vgo alt">📄 تقرير الفحص</button></div><p class="vmu text-sm">يقبل أرقام عربية وإنجليزية</p></form><div id="vOut" class="grid gap-3"></div>`; }
   else if (M === "rep") { await vload(force);
     B.innerHTML = `<div class="${VCARD} grid gap-3"><label class="text-xs font-semibold">الشهر${vMonthSel()}</label><p class="text-sm text-slate-500">${CK} (${esc(V.month)}${V.contractor ? " · " + esc(V.contractor) : ""})</p>
       <div class="grid sm:grid-cols-2 gap-2">${vFeat("pdf") ? `<button data-act="vRep" data-id="all" class="b">كل المركبات حسب المقاول</button><button data-act="vRep" data-id="bad" class="b">المركبات غير المطابقة</button><button data-act="vRep" data-id="no" class="b">لم تُفحص هذا الشهر</button><button data-act="vRep" data-id="sum" class="b">الملخص الشهري</button>` : ""}${vFeat("excel") ? `<button data-act="vXls" class="b">تصدير Excel</button>` : ""}</div>
@@ -1608,6 +1631,7 @@ const VACT = {
       ${V.dev ? "" : V.role === "sup" ? `<button data-act="vVeh" data-id="${v.id}" class="b mt-3">تعديل بيانات المركبة</button>` : `<button data-act="vReq" data-id="${esc(vcode(v))}" class="b mt-3">طلب تعديل بيانات المركبة من المشرف</button>`}</div>`, true); },
   vReq(code) { openModal("طلب تعديل", `<form data-form="vreq" dir="rtl" class="grid gap-2"><input type="hidden" name="code" value="${esc(code)}"><p>المركبة: <b dir="ltr">${esc(code)}</b></p><textarea name="note" rows="3" class="i" required maxlength="300" placeholder="ما التعديل المطلوب؟ (بدون بيانات شخصية)"></textarea><button class="b bp">إرسال للمشرف</button></form>`); },
   async vNotify(code) { await run("جارٍ الإرسال…", "تم إبلاغ المشرف ✓", () => addDoc(collection(vdb(), VP + "notifications"), { fid: V.fid, code, type: "unknown_code", done: false, ts: serverTimestamp() })); $("#vOut").innerHTML = ""; },
+  vLookS: () => vLookup("status"), vLookR: () => vLookup("report"), vStartInsp(id) { const v = V.veh.find(x => x.id === id); if (v) { $("#vOut").innerHTML = ""; return vOpenInsp(v); } },
   vAddVeh: code => vOpenInsp(null, code),                // unknown code: the inspector adds the vehicle together with its first inspection
   vRep: id => vReport(id),
   vXls() { const L = vlist(); if (!L.length) return toast("لا توجد بيانات للتصدير."); const st = L.map(vstate), ins = st.filter(x => x !== "no").length, bad = st.filter(x => x === "bad").length;
@@ -1634,6 +1658,29 @@ const vAuthMsg = e => ({ "auth/invalid-credential": "كلمة السر غير ص
   "auth/too-many-requests": "محاولات كثيرة. انتظر بضع دقائق ثم حاول مجدداً.", "auth/network-request-failed": "لا يوجد اتصال بالإنترنت. تحقق من الشبكة.", "auth/operation-not-allowed": "فعّل Email/Password من Firebase ← Authentication." }[e.code] || "تعذر تسجيل الدخول. حاول مرة أخرى.");
 const vSupLogin = () => { openModal("دخول المشرف", `<form data-form="vsup" dir="rtl" class="grid gap-3"><input class="i !mt-0" value="${SUP_DEV}" readonly dir="ltr" aria-label="اسم المستخدم"><input name="pw" type="password" class="i !mt-0" required autocomplete="off" placeholder="كلمة سر المشرف" aria-label="كلمة سر المشرف"><p class="err hidden text-sm text-red-700"></p><button class="b bp">دخول</button></form>`); $("#modal").classList.add("vgm"); $("[data-form=vsup] [name=pw]").focus(); };
 const vFail = (f, m) => { const el = f.querySelector(".err"); el.textContent = m; el.classList.remove("hidden"); };
+const vFind = raw => V.veh.filter(v => vMatch(v, raw)).sort((a, b) => (vst(a) === "on" ? 0 : 1) - (vst(b) === "on" ? 0 : 1))[0];   // active match wins over archived duplicates
+async function vInspOf(v) {                              // this month's inspection: by doc id first, then by vehicleId + month field
+  const d = await getDoc(vdoc("inspections", `${v.id}_${V.month}`)); if (d.exists()) return d;
+  try { return (await getDocs(query(vcol("inspections"), where("vehicleId", "==", v.id)))).docs.find(x => x.data().month === V.month) || null; } catch { return null; } }
+async function vLookup(mode) {                          // status check (right) · inspection report (left) for the entered code + selected month
+  const f = $("[data-form=vlook]"); if (!f) return; const raw = f.elements.code.value.trim(), out = $("#vOut");
+  if (!vKeys(raw).length) { f.elements.code.focus(); return toast("اكتب كود المركبة أولاً."); }
+  V.veh = await vget("vehicles"); let v = vFind(raw);
+  if (!v) { V.veh = await vget("vehicles", true); v = vFind(raw); }      // cache may be stale (vehicle added moments ago or from another device)
+  const [ck, ins] = await Promise.allSettled([vchk(), vget("inspectors")]); if (ck.status === "fulfilled") V.chk = ck.value; if (ins.status === "fulfilled") V.ins = ins.value;
+  if (!v) { let other = "";                              // exists in another factory? (only readable where the rules allow; failures are ignored)
+    try { const hits = (await Promise.allSettled(vFacs().filter(x => x.id !== V.fid).map(async x => ({ id: x.id, rows: (await getDocs(collection(vdb(), VP + "factories", x.id, "vehicles"))).docs.map(d => d.data()) })))).filter(r => r.status === "fulfilled" && r.value.rows.some(x => vMatch(x, raw))).map(r => vFacName(r.value.id)); if (hits.length) other = `<p class="vmu text-sm">ملاحظة: الكود مسجّل في مصنع آخر (${esc(hits.join("، "))}) — اختر المصنع الصحيح.</p>`; } catch {}
+    return out.innerHTML = `<div class="${VCARD} grid gap-2"><p class="text-red-500 font-semibold">الكود ${esc(raw)} غير مسجل في ${esc(vFacName(V.fid))}.</p>${other}<div class="flex flex-wrap gap-2"><button data-act="vAddVeh" data-id="${esc(raw)}" class="b bp">+ فحص مركبة جديدة (إضافة)</button><button data-act="vNotify" data-id="${esc(raw)}" class="b">إبلاغ المشرف</button></div></div>`; }
+  if (vst(v) !== "on") return out.innerHTML = `<div class="${VCARD} text-amber-500">المركبة ${esc(vcode(v))} موجودة لكنها ${VS[vst(v)]}.</div>`;
+  const snap = await vInspOf(v), ml = vMonLabel(V.month, true), cd = esc(vcode(v));
+  if (mode === "status") return out.innerHTML = snap
+    ? `<div class="${VCARD} grid gap-2 text-center" role="status"><p class="text-emerald-500 font-bold text-lg">✓ تم فحص المركبة ${cd}</p><p class="vmu text-sm">في شهر ${esc(ml)}</p><button data-act="vLookR" class="b justify-self-center">📄 عرض التقرير</button></div>`
+    : `<div class="${VCARD} grid gap-2 text-center" role="status"><p class="text-amber-500 font-bold text-lg">✗ المركبة ${cd} مسجلة، لكنها لم تُفحص بعد</p><p class="vmu text-sm">لا يوجد فحص لها في شهر ${esc(ml)}</p><button data-act="vStartInsp" data-id="${v.id}" class="vgo justify-self-center !px-6 !py-2">بدء الفحص</button></div>`;
+  if (!snap) return out.innerHTML = `<div class="${VCARD} text-amber-500 font-semibold text-center" role="status">المركبة ${cd} مسجلة، لكن لا يوجد تقرير فحص لها في شهر ${esc(ml)}.</div>`;
+  out.innerHTML = ""; const r = snap.data(), sl = st => st === "ok" ? "مطابق" : VST[st] || "—", it = x => x.kind === "gen" ? (x.pct != null ? x.pct + "%" : "—") : x.kind === "lt" ? (x.val || sl(x.st)) : sl(x.st);
+  openModal(`تقرير الفحص — ${vcode(v)} · ${ml}`, `<div dir="rtl" class="grid gap-2"><p class="font-bold ${r.ok ? "text-emerald-500" : "text-red-500"}">${r.ok ? "✓ مطابقة" : "✗ غير مطابقة"}</p>
+    <p class="text-sm">اللوحة: <b>${esc(r.plate || "—")}</b> · المقاول: <b>${esc(r.contractor || "—")}</b> · الخط: <b>${esc(r.route || "—")}</b> · الفاحص: <b>${esc(r.inspector || "—")}</b></p>
+    ${vTbl(["البند", "الحالة"], (r.items || []).map(x => [x.label, it(x)]))}${r.notes ? `<p class="text-sm">ملاحظات: ${esc(r.notes)}</p>` : ""}</div>`, true); }
 const VFORMS = {
   vdev: guard(async f => { const btn = f.querySelector("button:not([type])"); btn.disabled = true; vInit();
     try { await signInWithEmailAndPassword(vAuth, CAR_DEV, f.elements.pw.value); }
@@ -1643,12 +1690,7 @@ const VFORMS = {
     try { await signInWithEmailAndPassword(vAuth, SUP_DEV, f.elements.pw.value); }
     catch (e) { btn.disabled = false; return vFail(f, vAuthMsg(e)); }
     V.role = "sup"; VCACHE = {}; V.draft = null; vDraftSave(); closeModal(); vShow(VT.sup[0][0]); }),
-  vlook: guard(async f => { const raw = f.elements.code.value.trim(), c = vn(raw), out = $("#vOut"); if (!c) return;
-    [V.veh, V.chk, V.ins] = await Promise.all([vget("vehicles"), vchk(), vget("inspectors")]); const v = V.veh.find(x => [x.code, ...(x.linked || [])].some(k => vn(k) === c));
-    if (!v) return out.innerHTML = `<div class="${VCARD} grid gap-2"><p class="text-red-500 font-semibold">الكود ${esc(raw)} غير مسجل.</p><div class="flex flex-wrap gap-2"><button data-act="vAddVeh" data-id="${esc(raw)}" class="b bp">+ فحص مركبة جديدة (إضافة)</button><button data-act="vNotify" data-id="${esc(raw)}" class="b">إبلاغ المشرف</button></div></div>`;
-    if (vst(v) !== "on") return out.innerHTML = `<div class="${VCARD} text-amber-500">هذه المركبة ${VS[vst(v)]}.</div>`;
-    const done = await getDoc(vdoc("inspections", `${v.id}_${V.month}`));
-    if (done.exists()) return out.innerHTML = `<div class="${VCARD} text-amber-500 font-semibold">تم فحص المركبة ${esc(vcode(v))} بالفعل في هذا الشهر.</div>`; out.innerHTML = ""; await vOpenInsp(v); }),
+  vlook: guard(() => vLookup("status")),
   vsave: guard(async f => { if (V.dev || V.role === "sup") throw new Error(V.dev ? "مطور المركبات لا يضيف ولا يحفظ فحوصات. التعديل فقط." : "المشرف للمتابعة والتقارير فقط (قراءة)."); vSync(f); const d = V.draft; if (!d) return; const v = vOf(d), btn = f.querySelector("#vSaveBtn"), er = f.querySelector("p.err"), code = d.code.trim(), row = id => $(`[data-row="${id}"]`);
     const fail = (m, el) => { er.textContent = m; er.classList.remove("hidden"); (el || er).scrollIntoView({ block: "center", behavior: "smooth" }); };
     if (!code) return fail("كود السيارة مطلوب.", f.elements.code); if (!d.plateL.trim() || !d.plateN.trim()) return fail("رقم اللوحة لهذا الشهر مطلوب (حروف وأرقام).", !d.plateL.trim() ? f.elements.plateL : f.elements.plateN); if (!d.contractor) return fail("اختر المقاول.", f.elements.contractor); if (!d.route.trim()) return fail("الخط مطلوب.", f.elements.route); if (!d.inspector.trim()) return fail("اختر اسم الفاحص.", f.elements.inspector);
@@ -1658,7 +1700,7 @@ const VFORMS = {
     const rec = { ...ct, factoryId: V.fid, name: v?.name || "", plate, contractor: d.contractor, route: d.route.trim(), type: d.type.trim(), month: V.month, items, ok: items.every(x => x.ok), notes: d.notes.trim(), inspector: d.inspector.trim(), secs: Math.round((Date.now() - d.t0) / 1e3), clientTs: Date.now(), ts: serverTimestamp() };
     btn.disabled = true;                                // locked right away: no double taps
     try { if (v) await run("جارٍ حفظ الفحص…", "تم حفظ الفحص بنجاح ✓", () => setDoc(vdoc("inspections", `${v.id}_${V.month}`), { ...rec, vehicleId: v.id, code: vcode(v) }));
-      else { V.veh = await vget("vehicles", true); const all = [code, ...d.linked], clash = V.veh.find(x => [x.code, ...(x.linked || [])].some(c => all.some(a => vn(a) === vn(c)))); if (clash) throw new Error(`الكود مستخدم في المركبة ${vcode(clash)} — ابحث عنه من شاشة البحث.`);
+      else { V.veh = await vget("vehicles", true); const all = [code, ...d.linked], clash = V.veh.find(x => vMatch(x, all.join("/"))); if (clash) throw new Error(`الكود مستخدم في المركبة ${vcode(clash)} — ابحث عنه من شاشة البحث.`);
         const ref = doc(vcol("vehicles")), b = writeBatch(vdb());       // new vehicle + its first inspection are written together (all or nothing)
         b.set(ref, { ...ct, factoryId: V.fid, code, linked: d.linked, name: "", plate, contractor: d.contractor, type: rec.type, route: rec.route, notes: "", active: true, createdBy: "inspector", createdAt: serverTimestamp() });
         b.set(vdoc("inspections", `${ref.id}_${V.month}`), { ...rec, vehicleId: ref.id, code: all.join("/") }); await run("جارٍ حفظ الفحص…", "تمت إضافة المركبة وحفظ الفحص ✓", () => b.commit()); vinv("vehicles"); } }
