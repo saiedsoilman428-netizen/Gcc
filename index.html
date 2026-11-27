@@ -449,6 +449,18 @@ html.dark .i:focus,html.dark input:focus,html.dark select:focus,html.dark textar
 .i:disabled,.i[readonly]{color:var(--g-mu);-webkit-text-fill-color:var(--g-mu)}
 .tile,.xc,.wtw,#side,#sbar,.regw{color:var(--g-tx)}
 #veh input::placeholder,#veh textarea::placeholder{color:var(--mu)!important;-webkit-text-fill-color:var(--mu)}
+/* حدود التعرض + كل بطاقات النوافذ: نص بكامل القوة، بلا تعتيم، حقول واضحة (قيم احتياطية تضمن القراءة حتى بدون ثيم) */
+#mBox .xc,#mBox .xc div,#mBox .xc b,#mBox .xc label,#mBox .xc span,#mBox .xc p,#mBox .xc h3{color:var(--g-tx,#f1f5f9)!important;opacity:1!important;line-height:1.85}
+#mBox .xc h3{font-size:1.15rem;font-weight:800}
+#mBox .xc .xg{padding-block:.55rem;border-bottom:1px solid var(--g-bd,rgba(255,255,255,.14))}#mBox .xc .xg:last-child{border-bottom:0}
+#mBox .xc .xtm{font-size:1.05rem;letter-spacing:.02em;color:var(--g-lt-c,var(--g-tx,#fff))!important}
+#mBox .xc .xs{font-weight:700}
+#mBox .xc .xd{font-size:1rem;font-weight:500;margin-top:.15rem}
+#mBox .xc .xn{font-size:.9rem;color:var(--g-mu,#cbd5e1)!important}
+#mBox .xc .xok{color:var(--g-ok,#4ade80)!important}#mBox .xc .xbad{color:var(--g-bad,#f87171)!important}
+#mBox .xc input,#mBox .xc .i{background:var(--g-fl,#14161B)!important;color:var(--g-tx,#f1f5f9)!important;-webkit-text-fill-color:var(--g-tx,#f1f5f9)!important;border:1.5px solid var(--g-ibd,#7b8f96)!important;font-size:1rem;font-weight:600;min-height:2.8rem}
+#mBox .xc input::placeholder{color:var(--g-ph,#aab8bd)!important;-webkit-text-fill-color:var(--g-ph,#aab8bd)!important;opacity:1}
+#mBox .xc .xbtn{color:#fff!important}
 </style>
 <style id="hse-page">
 /* HSE forms page — same Garage Console look & motion as Vehicle Inspection */
@@ -495,6 +507,14 @@ html:not(.dark) #hsep{background:linear-gradient(180deg,var(--t-tint),var(--g-bg
 #mBox .overflow-auto{max-width:100%;-webkit-overflow-scrolling:touch;border-radius:12px}
 #mBox .overflow-auto .rt{min-width:30rem}
 #mBox #pelQ{color:var(--g-tx)!important}
+/* Safety Guide: one smooth long page — stacked cards, no tables, no sideways scrolling */
+#mBox{overflow-x:hidden}
+.rf{display:grid;gap:1.4rem;min-width:0;max-width:100%;overflow-wrap:anywhere}.rf section{min-width:0;scroll-margin-top:3.6rem}
+.rfn{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem 0;background:var(--g-sf);border-bottom:1px solid var(--g-bd)}.rfn .b{min-height:2.2rem;padding:.2rem .7rem;font-size:.82rem;border-radius:999px}
+.rfl{display:grid;gap:.55rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,16rem),1fr))}
+.rfi{display:grid;gap:.2rem;padding:.7rem .85rem;border:1px solid var(--g-bd);border-inline-start:4px solid rgb(var(--g-ac));border-radius:14px;background:var(--g-fl);color:var(--g-tx)}
+.rfi .n{font-weight:800;font-size:1rem;line-height:1.6;color:var(--g-tx)}.rfi .e{font-size:.82rem;color:var(--g-mu);text-align:right}
+.rfv{display:flex;flex-wrap:wrap;gap:.35rem .5rem;margin-top:.15rem}.rfv span{display:inline-flex;gap:.35rem;align-items:baseline;padding:.2rem .65rem;border-radius:12px;background:var(--g-sf);border:1px solid var(--g-bd);font-size:.92rem;line-height:1.6;color:var(--g-tx)}.rfv small{color:var(--g-mu);font-size:.78rem}.rfv b{color:var(--g-tx)}
 </style>
 <style id="theme-ui">
 html.themeFade *,html.themeFade *::before,html.themeFade *::after{transition:background-color .4s ease,border-color .4s ease,color .4s ease,box-shadow .4s ease,fill .4s ease!important}
@@ -510,6 +530,19 @@ header.brand::before,#veh .vhead::before,#hsep .hh::before{content:"";position:a
  background-image:linear-gradient(rgb(var(--g-lt) / .35) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--g-lt) / .35) 1px,transparent 1px);background-size:26px 20px;
  transform:perspective(220px) rotateX(58deg);transform-origin:50% 100%;-webkit-mask-image:linear-gradient(to top,#000,transparent);mask-image:linear-gradient(to top,#000,transparent)}
 #hsep .hh{isolation:isolate}
+/* HOME-ONLY perspective grid: fixed full-screen layer behind the factory selector; shown only while #login + #sel are visible (hidden at once on password step / inside any factory or sub-view) */
+#homeGrid{display:none;position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+body:has(#login:not(.hidden) #sel:not(.hidden)) #homeGrid{display:block}
+#homeGrid::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 50% at 50% 0,rgb(var(--g-ac,13 148 136) / .22),transparent 70%)}
+#homeGrid::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgb(var(--g-ad,15 118 110) / .16) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--g-ad,15 118 110) / .16) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 65%);mask-image:linear-gradient(to bottom,#000,transparent 65%)}
+#homeGrid i{position:absolute;inset:auto 0 0 0;height:62vh;overflow:hidden;-webkit-mask-image:linear-gradient(to top,#000 50%,transparent);mask-image:linear-gradient(to top,#000 50%,transparent)}
+#homeGrid i::before{content:"";position:absolute;left:-150%;right:-150%;bottom:0;height:300vh;background-image:linear-gradient(rgb(var(--g-ad,15 118 110) / .55) 2px,transparent 2px),linear-gradient(90deg,rgb(var(--g-ad,15 118 110) / .55) 2px,transparent 2px);background-size:60px 60px;
+ transform:perspective(1200px) rotateX(68deg);transform-origin:50% 100%;animation:homeGridMove 5s linear infinite}
+html.dark #homeGrid::after{background-image:linear-gradient(rgb(var(--g-lt,94 234 212) / .14) 1px,transparent 1px),linear-gradient(90deg,rgb(var(--g-lt,94 234 212) / .14) 1px,transparent 1px)}
+html.dark #homeGrid i::before{background-image:linear-gradient(rgb(var(--g-lt,94 234 212) / .5) 2px,transparent 2px),linear-gradient(90deg,rgb(var(--g-lt,94 234 212) / .5) 2px,transparent 2px)}
+@keyframes homeGridMove{to{background-position:0 60px}}
+#login{position:relative;z-index:1}
+html:not(.dark) #login:has(#sel:not(.hidden))>div{background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
 /* accent surfaces keep white text contrast */
 .bp,#veh .vgo:not(.alt),#veh .vtimer{color:#fff}
 /* accent text on light surfaces uses the darker accent */
@@ -600,6 +633,7 @@ html:not(.dark) .tile .tic,html:not(.dark) #veh.vlight .vct svg{color:rgb(var(--
 </script>
 
 <!-- ================= LOGIN ================= -->
+<div id="homeGrid" aria-hidden="true"><i></i></div>
 <main id="login" class="min-h-screen grid place-items-center p-4">
   <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
     <div class="brand bg-slate-800 text-white p-5 flex items-center gap-3"><span class="logo shrink-0" data-s="44"></span>
@@ -1374,26 +1408,23 @@ const DUST = [["Particulates, respirable (no specific limit)", "أتربة قا�
   ["Cotton dust (raw, thoracic)", "أتربة القطن الخام", "0.1 mg/m³"], ["Flour dust (inhalable)", "أتربة الدقيق", "0.5 mg/m³"], ["Grain dust (inhalable)", "أتربة الحبوب", "4 mg/m³"], ["Lead dust", "أتربة الرصاص", "0.05 mg/m³"], ["Asbestos (all forms)", "الأسبستوس", "0.1 f/cc"]];
 const LUX = [["ممرات وطرق داخلية", "100"], ["سلالم", "150"], ["مخازن عامة", "100"], ["مخازن فيها قراءة بيانات أو تداول", "200"], ["أرصفة التحميل والتفريغ", "150"], ["كافتيريا وأماكن الراحة", "200"], ["ورش الصيانة وتشغيل الماكينات (شغل خشن)", "300"],
   ["لحام", "300"], ["خطوط الإنتاج والتجميع العادي", "300 – 500"], ["المكاتب", "500"], ["غرف التحكم", "500"], ["غرفة الإسعافات الأولية", "500"], ["التجميع الدقيق", "750"], ["فحص وضبط الجودة", "750 – 1000"], ["ساحات وممرات خارجية", "20 – 50"]];
-const REF = () => `<div class="grid gap-5" dir="rtl">
-  <section><h3 class="font-bold text-base mb-1">⚖️ القوانين واللوائح</h3><table class="rt"><tr><th></th><th>القانون القديم</th><th>القانون الجديد</th></tr>
-    <tr><td>القانون</td><td>قانون العمل 12 لسنة 2003 (الكتاب الخامس: السلامة والصحة المهنية وتأمين بيئة العمل)</td><td>قانون العمل 14 لسنة 2025</td></tr>
-    <tr><td>التواريخ</td><td>اتلغى من 1 سبتمبر 2025</td><td>اتنشر في 3 مايو 2025 وشغّال من 1 سبتمبر 2025، ومحاكم العمل المتخصصة من 1 أكتوبر 2025</td></tr>
-    <tr><td>السلامة والصحة المهنية</td><td colspan="2">راجع باب السلامة والصحة المهنية في القانون الساري وقرارات وزارة العمل التنفيذية.</td></tr></table>
-    <ul class="list-disc ps-5 mt-2 grid gap-1"><li>قانون البيئة 4 لسنة 1994 (المعدل بالقانون 9 لسنة 2009) ولائحته التنفيذية، قرار 338 لسنة 1995 المعدل بقرار 1095 لسنة 2011 — الملحق 8: حدود الملوثات في هواء أماكن العمل.</li>
-    <li>قانون التأمينات الاجتماعية 148 لسنة 2019 — إصابات العمل والأمراض المهنية؛ لازم الإصابة تتبلّغ لمكتب التأمينات ومديرية العمل.</li></ul></section>
-  <section><h3 class="font-bold text-base mb-1">🦺 التزامات صاحب العمل المعتادة</h3><ul class="list-disc ps-5 grid gap-1"><li>يوفّر مكان شغل آمن، ويعمل تقييم مخاطر وتعليمات سلامة مكتوبة.</li><li>يدّي العمال معدات الوقاية الشخصية (PPE) المناسبة مجانًا ويدرّبهم على استخدامها.</li>
+const ri = (n, e, v = []) => `<div class="rfi" data-r><div class="n">${n}</div>${e ? `<div class="e" dir="ltr">${e}</div>` : ""}${v.length ? `<div class="rfv">${v.map(([l, x]) => `<span><small>${l}</small> <b dir="ltr">${x}</b></span>`).join("")}</div>` : ""}</div>`;
+const RF_NAV = [["rf-law", "⚖️ القوانين"], ["rf-emp", "🦺 الالتزامات"], ["rf-pel", "☣️ المواد الخطرة"], ["rf-noise", "🔊 الضوضاء"], ["rf-dust", "🌫️ الأتربة"], ["rf-lux", "💡 الإضاءة"]];
+const rs = (id, t, body, note) => `<section id="${id}"><h3>${t}</h3>${body}${note ? `<p class="text-xs text-slate-500 mt-2">${note}</p>` : ""}</section>`;
+const REF = () => `<div class="rf" dir="rtl"><nav class="rfn" aria-label="أقسام الدليل">${RF_NAV.map(([i, l]) => `<button type="button" data-act="rfGo" data-id="${i}" class="b">${l}</button>`).join("")}</nav>
+  ${rs("rf-law", "⚖️ القوانين واللوائح", `<div class="rfl">${ri("القانون القديم", "", [["", "قانون العمل 12 لسنة 2003 (الكتاب الخامس: السلامة والصحة المهنية وتأمين بيئة العمل)"]])}${ri("اتلغى", "", [["", "من 1 سبتمبر 2025"]])}${ri("القانون الجديد", "", [["", "قانون العمل 14 لسنة 2025"]])}${ri("التواريخ", "", [["", "اتنشر في 3 مايو 2025 وشغّال من 1 سبتمبر 2025، ومحاكم العمل المتخصصة من 1 أكتوبر 2025"]])}${ri("السلامة والصحة المهنية", "", [["", "راجع باب السلامة والصحة المهنية في القانون الساري وقرارات وزارة العمل التنفيذية."]])}</div>
+    <ul class="list-disc mt-3 grid gap-1"><li>قانون البيئة 4 لسنة 1994 (المعدل بالقانون 9 لسنة 2009) ولائحته التنفيذية، قرار 338 لسنة 1995 المعدل بقرار 1095 لسنة 2011 — الملحق 8: حدود الملوثات في هواء أماكن العمل.</li>
+    <li>قانون التأمينات الاجتماعية 148 لسنة 2019 — إصابات العمل والأمراض المهنية؛ لازم الإصابة تتبلّغ لمكتب التأمينات ومديرية العمل.</li></ul>`)}
+  ${rs("rf-emp", "🦺 التزامات صاحب العمل المعتادة", `<ul class="list-disc grid gap-1"><li>يوفّر مكان شغل آمن، ويعمل تقييم مخاطر وتعليمات سلامة مكتوبة.</li><li>يدّي العمال معدات الوقاية الشخصية (PPE) المناسبة مجانًا ويدرّبهم على استخدامها.</li>
     <li>كشف طبي قبل التعيين وكشف دوري، وحفظ السجلات الطبية.</li><li>يمسك سجل إصابات العمل والأمراض المهنية ويبلّغ الجهات في الميعاد القانوني.</li><li>خطط مكافحة الحريق والطوارئ والإخلاء، وتغطية أجزاء الماكينات الخطرة، وتخزين المواد الخطرة بشكل آمن.</li>
-    <li>وحدة أو مسؤول سلامة ولجنة سلامة حسب حجم المنشأة، والتعاون مع مفتشي العمل.</li></ul><p class="text-xs text-slate-500 mt-1">للاسترشاد فقط — اتأكد من أرقام المواد والمواعيد والعقوبات من النص الرسمي للقانون الساري.</p></section>
-  <section><h3 class="font-bold text-base mb-1">☣️ حدود التعرض للمواد الخطرة والحدود السقفية</h3><input id="pelQ" type="search" placeholder="Search substance" class="i !mt-0 mb-2">
-    <div class="overflow-auto max-h-96"><table id="pelT" class="rt"><tr><th>Substance</th><th>المادة</th><th>المتوسط على 8 ساعات (TWA)</th><th>حد قصير المدى / حد سقفي (Ceiling)</th></tr>${PEL.map(r => `<tr data-r><td dir="ltr">${r[0]}</td><td>${r[1]}</td><td dir="ltr">${r[2]}</td><td dir="ltr">${r[3]}</td></tr>`).join("")}</table></div>
-    <p class="text-xs text-slate-500 mt-1">الحد السقفي (Ceiling) معناه رقم ما ينفعش يتعدّى لحظة واحدة حتى. القيم دي إرشادية من ACGIH TLV. الحدود الملزمة قانونًا في مصر موجودة في الملحق 8 من قرار 338 لسنة 1995 (المعدل) — راجعها قبل ما تستخدم أي رقم في تقرير رسمي.</p></section>
-  <section><h3 class="font-bold text-base mb-1">🔊 الضوضاء</h3><table class="rt"><tr><th>مستوى الصوت dB(A)</th><th>أقصى مدة تعرّض في اليوم</th></tr>${NOISE.map(r => `<tr><td dir="ltr">${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>
-    <ul class="list-disc ps-5 mt-2 grid gap-1 text-sm"><li>الجدول ده بقاعدة ACGIH (حد 85 ديسيبل لمدة 8 ساعات، وكل زيادة 3 ديسيبل تنصّف المدة). حد OSHA الأمريكي 90 ديسيبل لـ 8 ساعات.</li><li>أي صوت لحظي (نبضي) أعلى من 140 ديسيبل (C) ممنوع تتعرّض له الأذن من غير حماية.</li>
-    <li>لازم سدادات أو سماعات أذن وبرنامج قياس وفحص سمع دوري لو التعرّض عدّى 85 ديسيبل.</li><li>الحد المنصوص عليه في اللائحة التنفيذية لقانون البيئة (حوالي 90 ديسيبل لـ 8 ساعات) — اتأكد منه من النص الرسمي.</li></ul></section>
-  <section><h3 class="font-bold text-base mb-1">🌫️ الأتربة</h3><div class="overflow-auto max-h-80"><table class="rt"><tr><th>Dust</th><th>نوع الأتربة</th><th>الحد (TWA 8 ساعات)</th></tr>${DUST.map(r => `<tr><td dir="ltr">${r[0]}</td><td>${r[1]}</td><td dir="ltr">${r[2]}</td></tr>`).join("")}</table></div>
-    <p class="text-xs text-slate-500 mt-1">قيم إرشادية (ACGIH / OSHA). استخدم شفط موضعي وتهوية، وكمامات مناسبة، وقياس دوري، وراجع الحد الرسمي في الملحق 8 من قرار 338 لسنة 1995 المعدل.</p></section>
-  <section><h3 class="font-bold text-base mb-1">💡 شدة الإضاءة (لوكس)</h3><table class="rt"><tr><th>المكان / نوع الشغل</th><th>الحد الأدنى المقترح (لوكس)</th></tr>${LUX.map(r => `<tr><td>${r[0]}</td><td dir="ltr">${r[1]}</td></tr>`).join("")}</table>
-    <p class="text-xs text-slate-500 mt-1">قيم إرشادية مبنية على المواصفة الأوروبية EN 12464-1. قيس الإضاءة بجهاز لوكس ميتر على مستوى سطح الشغل، وراجع الكود المصري لأعمال الإضاءة واشتراطات الجهات المختصة.</p></section></div>`;
+    <li>وحدة أو مسؤول سلامة ولجنة سلامة حسب حجم المنشأة، والتعاون مع مفتشي العمل.</li></ul>`, "للاسترشاد فقط — اتأكد من أرقام المواد والمواعيد والعقوبات من النص الرسمي للقانون الساري.")}
+  ${rs("rf-pel", "☣️ حدود التعرض للمواد الخطرة والحدود السقفية", `<input id="pelQ" type="search" placeholder="بحث عن مادة / Search substance" class="i !mt-0 mb-2"><div id="pelL" class="rfl">${PEL.map(r => ri(r[1], r[0], [["TWA 8 ساعات", r[2]], ["قصير المدى / سقفي", r[3]]])).join("")}</div>`,
+    "الحد السقفي (Ceiling) معناه رقم ما ينفعش يتعدّى لحظة واحدة حتى. القيم دي إرشادية من ACGIH TLV. الحدود الملزمة قانونًا في مصر موجودة في الملحق 8 من قرار 338 لسنة 1995 (المعدل) — راجعها قبل ما تستخدم أي رقم في تقرير رسمي.")}
+  ${rs("rf-noise", "🔊 الضوضاء", `<div class="rfl">${NOISE.map(r => ri(`${r[0]} dB(A)`, "", [["أقصى مدة تعرّض في اليوم", r[1]]])).join("")}</div>
+    <ul class="list-disc mt-3 grid gap-1 text-sm"><li>الجدول ده بقاعدة ACGIH (حد 85 ديسيبل لمدة 8 ساعات، وكل زيادة 3 ديسيبل تنصّف المدة). حد OSHA الأمريكي 90 ديسيبل لـ 8 ساعات.</li><li>أي صوت لحظي (نبضي) أعلى من 140 ديسيبل (C) ممنوع تتعرّض له الأذن من غير حماية.</li>
+    <li>لازم سدادات أو سماعات أذن وبرنامج قياس وفحص سمع دوري لو التعرّض عدّى 85 ديسيبل.</li><li>الحد المنصوص عليه في اللائحة التنفيذية لقانون البيئة (حوالي 90 ديسيبل لـ 8 ساعات) — اتأكد منه من النص الرسمي.</li></ul>`)}
+  ${rs("rf-dust", "🌫️ الأتربة", `<div class="rfl">${DUST.map(r => ri(r[1], r[0], [["TWA 8 ساعات", r[2]]])).join("")}</div>`, "قيم إرشادية (ACGIH / OSHA). استخدم شفط موضعي وتهوية، وكمامات مناسبة، وقياس دوري، وراجع الحد الرسمي في الملحق 8 من قرار 338 لسنة 1995 المعدل.")}
+  ${rs("rf-lux", "💡 شدة الإضاءة (لوكس)", `<div class="rfl">${LUX.map(r => ri(r[0], "", [["الحد الأدنى المقترح (لوكس)", r[1]]])).join("")}</div>`, "قيم إرشادية مبنية على المواصفة الأوروبية EN 12464-1. قيس الإضاءة بجهاز لوكس ميتر على مستوى سطح الشغل، وراجع الكود المصري لأعمال الإضاءة واشتراطات الجهات المختصة.")}</div>`;
 
 window.addEventListener("popstate", () => { if (location.hash !== "#ai") $("#chat").classList.add("hidden"); });
 
@@ -1415,13 +1446,13 @@ const xN = id => { const v = parseFloat(String(document.getElementById(id)?.valu
 const xR = (id, h) => { const e = document.getElementById(id); if (e) e.innerHTML = h; };
 const xF = n => (Math.round(n * 1000) / 1000).toString();
 const EXPO = () => `<div class="grid gap-4" dir="rtl">
-  <section class="xc"><h3 class="font-bold mb-2">📖 اتعرّف على المصطلحات</h3><div class="grid gap-2">${EXPO_G.map(g => `<div><b dir="ltr">${g[0]}</b> — ${g[1]}<div class="text-sm opacity-80">${g[2]}</div></div>`).join("")}</div></section>
+  <section class="xc"><h3 class="font-bold mb-2">📖 اتعرّف على المصطلحات</h3><div class="grid gap-2">${EXPO_G.map(g => `<div class="xg"><b dir="ltr" class="xtm">${g[0]}</b> — <span class="xs">${g[1]}</span><div class="xd">${g[2]}</div></div>`).join("")}</div></section>
   <section class="xc"><h3 class="font-bold mb-2">⏱️ حاسبة TWA (8 ساعات)</h3><div class="grid grid-cols-2 gap-2 text-sm"><b>التركيز</b><b>المدة (ساعة)</b>${[1, 2, 3].map(n => `<input id="xt${n}c" class="i !mt-0" inputmode="decimal" dir="ltr" placeholder="ppm"><input id="xt${n}h" class="i !mt-0" inputmode="decimal" dir="ltr" placeholder="h">`).join("")}</div>
     <label class="text-sm block mt-2">الحد المسموح (TWA)<input id="xtL" class="i" inputmode="decimal" dir="ltr" placeholder="ppm"></label><div id="xtR" class="mt-2 font-semibold"></div><button type="button" data-act="xEx" data-id="twa" class="b xbtn mt-2">مثال جاهز</button></section>
   <section class="xc"><h3 class="font-bold mb-2">🕒 تعديل الحد لوردية أطول (RF)</h3><label class="text-sm block">ساعات الوردية<input id="xrH" class="i" inputmode="decimal" dir="ltr" placeholder="12"></label><label class="text-sm block">الحد الأصلي (8 ساعات)<input id="xrL" class="i" inputmode="decimal" dir="ltr"></label>
-    <div id="xrR" class="mt-2 font-semibold"></div><p class="text-xs opacity-70">RF = (8 ÷ ساعات الوردية) × ((24 − ساعات الوردية) ÷ 16) — طريقة Brief & Scala.</p><button type="button" data-act="xEx" data-id="rf" class="b xbtn mt-2">مثال جاهز</button></section>
+    <div id="xrR" class="mt-2 font-semibold"></div><p class="xn">RF = (8 ÷ ساعات الوردية) × ((24 − ساعات الوردية) ÷ 16) — طريقة Brief & Scala.</p><button type="button" data-act="xEx" data-id="rf" class="b xbtn mt-2">مثال جاهز</button></section>
   <section class="xc"><h3 class="font-bold mb-2">🧪 حاسبة الخليط (Em)</h3><div class="grid grid-cols-2 gap-2 text-sm"><b>التركيز الفعلي C</b><b>الحد L</b>${[1, 2, 3].map(n => `<input id="xm${n}c" class="i !mt-0" inputmode="decimal" dir="ltr"><input id="xm${n}l" class="i !mt-0" inputmode="decimal" dir="ltr">`).join("")}</div>
-    <div id="xmR" class="mt-2 font-semibold"></div><p class="text-xs opacity-70">Em = ΣCi÷Li — لو النتيجة أكبر من 1 يبقى الخليط عدّى الحد.</p><button type="button" data-act="xEx" data-id="em" class="b xbtn mt-2">مثال جاهز</button></section></div>`;
+    <div id="xmR" class="mt-2 font-semibold"></div><p class="xn">Em = ΣCi÷Li — لو النتيجة أكبر من 1 يبقى الخليط عدّى الحد.</p><button type="button" data-act="xEx" data-id="em" class="b xbtn mt-2">مثال جاهز</button></section></div>`;
 function xCalc() {
   let sum = 0, h = 0, ok = true; for (const n of [1, 2, 3]) { const c = xN(`xt${n}c`), t = xN(`xt${n}h`); if (isNaN(c) && isNaN(t)) continue; if (isNaN(c) || isNaN(t) || c < 0 || t < 0) ok = false; else { sum += c * t; h += t; } }
   const L = xN("xtL"), tw = sum / 8;
@@ -1436,6 +1467,7 @@ const go = (v, dept) => { S.view = v; S.dept = dept; S.hf = "all"; remember(); r
 const ACT = {
   regList: need(() => { openModal("قائمة العمال المسجلين", regHtml(), true, true); renderReg(); }),
   async regTog(id) { const w = S.workers.find(x => x.id === id); if (!w) return; await run("Saving…", w.listed === false ? "تم تفعيل العامل في القائمة العاملة ✓" : "تم إخفاء العامل من القائمة العاملة.", () => updateDoc(doc(col("workers"), id), { listed: w.listed === false })); },
+  rfGo: id => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }),
   refs: () => openModal("Safety Guide", REF(), true, true),
   expo: () => openModal("حدود التعرض", EXPO(), true, true),
   xEx: id => { Object.entries(X_EX[id] || {}).forEach(([k, v]) => { const e = document.getElementById(k); if (e) e.value = v; }); xCalc(); },
@@ -1589,7 +1621,7 @@ document.addEventListener("change", e => { if (e.target.closest("#rc")) renderRe
   const fk = e.target.dataset.fill; if (fk && e.target.value) { const el = e.target.form.elements[fk]; el.value = el.type === "date" ? "" : e.target.value; e.target.value = ""; } if (e.target.id === "logoFile") uploadLogo(e.target.files[0]); });
 document.addEventListener("input", e => { const f = e.target.closest?.("[data-form=theme]"); if (f) previewUi(f);
   const g = e.target.closest?.("[data-form=studio]"); if (g) { e.target.dataset.t = 1; applySec(readSec(g)); }
-  if (e.target.id === "pelQ") { const q = e.target.value.toLowerCase(); document.querySelectorAll("#pelT tr[data-r]").forEach(r => r.hidden = !r.textContent.toLowerCase().includes(q)); } });
+  if (e.target.id === "pelQ") { const q = e.target.value.toLowerCase(); document.querySelectorAll("#pelL [data-r]").forEach(r => r.hidden = !r.textContent.toLowerCase().includes(q)); } });
 document.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && e.target.id === "aiQ") { e.preventDefault(); ACT.aiSend(); } if (e.key === "Escape") { $("#pdo").classList.add("hidden"); setSide(false); } if (e.key === "Escape") cfmRes ? cfmDone(false) : closeModal(); });
 $("#search").addEventListener("input", e => { S.q = e.target.value.trim().toLowerCase(); renderTable(); guard(globalSearch)(); });
 /* ======================= 11) VEHICLE INSPECTION MODULE (فحص المركبات) =======================
