@@ -259,6 +259,111 @@ header.brand .hb{background:rgba(255,255,255,.14)}header.brand .hb:hover{backgro
 @media (max-width:380px){#veh .vres.gen{grid-template-columns:repeat(2,auto)}#veh .vst{min-width:3.8rem}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<style id="veh-dock">
+/* vehicle dock: ↑ · tabs/search · + sit in ONE in-flow sticky row at the bottom — nothing floats over form fields */
+#veh .vdock{position:sticky;bottom:0;z-index:6;display:flex;align-items:stretch;gap:.5rem;padding:.5rem .6rem calc(.5rem + env(safe-area-inset-bottom));background:var(--sf);border-top:1px solid var(--bd);box-shadow:0 -6px 18px rgba(0,0,0,.2)}
+#veh .vdock .vnav{position:static;flex:1 1 0;min-width:0;margin:0;left:auto;right:auto;bottom:auto;padding:0;border:0;border-radius:14px;background:transparent;backdrop-filter:none;box-shadow:none;overflow-x:auto}
+#veh .vdock .vnav:has(.vni:only-child) .vni{flex:1 1 100%;grid-auto-flow:column;justify-content:center;align-items:center;gap:.5rem;min-height:2.9rem;padding:.4rem .8rem}
+#veh .vdock .vtop,#veh .vdock .vplus{position:static;transform:none;flex:none;align-self:center;width:2.9rem;height:2.9rem;margin:0;padding:0;font-size:1.9rem;line-height:1;animation:none;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+#veh .vdock .vtop.hidden,#veh .vdock .vplus.hidden{display:none}
+#veh .vdock .vplus:active,#veh .vdock .vtop:active{transform:scale(.92)}
+#veh #vBody{padding-bottom:1.25rem}
+</style>
+<style id="compact-pass">
+/* compact density: smaller icons, tighter cells, wrapping columns → less horizontal scroll on mobile (RTL) */
+tr[data-act]{min-height:0}
+.wtw table{min-width:0;width:100%;font-size:.8rem;line-height:1.35}
+.wtw th,.wtw td{padding:.4rem .5rem;white-space:normal;overflow-wrap:anywhere;vertical-align:middle;height:2.5rem}
+.wtw th{font-size:.75rem;white-space:nowrap}
+.wtw td:nth-child(1),.wtw td:nth-child(2),.wtw th:nth-child(1),.wtw th:nth-child(2){white-space:nowrap;width:1%;text-align:center}
+.wtw td:nth-child(3){min-width:6.5rem;font-weight:600}
+.wtw td:nth-child(n+4){min-width:5rem;max-width:9rem}
+.wtw .empty{padding:1.25rem .75rem}
+.regw table{min-width:0;font-size:.78rem}.regw td:nth-child(3),.regw td:nth-child(5),.regw td:nth-child(6){min-width:5.5rem}
+.rt td,.rt th{padding:.3rem .4rem;font-size:.75rem;line-height:1.35}
+#mBox.mdark .rt td,#mBox.mdark .rt th{white-space:normal}
+.wtw .b,.rt .b,.regw .b,td .b{min-height:2rem;padding:.2rem .55rem;font-size:.75rem;border-radius:10px}
+.wtw .badge,.wtw svg,.rt svg{width:1rem;height:1rem}
+.tile{min-height:5.2rem;padding:.7rem .5rem;gap:.3rem;font-size:.9rem;line-height:1.3}
+.tile .tic{width:2.4rem;height:2.4rem;font-size:1.35rem;border-radius:12px}
+#tiles{gap:.6rem}
+.wbar{padding:.3rem 0}
+#topbar .tb{width:2.4rem;height:2.4rem}#topbar .tb svg{width:1.25rem;height:1.25rem}
+#veh .vni svg{width:1.4rem;height:1.4rem}#veh .vni{font-size:.75rem;gap:.1rem;padding:.4rem .3rem}
+#veh .vct{font-size:1rem;gap:.5rem;padding-bottom:.6rem;margin-bottom:.7rem}#veh .vct svg{width:1.6rem;height:1.6rem;padding:.2rem}
+#veh .vc{padding:.9rem 1rem}
+#veh .vi{min-height:2.9rem;padding:.6rem .8rem;font-size:.95rem}
+#veh .vtr{min-height:3.8rem;padding:.5rem .6rem;gap:.4rem}#veh .vth{padding-block:.6rem}
+#veh .vst{min-height:2.3rem;min-width:3.9rem;font-size:.85rem}
+#veh .vsq{min-width:2.6rem;height:2.6rem;border-radius:12px}#veh .vsq svg{width:1.25rem;height:1.25rem}
+#veh .vdock .vtop,#veh .vdock .vplus{width:2.6rem;height:2.6rem}
+#veh .vtimer{font-size:1.15rem;padding:.4rem .7rem}
+#veh .rt td,#veh .rt th{padding:.3rem .4rem}
+</style>
+<style id="garage-system">
+/* ===== Garage Console design system — shared by every screen (same tokens/components as Vehicle Inspection) ===== */
+:root{--g-bg:#eef6f5;--g-sf:#fff;--g-fl:#f3f9f8;--g-bd:#b4cdca;--g-tx:#0b2a2a;--g-mu:#47635f;--g-ac:13 148 136;--g-lt:94 234 212;--g-sh:0 6px 18px rgba(0,0,0,.12);--cd:var(--g-sf);--bdr:var(--g-bd);--bl:#0d9488}
+html.dark{--g-bg:#0b1416;--g-sf:#112024;--g-fl:#16292d;--g-bd:#2f4a50;--g-tx:#eef7f6;--g-mu:#a3bcbe;--g-sh:0 6px 18px rgba(0,0,0,.3);--cd:var(--g-sf);--bdr:var(--g-bd)}
+html:not(.dark) body{background:linear-gradient(180deg,#dff1ee,var(--page,#eef6f5) 220px) fixed;color:var(--g-tx)}
+html.dark body{background:radial-gradient(120% 60% at 100% 0,#10302f 0,transparent 60%),#0b1416 fixed;color:var(--g-tx)}
+/* surfaces */
+.dark .bg-white,.dark .b{background:var(--g-sf)!important}.dark .bg-slate-100{background:var(--g-bg)!important}
+.dark .bg-slate-50,.dark tbody tr:nth-child(even){background:var(--g-fl)!important}
+.dark .text-slate-500,.dark .text-slate-600{color:var(--g-mu)!important}
+.dark .border-slate-200,.dark .border-slate-300,.dark .border-slate-100,.dark .b{border-color:var(--g-bd)!important}
+.dark .i,html.dark input,html.dark select,html.dark textarea{background:var(--g-fl)!important;border-color:var(--g-bd)!important}
+/* headers */
+header.brand{background:linear-gradient(135deg,rgb(var(--g-ac)),var(--brand,#0b4f55))!important;border-radius:0 0 26px 26px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+#topbar{background:linear-gradient(135deg,var(--brand,#0b4f55),rgb(var(--g-ac)))!important;border-bottom:0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#topbar .tb,header.brand .hb{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
+/* cards / tiles: stripe-accent */
+.tile,.xc,.wtw,#side,#sbar,.regw{background:var(--g-sf);border:1px solid var(--g-bd);color:var(--g-tx)}
+.tile{border-radius:22px;border-inline-start:6px solid rgb(var(--g-ac));box-shadow:var(--g-sh);animation:slideIn .4s var(--ease) both!important}
+.tile.pri{border-color:var(--g-bd);border-inline-start-color:#f59e0b}
+.tile .tic{background:rgba(94,234,212,.14)}html:not(.dark) .tile .tic{background:rgba(13,148,136,.1)}
+.tile:hover{transform:translateY(-2px)}
+.xc,#mBox.mdark .xc{border-radius:22px;padding:1rem 1.1rem;border-inline-start:6px solid rgb(var(--g-ac));background:var(--g-sf);box-shadow:var(--g-sh);animation:slideIn .4s var(--ease) both}
+/* controls */
+.b{border-radius:14px;border:1.5px solid var(--g-bd);background:var(--g-sf);color:var(--g-tx)}
+.b:hover{background:var(--g-fl)}.dark .hover\:bg-slate-100:hover,.dark .b:hover{background:var(--g-fl)!important}
+.bp,.dark .bp{background:linear-gradient(135deg,rgb(var(--g-ac)),#0e7490)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 6px 16px rgba(13,148,136,.3)}
+.i,select,textarea,input:not([type=checkbox]):not([type=radio]){border-radius:14px;border:1.5px solid var(--g-bd);transition:border-color .2s,box-shadow .2s}
+.i:focus,select:focus,textarea:focus,input:focus{outline:0;border-color:rgb(var(--g-ac));box-shadow:0 0 0 3px rgba(13,148,136,.22)}
+.dark .i:focus,.dark input:focus,.dark select:focus{border-color:rgb(var(--g-lt))}
+input[type=checkbox],input[type=radio]{accent-color:rgb(var(--g-ac))}
+/* tables */
+.wtw,.rt,.regw{border-radius:18px;overflow:auto}
+.wtw th,.rt th{background:var(--g-fl)!important;color:var(--g-mu);border-color:var(--g-bd)}
+.wtw td,.rt td{border-color:var(--g-bd)}
+.wtw tbody tr:hover td{background:rgba(13,148,136,.12)}
+.wtw tbody tr:nth-child(n+13){animation:none}
+/* badges */
+.rounded-full.text-\[11px\]{border:1px solid currentColor;font-weight:700}
+/* modals / drawer / chat / dialogs */
+#modal,#cfm,#pdo{backdrop-filter:blur(4px)}
+#mBox,#cfm>div,#pdo>div{border-radius:22px;border:1px solid var(--g-bd);background:var(--g-sf);color:var(--g-tx);box-shadow:0 14px 40px rgba(0,0,0,.35)}
+#mBox.mdark{background:var(--g-sf)!important;border-radius:0!important}#modal.mdark{background:var(--g-bg)!important}
+#mBox.mdark .b{background:var(--g-fl)!important;border-color:var(--g-bd)!important}
+#mBox.mdark .i,#mBox.mdark select{background:var(--g-fl)!important;border-color:var(--g-bd)!important}
+#mBox.mdark .rt th{background:var(--g-fl)!important}
+#modal.vgm #mBox{border-radius:22px}
+#side{border-radius:22px 0 0 22px;border-inline-end:0}#side button,#side a{border-radius:12px;transition:background .2s,transform .15s var(--ease)}#side button:hover{transform:translateX(-3px)}
+#sbar{border-radius:22px 22px 0 0;border-bottom:0;box-shadow:0 -6px 18px rgba(0,0,0,.18)}
+#chat{background:var(--g-bg);color:var(--g-tx)}#chat .brand{border-radius:0 0 22px 22px}
+.dark #chat,.dark #chat .bg-white{background:var(--g-bg)!important}
+#spin{background:linear-gradient(135deg,rgb(var(--g-ac)),#0b4f55)}
+div[role=status].fixed{border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.35);animation:popIn .25s var(--ease) both}
+#upBtn{background:rgb(var(--g-ac))}
+/* ===== shared motion: same feel as Vehicle Inspection ===== */
+.b svg,.hb svg,.tb svg,.tile .tic,#side button span{transition:transform .25s var(--ease)}
+.b:hover svg,.hb:hover svg,.tb:hover svg{transform:scale(1.12)}
+.b:active svg,.tb:active svg{transform:scale(.9)}
+.tile:active .tic{transform:scale(.88)}
+.tile:focus-visible,.b:focus-visible,.hb:focus-visible,.tb:focus-visible{outline:2px solid rgb(var(--g-lt));outline-offset:2px}
+#facNav button,#deptNav button{transition:background .2s,transform .15s var(--ease)}#facNav button:active,#deptNav button:active{transform:scale(.97)}
+.logo{animation:bob 4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
 
 <style id="fx">
 /* ===== layout clearance / overlap fixes ===== */
@@ -404,9 +509,7 @@ header.brand .hb{background:rgba(255,255,255,.14)}header.brand .hb:hover{backgro
     <button data-act="vGear" class="vsq" aria-label="الإعدادات"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button data-act="vehClose" class="vsq" aria-label="العودة إلى HSE">HSE</button></header>
   <div id="vBody" class="px-3 pt-4 pb-28 max-w-3xl mx-auto grid gap-3 content-start"></div>
-  <button id="vTop" data-act="vTop" class="vtop hidden" aria-label="للأعلى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-  <button id="vPlus" data-act="vPlus" class="vplus hidden" aria-label="إضافة مركبة للفحص" title="إضافة مركبة للفحص">+</button>
-  <nav id="vTabs" class="vnav" aria-label="أقسام فحص المركبات"></nav>
+  <div class="vdock"><button id="vTop" data-act="vTop" class="vtop hidden" aria-label="للأعلى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><nav id="vTabs" class="vnav" aria-label="أقسام فحص المركبات"></nav><button id="vPlus" data-act="vPlus" class="vplus hidden" aria-label="إضافة مركبة للفحص" title="إضافة مركبة للفحص">+</button></div>
 </div>
 <div id="chat" class="hidden fixed inset-0 z-[60] flex flex-col bg-white">
   <div class="brand text-white flex items-center gap-2 px-3 py-3">
@@ -669,47 +772,49 @@ function renderReport(e) {
 /* ======================= 9) ALERT ENGINE (realtime) ======================= */
 const SEV = { high: 0, medium: 1, low: 2 };
 function computeAlerts() {
-  const A = [], t = today(), seen = {}, add = (sev, key, msg, ref = {}) => A.push({ sev, key, msg, ...ref });
-  const exams = S.forms.filter(f => f.type === "Periodic Medical Exam");
+  const A = [], t = today(), seen = {}, L = (ar, en) => LANG === "ar" ? ar : en, add = (sev, key, msg, ref = {}) => A.push({ sev, key, msg, ...ref });
+  const exams = S.forms.filter(f => f.type === "Periodic Medical Exam"), ids = new Set();
   S.workers.forEach(w => {
-    const who = `${w.name} (${w.code})`, ds = parseDates(w.injuries); seen[w.code] = (seen[w.code] || 0) + 1;
-    if (hasText(w.injuries) && !ds.length) add("high", `nodate:${w.id}`, `${who}: injury recorded without a valid date.`, { w: w.id });
-    if (ds.some(d => d <= t && (t - d) / 864e5 <= ALERT_DAYS)) add("medium", `recent:${w.id}`, `${who}: injury in the last ${ALERT_DAYS} days — confirm medical follow-up.`, { w: w.id });
-    if (!hasText(w.medical)) add("low", `med:${w.id}`, `${who}: medical history is missing.`, { w: w.id });
+    if (ids.has(w.id)) return; ids.add(w.id);
+    const who = `${w.name} (${w.code})`, ds = parseDates(w.injuries), wa = (sev, k, ar, en) => add(sev, `${k}:${w.id}`, `${who}: ${L(ar, en)}`, { w: w.id, c: `${k}:${w.code}` }); seen[w.code] = (seen[w.code] || 0) + 1;
+    if (hasText(w.injuries) && !ds.length) wa("high", "nodate", "تم تسجيل إصابة بدون تاريخ صحيح.", "injury recorded without a valid date.");
+    if (ds.some(d => d <= t && (t - d) / 864e5 <= ALERT_DAYS)) wa("medium", "recent", `إصابة خلال آخر ${ALERT_DAYS} يومًا — تأكد من المتابعة الطبية.`, `injury in the last ${ALERT_DAYS} days — confirm medical follow-up.`);
+    if (!hasText(w.medical)) wa("low", "med", "التاريخ المرضي غير مسجّل.", "medical history is missing.");
     if (hasText(w.chronic)) {
-      if (!hasText(w.notes)) add("medium", `chn:${w.id}`, `${who}: chronic disease without a follow-up note.`, { w: w.id });
+      if (!hasText(w.notes)) wa("medium", "chn", "مرض مزمن بدون ملاحظة متابعة.", "chronic disease without a follow-up note.");
       const last = Math.max(0, ...exams.filter(f => (f.values?.[1] || "").toLowerCase().includes(`${w.code}`.toLowerCase())).flatMap(f => parseDates(f.values[0])).map(Number));
-      if (!last || (t - last) / 864e5 > EXAM_MAX_DAYS) add("high", `exam:${w.id}`, `${who}: chronic case with no medical exam in the last 12 months.`, { w: w.id });
+      if (!last || (t - last) / 864e5 > EXAM_MAX_DAYS) wa("high", "exam", "حالة مزمنة بدون كشف طبي خلال آخر 12 شهرًا.", "chronic case with no medical exam in the last 12 months.");
     }
-    if (w.hireDate && new Date(w.hireDate) > t) add("low", `hire:${w.id}`, `${who}: hire date is in the future.`, { w: w.id });
+    if (w.hireDate && new Date(w.hireDate) > t) wa("low", "hire", "تاريخ التعيين في المستقبل.", "hire date is in the future.");
   });
-  Object.keys(seen).filter(c => seen[c] > 1).forEach(c => add("high", `dup:${c}`, `Duplicate worker code ${c}.`));
+  Object.keys(seen).filter(c => seen[c] > 1).forEach(c => add("high", `dup:${c}`, L(`كود العامل ${c} مكرر.`, `Duplicate worker code ${c}.`), { c: `dup:${c}` }));
   S.forms.forEach(f => {
     if (f.type === "Incident / Accident Report") {      // incident whose date is missing from the worker's injury dates
       const who = (f.values?.[3] || "").toLowerCase(), d = parseDates(f.values?.[0])[0];
       const w = who && S.workers.find(x => who.includes(`${x.code}`.toLowerCase()) || who.includes(`${x.name}`.toLowerCase()));
-      if (d && w && !parseDates(w.injuries).some(x => sameDay(x, d))) add("high", `unrec:${f.id}`, `Incident on ${fmt(d)} for ${w.name} is not in the worker's injury dates.`, { w: w.id, f: f.id });
-      else if (who && !w) add("medium", `unk:${f.id}`, "Incident report names someone not found in the register.", { f: f.id });
+      if (d && w && !parseDates(w.injuries).some(x => sameDay(x, d))) add("high", `unrec:${f.id}`, L(`حادث بتاريخ ${fmt(d)} للعامل ${w.name} غير مسجّل في تواريخ إصاباته.`, `Incident on ${fmt(d)} for ${w.name} is not in the worker's injury dates.`), { w: w.id, f: f.id });
+      else if (who && !w) add("medium", `unk:${f.id}`, L("تقرير حادث يذكر شخصًا غير موجود في سجل العمال.", "Incident report names someone not found in the register."), { f: f.id });
     }
     if (f.status === "closed") return;
     const { label, value } = dueInfo(f), due = parseDates(value)[0];
-    if (due && due < t) add("high", `due:${f.id}`, `${f.type}: "${label}" passed on ${fmt(due)}.`, { f: f.id });
-    else if (due && due - t <= DUE_SOON_DAYS * 864e5) add("medium", `soon:${f.id}`, `${f.type}: "${label}" is due on ${fmt(due)}.`, { f: f.id });
+    if (due && due < t) add("high", `due:${f.id}`, `${f.type}: "${label}" ${L("انتهى موعده في", "passed on")} ${fmt(due)}.`, { f: f.id });
+    else if (due && due - t <= DUE_SOON_DAYS * 864e5) add("medium", `soon:${f.id}`, `${f.type}: "${label}" ${L("موعده في", "is due on")} ${fmt(due)}.`, { f: f.id });
   });
-  return A.sort((a, b) => SEV[a.sev] - SEV[b.sev]);
+  const U = new Set();
+  return A.filter(a => { const k = a.c || a.key; if (U.has(k)) return false; U.add(k); return true; }).sort((a, b) => SEV[a.sev] - SEV[b.sev]);
 }
 function refreshAlerts() {                              // runs on every data change and hourly (date-based overdues)
   const rd = getRead(), A = S.alerts = can() ? computeAlerts().filter(a => !rd.has(a.key)) : [], hi = A.some(a => a.sev === "high"), b = $("#badge");
   $("#bell")?.classList.toggle("ring", !!A.length); if (b) { b.textContent = A.length; b.classList.toggle("hidden", !A.length); b.classList.toggle("bg-red-600", hi); b.classList.toggle("bg-amber-500", !hi); }
   const keys = new Set(A.filter(a => a.sev === "high").map(a => a.key));
-  if (prevHigh && Date.now() > armedAt) { const n = [...keys].filter(k => !prevHigh.has(k)).length; if (n) toast(`${n} new high-priority alert(s) — open 🔔`); }
+  if (prevHigh && Date.now() > armedAt) { const n = [...keys].filter(k => !prevHigh.has(k)).length; if (n) toast(LANG === "ar" ? `${n} إشعار عاجل جديد — افتح 🔔` : `${n} new high-priority alert(s) — open 🔔`); }
   prevHigh = can() ? keys : null; renderAlertList();
 }
 function renderAlertList() {
   const el = $("#alertL"); if (!el) return;
   const c = { high: "bg-red-50 border-red-300", medium: "bg-amber-50 border-amber-300", low: "bg-slate-50 border-slate-300" };
   el.innerHTML = S.alerts.map(a => `<div class="p-2 rounded border ${c[a.sev]} flex items-center gap-2"><span class="me-auto">${esc(a.msg)}</span>
-    <button data-act="review" data-id="${esc(a.key)}" class="${sm}">${a.w || a.f ? "Review" : "Mark read"}</button></div>`).join("") || `<p class="text-slate-500">Nothing needs attention.</p>`;
+    <button data-act="review" data-id="${esc(a.key)}" class="${sm}">${t(a.w || a.f ? "Review" : "Mark read")}</button></div>`).join("") || `<p class="text-slate-500">${t("Nothing needs attention.")}</p>`;
 }
 setInterval(refreshAlerts, 36e5);
 
@@ -719,7 +824,7 @@ const getRead = () => { try { return new Set(JSON.parse(localStorage.getItem(rea
 const markRead = k => { const r = getRead(); r.add(k); try { localStorage.setItem(readKey(), JSON.stringify([...r])); } catch {} };
 
 /* ---- UI settings (colors · logo · icons): cached locally and shared through settings/system.ui ---- */
-const DEF = { brand: [30, 33, 40], accent: [59, 130, 246], page: [241, 245, 249], text: [30, 41, 59] }, UI_KEY = "gcc.ui", SESS = "gcc.sess";
+const DEF = { brand: [11, 79, 85], accent: [13, 148, 136], page: [238, 246, 245], text: [11, 42, 42] }, UI_KEY = "gcc.ui", SESS = "gcc.sess";
 const toRgb = v => { if (Array.isArray(v) && v.length === 3 && v.every(x => Number.isInteger(x) && x >= 0 && x <= 255)) return v;
   const h = String(v || "").replace("#", ""); return /^[0-9a-f]{6}$/i.test(h) ? [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)) : null; };   // also reads old "#rrggbb" values
 const defUi = () => ({ colors: { ...DEF }, logo: "", items: {}, order: [], fac: {}, sec: {} });
@@ -818,6 +923,7 @@ Object.assign(AR, { "AI model": "نموذج الذكاء الاصطناعي", "W
 const AR2EN = Object.fromEntries(Object.entries(AR).map(([k, v]) => [v, k]));
 const gd = localStorage.getItem("gcc.dark");
 let LANG = localStorage.getItem("gcc.lang") || "ar", DARK = gd === null ? true : gd === "1";   // default: dark + Arabic/RTL
+Object.assign(AR, { "Review": "مراجعة", "Mark read": "تمت القراءة", "Nothing needs attention.": "لا توجد إشعارات." });
 const t = s => (LANG === "ar" && AR[s]) || s;
 function i18n(root = document.body, force) {            // swaps known UI strings (text + placeholder/title); stored data is never changed
   if (LANG === "en" && !force) return;
@@ -1038,7 +1144,7 @@ const regHtml = () => `<div class="grid gap-2" dir="rtl"><div class="flex gap-2 
 function renderReg() {                                  // Registered Workers table (live): every worker of this factory, whether or not shown in the working list
   const b = $("#regB"); if (!b) return; const q = ($("#regQ")?.value || "").trim().toLowerCase(), r = [...S.workers].sort(cmp.serial).filter(w => !q || `${w.name}`.toLowerCase().includes(q) || `${w.code}`.toLowerCase().includes(q));
   b.innerHTML = r.map((w, i) => `<tr><td>${esc(w.serial || i + 1)}</td><td>${esc(w.code)}</td><td>${esc(w.name)}</td><td>${esc(w.dept)}</td><td>${esc(w.profession)}</td><td>${hasText(w.chronic) ? esc(w.chronic) : "—"}</td>
-    <td class="whitespace-nowrap">${w.listed === false ? "غير ظاهر" : "ظاهر"} <button data-act="regTog" data-id="${w.id}" class="${sm}">${w.listed === false ? "إظهار" : "إخفاء"}</button> <button data-act="edit" data-id="${w.id}" class="${sm}">تعديل</button></td></tr>`).join("")
+    <td class="whitespace-nowrap">${w.listed === false ? "غير مفعّل" : "مفعّل"} <button data-act="regTog" data-id="${w.id}" class="${sm} ${w.listed === false ? "bp" : ""}">${w.listed === false ? "تفعيل" : "إخفاء"}</button> <button data-act="edit" data-id="${w.id}" class="${sm}">تعديل</button> <button data-act="regDel" data-id="${w.id}" class="${sm} !text-red-700">حذف</button></td></tr>`).join("")
     || `<tr><td colspan="7" class="text-center text-slate-500 py-6">لا يوجد عمال مسجلين</td></tr>`; $("#regN").textContent = `${r.length} عامل`; }
 document.addEventListener("input", e => { if (e.target.id === "regQ") renderReg(); });
 const EXPO_G = [["TWA", "المتوسط الموزون على 8 ساعات", "الرقم اللي المتوسط بتاعك طول الوردية ما يعدّاوش. مثال: تركيز الأسيتون في الورشة بيتغيّر خلال اليوم، والمتوسط بالزمن هو اللي بيتقارن بالحد."],
@@ -1071,7 +1177,7 @@ document.addEventListener("input", e => { if (/^x[tmr]/.test(e.target.id || "") 
 const go = (v, dept) => { S.view = v; S.dept = dept; S.hf = "all"; remember(); renderAll(); window.scrollTo(0, 0); };   // one navigation helper for home → departments → worker table
 const ACT = {
   regList: need(() => { openModal("قائمة العمال المسجلين", regHtml(), true, true); renderReg(); }),
-  async regTog(id) { const w = S.workers.find(x => x.id === id); if (!w) return; await run("Saving…", w.listed === false ? "تم إظهار العامل في القائمة العاملة." : "تم إخفاء العامل من القائمة العاملة.", () => updateDoc(doc(col("workers"), id), { listed: w.listed === false })); },
+  async regTog(id) { const w = S.workers.find(x => x.id === id); if (!w) return; await run("Saving…", w.listed === false ? "تم تفعيل العامل في القائمة العاملة ✓" : "تم إخفاء العامل من القائمة العاملة.", () => updateDoc(doc(col("workers"), id), { listed: w.listed === false })); },
   refs: () => openModal("Safety Guide", REF(), true, true),
   expo: () => openModal("حدود التعرض", EXPO(), true, true),
   xEx: id => { Object.entries(X_EX[id] || {}).forEach(([k, v]) => { const e = document.getElementById(k); if (e) e.value = v; }); xCalc(); },
@@ -1097,7 +1203,7 @@ const ACT = {
   up: () => window.scrollTo({ top: 0, behavior: "smooth" }),
   wopen: need(id => { const w = S.workers.find(x => x.id === id); if (!w) return; const sb = "b !px-3 !py-1";
     openModal(w.name, `<dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-sm" dir="auto">${COLS.map(k => `<dt class="text-slate-500">${esc(lab(k))}</dt><dd>${esc(w[k]) || "—"}</dd>`).join("")}</dl>
-      <div class="mt-3 flex flex-wrap items-center gap-2">${badge(w)}<button data-act="edit" data-id="${w.id}" class="${sb} ms-auto">Edit</button><button data-act="del" data-id="${w.id}" class="${sb} text-red-700">Delete</button></div>`); }),
+      <div class="mt-3 flex flex-wrap items-center gap-2">${badge(w)}<button data-act="edit" data-id="${w.id}" class="${sb} ms-auto">Edit</button><button data-act="del" data-id="${w.id}" class="${sb} text-red-700">حذف</button></div>`); }),
   async install() { if (!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall = null; $("#installBtn").classList.add("hidden"); },
   pdoX: () => $("#pdo").classList.add("hidden"),
   pdoPrint() { $("#pdo").classList.add("hidden"); $("#printArea").innerHTML = PD.body; window.print(); },
@@ -1148,8 +1254,10 @@ const ACT = {
   dept(d) { setSide(false); go(d === "All" ? "wdepts" : "wlist", d); },
   hfilter(k) { S.hf = k; renderTable(); },
   add: need(() => workerForm()), edit: need(async id => { const w = S.workers.find(x => x.id === id); if (w && await askPw(w)) workerForm(w); }),
-  async del(id) { const w = S.workers.find(x => x.id === id); if (!w || !(await askPw(w))) return; closeModal();
-    if (await confirmBox(`Delete ${w.name} (${w.code})? This permanently removes the record.`)) await run("Deleting…", "Worker deleted.", () => deleteDoc(doc(col("workers"), id))); },
+  async del(id, reg) { const w = S.workers.find(x => x.id === id); if (!w || !(await askPw(w))) return; closeModal();
+    if (await confirmBox(`حذف العامل ${w.name} (${w.code}) نهائيًا؟ لا يمكن التراجع.`, "حذف")) { await run("جارٍ الحذف…", "تم حذف العامل ✓", () => deleteDoc(doc(col("workers"), id))); S.workers = S.workers.filter(x => x.id !== id); if (S.unl === id) S.unl = null; renderAll(); refreshAlerts(); }
+    if (reg) ACT.regList(); },
+  regDel(id) { return ACT.del(id, true); },
   export: need(exportCsv),
   print: need(() => { const t = $("#wt").cloneNode(true); t.className = "rt"; printDoc($("#deptTitle").textContent, t.outerHTML); }),
   alerts: need(() => { openModal("Notifications", `<div id="alertL" class="grid gap-2"></div>`); renderAlertList(); }),
@@ -1195,8 +1303,8 @@ const FORMS = {
     if (S.workers.some(x => x.code === d.code && x.id !== id)) throw new Error("الكود ده مسجّل لعامل تاني.");
     btn.disabled = true;                                 // blocks double-submits until Firebase confirms
     try {
-      await run("Saving…", id ? "Worker updated." : "تمت إضافة العامل في «قائمة العمال المسجلين» (مش ظاهر في القائمة العاملة لحد ما تفعّله).", () => id ? updateDoc(doc(col("workers"), id), d)
-        : addDoc(col("workers"), { ...d, listed: false, serial: Math.max(0, ...S.workers.map(x => x.serial || 0)) + 1, createdAt: serverTimestamp() }));
+      await run("Saving…", id ? "Worker updated." : "تمت إضافة العامل وتفعيله في القائمة العاملة ✓", () => id ? updateDoc(doc(col("workers"), id), d)
+        : addDoc(col("workers"), { ...d, listed: true, serial: Math.max(0, ...S.workers.map(x => x.serial || 0)) + 1, createdAt: serverTimestamp() }));
       closeModal(); if (!id) ACT.regList();               // new workers live in the registered list: open it so the saved worker is visible
     } finally { btn.disabled = false; } }),
   hform: guard(async f => { const type = f.elements.type.value, id = f.elements.id.value, values = fields(type).map((_, i) => f.elements["f" + i].value);
