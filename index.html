@@ -1565,7 +1565,6 @@ const LWC = { 3: `${lwIn("c3w", "الأجر الإجمالي الشهري (جن�
 const lwCard = (c, o) => `<section class="lw" id="${c.id}" data-o="${o ? 1 : 0}"><h3><button type="button" class="lwh" data-act="lawTog" data-id="${c.id}" aria-expanded="${!!o}"><span>${esc(c.t)}</span><i aria-hidden="true">▼</i></button></h3><div class="lwb"><div><div class="lwi">${lwSec(c)}${c.calc ? `<div class="lwc"><b>🧮 حاسبة سريعة</b>${LWC[c.calc]}<div id="c${c.calc}o" class="lwo" aria-live="polite"><span class="xn">أدخل القيم لعرض النتيجة.</span></div></div>` : ""}</div></div></div></section>`;
 const LAWS_PRINT = () => LAWS.map(c => `<section><h3 style="margin:12px 0 4px;font-weight:700">${esc(c.t)}</h3>${lwSec(c)}</section>`).join("");
 const LAWS_TXT = () => LAWS.map(c => `${c.t}\n${c.s.map(([h, p, f]) => `- ${h}: ${[p.replace(/\*\*/g, ""), ...(f || [])].filter(Boolean).join("\n  ")}`).join("\n")}`).join("\n\n");
-SNAP.laws = () => ({ title: "قوانين العمل والتأمينات والمعادلات", html: LAWS_PRINT(), parts: [] });
 const LAWS_VIEW = () => `<div class="rf" dir="rtl"><nav class="rfn" aria-label="أدوات"><span class="hbar"><button type="button" data-act="xPrint" data-id="laws" class="b !py-0.5 text-xs">🖨 طباعة</button><button type="button" data-act="lawCopy" class="b !py-0.5 text-xs">📋 نسخ</button><button type="button" data-act="lawAll" class="b !py-0.5 text-xs">▼ فتح / طي الكل</button></span></nav>${LAWS.map(c => lwCard(c, false)).join("")}<p class="text-xs text-slate-500">للاسترشاد فقط — راجع النص الرسمي للقوانين وقرارات الجهات المختصة.</p></div>`;
 const lwr = (l, v, c = "") => `<div class="lwr ${c}"><span>${l}</span><b>${v}</b></div>`, lwk = (ok, t) => `<div class="lwk ${ok ? "xok" : "xbad"}">${ok ? "✔" : "⚠"} ${t}</div>`;
 const lawLive = k => { const o = $("#c" + k + "o"); if (!o) return;
@@ -2072,6 +2071,7 @@ const SNAP = {
   vdev: () => ({ title: "بيانات المركبات", sheet: "المركبات", meta: `المصنع: ${vFacName(V.fid)}`, parts: [{ head: ["الكود", "الاسم", "اللوحة", "المقاول", "الحالة"], rows: V.veh.filter(v => !V.q || vBlob(v).includes(vn(V.q))).map(v => [vcode(v), v.name, v.plate, v.contractor, VS[vst(v)]]) }] }),
   vcon: () => ({ title: "المقاولون", sheet: "المقاولون", meta: `المصنع: ${vFacName(V.fid)}`, parts: [{ head: ["المقاول", "الحالة", "عدد المركبات"], rows: V.con.map(c => [c.name, c.active === false ? "معطّل" : "فعّال", V.veh.filter(v => vn(v.contractor) === vn(c.name)).length]) }] }),
   vhist: () => VH && { title: `سجل الفحص — ${vcode(VH.v)}`, sheet: "سجل الفحص", meta: `${VH.v.name || ""} · ${VH.v.plate || ""} · ${VH.v.contractor || ""}`, parts: [{ head: ["الشهر", "النتيجة", "المفتش", "بنود غير مطابقة"], rows: VH.R.map(r => [r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, vBad(r)]) }] } };
+SNAP.laws = () => ({ title: "قوانين العمل والتأمينات والمعادلات", html: LAWS_PRINT(), parts: [] });   // after SNAP exists (was above it → "Cannot access SNAP before initialization" killed the whole script)
 
 const VACT = {
   veh() { if (!can()) return toast("Sign in to a factory first."); vDrive(vOpen); },
