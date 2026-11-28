@@ -461,6 +461,22 @@ html.dark .i:focus,html.dark input:focus,html.dark select:focus,html.dark textar
 #mBox .xc input,#mBox .xc .i{background:var(--g-fl,#14161B)!important;color:var(--g-tx,#f1f5f9)!important;-webkit-text-fill-color:var(--g-tx,#f1f5f9)!important;border:1.5px solid var(--g-ibd,#7b8f96)!important;font-size:1rem;font-weight:600;min-height:2.8rem}
 #mBox .xc input::placeholder{color:var(--g-ph,#aab8bd)!important;-webkit-text-fill-color:var(--g-ph,#aab8bd)!important;opacity:1}
 #mBox .xc .xbtn{color:#fff!important}
+#mBox .lw{border:1px solid var(--g-bd);border-radius:16px;background:var(--g-sf);color:var(--g-tx);overflow:hidden;box-shadow:var(--g-sh)}#mBox .lw>h3{margin:0}
+#mBox .lwh{width:100%;display:flex;justify-content:space-between;align-items:center;gap:.75rem;padding:.9rem 1rem;min-height:3.4rem;font-weight:800;font-size:1.05rem;line-height:1.6;text-align:right;color:var(--g-tx);background:transparent;border:0}
+#mBox .lwh i{font-style:normal;flex:none;color:rgb(var(--g-ac));transition:transform .25s}#mBox .lw[data-o="1"] .lwh i{transform:rotate(180deg)}
+#mBox .lwb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}#mBox .lw[data-o="1"] .lwb{grid-template-rows:1fr}#mBox .lwb>div{overflow:hidden;min-height:0}#mBox .lw:not([data-o="1"]) .lwi{visibility:hidden}
+#mBox .lwi{padding:.9rem 1rem 1rem;display:grid;gap:.9rem;border-top:1px solid var(--g-bd)}#mBox .lws h4{font-weight:800;margin-bottom:.2rem;color:var(--g-tx)}#mBox .lws p{line-height:1.95;color:var(--g-tx)}
+#mBox .fx{display:block;margin-top:.4rem;padding:.6rem .8rem;border-radius:12px;background:var(--g-fl);border:1px dashed rgb(var(--g-ac));font-family:ui-monospace,monospace;font-size:.92rem;direction:rtl;text-align:right;overflow-wrap:anywhere;line-height:1.9;color:var(--g-tx)}
+#mBox .lwc{display:grid;gap:.5rem;padding:.8rem;border-radius:12px;background:var(--g-fl);border:1px solid var(--g-bd)}#mBox .lwo{line-height:1.9;color:var(--g-tx)}#mBox .lwo b{color:var(--g-tx)}
+#mBox .lwr{display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.4rem 0;border-bottom:1px solid var(--g-bd);color:var(--g-tx)}#mBox .lwr b{white-space:nowrap;direction:ltr}#mBox .lwr.big{font-weight:800;font-size:1.05rem;border-bottom:2px solid rgb(var(--g-ac))}
+#mBox .lwk.xok{color:var(--g-ok,#16a34a)}#mBox .lwk.xbad{color:var(--g-bad,#dc2626)}
+#mBox .lwk{margin:.35rem 0;padding:.45rem .7rem;border-radius:10px;border:1px solid currentColor;font-weight:700;line-height:1.7;background:var(--g-sf)}#mBox .lwc .xn{color:var(--g-mu)!important}
+#mBox .pvbar{position:sticky;top:0;z-index:5;display:flex;gap:.5rem;padding:.5rem 0;background:var(--g-sf)}
+#mBox .pvsheet{background:#fff;border:1px solid #bbb;border-radius:8px;padding:1rem;overflow-x:auto;font-size:.88rem;box-shadow:var(--g-sh)}#mBox .pvsheet,#mBox .pvsheet *{color:#000!important}
+#mBox .pvsheet table{width:100%;border-collapse:collapse;margin:6px 0}#mBox .pvsheet td,#mBox .pvsheet th{border:1px solid #444;padding:4px 6px;text-align:right;vertical-align:middle;background:#fff}#mBox .pvsheet th{background:#e5e7eb;font-weight:700}
+#mBox .lws ul{list-style:disc;padding-inline-start:1.3rem;display:grid;gap:.35rem;line-height:1.9;color:var(--g-tx)}#mBox .lws li::marker{color:rgb(var(--g-ac))}
+#mBox .lws.warn{padding:.55rem .75rem;border-radius:12px;background:var(--g-fl);border:1px solid var(--g-bd);border-inline-start:5px solid var(--g-bad,#dc2626)}
+#printArea .fx{display:block;border:1px dashed #444;padding:4px 6px;margin:4px 0;font-family:monospace}#printArea .lws{margin-bottom:6px}
 </style>
 <style id="hse-page">
 /* HSE forms page — same Garage Console look & motion as Vehicle Inspection */
@@ -590,6 +606,64 @@ html:not(.dark) .tile .tic,html:not(.dark) #veh.vlight .vct svg{color:rgb(var(--
   #upBtn,#veh .vtop{will-change:opacity}
 }
 @media (prefers-reduced-motion:reduce){html,#veh{scroll-behavior:auto}}
+</style>
+<style id="calm">
+/* calm motion: transform/opacity only, short & subtle; no layout-property animation, no re-triggered parent entrances, stable sizing */
+html,#veh,#hsep{scroll-behavior:auto!important}html{scrollbar-gutter:stable}
+#home,#wv,#wdepts,#wlist{min-height:55vh}
+#home,#wv,#wdepts,#wlist,#veh,#hsep,#chat,#veh #vBody.mv>*,#tiles>*,.tile,.wtw tbody tr,.xc,#mBox .xc,#mBox section,#hsep .hc,#hsep .hbtn,#hsep .hrow,#veh .vc,#veh .vst.on{animation:none!important}
+#sideTab{transition:transform .3s var(--ease),filter .15s!important}#side.open+#sideTab{right:0!important;transform:translateX(calc(-1 * min(17rem,85vw)))}
+#veh .vsw i{transition:background .2s!important}
+#mBox .lwb{display:none;transition:none}#mBox .lw[data-o="1"] .lwb{display:grid;grid-template-rows:1fr}#mBox .lw:not([data-o="1"]) .lwi{visibility:visible}
+@keyframes calmIn{from{opacity:0}to{opacity:1}}@keyframes calmPop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:no-preference){
+  #home:not(.hidden),#wv:not(.hidden),#wdepts:not(.hidden),#wlist:not(.hidden),#veh:not(.hidden),#hsep:not(.hidden),#chat:not(.hidden),#modal:not(.hidden){animation:calmIn .16s ease-out both!important}
+  #modal:not(.hidden) #mBox,#cfm:not(.hidden)>div,#pdo:not(.hidden)>div,div[role=status].fixed{animation:calmPop .18s ease-out both!important}
+  #mBox .lw[data-o="1"] .lwb{animation:calmIn .18s ease-out both}}
+</style>
+<style id="resp">
+/* automatic responsive layer: fluid type/spacing, auto-fit grids, modals, tables — pure CSS, no toggles, no horizontal page scroll (RTL-safe) */
+html{font-size:clamp(15px,.28vw + 14px,17.5px);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:clip}#veh,#hsep,#chat,#modal,#mBox{overflow-x:hidden}
+img,svg,video,canvas,iframe{max-width:100%}
+.grid>*,.flex>*{min-width:0}
+h1,h2,h3,h4,p,li,label,td,th,.tile,.b,.hrow,.hbtn{overflow-wrap:anywhere}pre,code{white-space:pre-wrap;overflow-wrap:anywhere}
+input,select,textarea,.i{max-width:100%}
+.text-lg{font-size:clamp(1.05rem,.5vw + .95rem,1.35rem)}.text-xl{font-size:clamp(1.15rem,.7vw + 1rem,1.6rem)}.text-2xl{font-size:clamp(1.3rem,1vw + 1.05rem,1.9rem)}
+/* app shell */
+#app>main,#app main.flex-1,#app .flex-1.min-w-0{width:100%;max-width:min(100%,96rem);margin-inline:auto}
+#app main{padding-inline:clamp(.6rem,2.2vw,1.75rem)}
+#tiles,#wdepts{grid-template-columns:repeat(auto-fill,minmax(min(100%,9.5rem),1fr))!important;gap:clamp(.5rem,1.6vw,1rem)}
+#facCards{grid-template-columns:repeat(auto-fit,minmax(min(100%,9rem),1fr))!important}
+#login{padding:clamp(.5rem,3vw,2rem)}#login>div{width:100%;max-width:min(100%,clamp(22rem,42vw,34rem))}
+#sbar>div,#vBody,#hsB{width:100%}
+@media (min-width:1024px){#vBody,#hsB,#sbar>div{max-width:min(100%,60rem)}}@media (min-width:1440px){#vBody,#hsB,#sbar>div{max-width:min(100%,72rem)}}
+#side{width:min(17rem,85vw)}
+/* modals & dialogs */
+#modal{padding:clamp(.4rem,2vw,1.5rem)}#mBox{width:100%;max-width:min(100%,34rem);max-height:calc(100dvh - clamp(.8rem,4vw,3rem))}#mBox.max-w-4xl{max-width:min(100%,clamp(40rem,70vw,68rem))}
+#cfm>div,#pdo>div{width:100%;max-width:min(100%,26rem)}
+/* tables always fit their container (no page-level sideways scroll; wrap long names/plates/codes) */
+.wtw,.regw,.pvsheet,#mBody .rt{max-width:100%}.wtw table,.regw table,#mBody table,.pvsheet table{width:100%;min-width:0!important;table-layout:auto}
+.wtw th,.wtw td,.regw th,.regw td,#mBody .rt td,#mBody .rt th,.pvsheet td,.pvsheet th{white-space:normal!important;overflow-wrap:anywhere;word-break:normal;vertical-align:middle}
+#mBox.mdark .rt td,#mBox.mdark .rt th{white-space:normal!important}
+.wtw td:nth-child(n+4){max-width:none}
+@media (max-width:520px){.wtw table,.regw table,#mBody table,.pvsheet table{font-size:.78rem}.wtw th,.wtw td,.regw th,.regw td,#mBody td,#mBody th,.pvsheet td,.pvsheet th{padding:.35rem .35rem!important}}
+@media (min-width:1024px){.wtw table,.regw table{font-size:.95rem}.wtw th,.wtw td{padding:.65rem .9rem}}
+/* toolbars & header controls wrap instead of overflowing */
+.hbar,.rfn,.pvbar{flex-wrap:wrap}.flex.items-center,.flex.gap-2{flex-wrap:wrap}#hfBar{max-width:100%}
+#topbar{max-width:100vw;gap:clamp(.25rem,1.4vw,.6rem)}#topbar .tb{flex:none}
+@media (max-width:360px){#topbar .tb{width:2.5rem;height:2.5rem}.b{padding-inline:.6rem}}
+/* extra-wide screens: more room, fluid card grids */
+@media (min-width:1280px){.rfl{grid-template-columns:repeat(auto-fill,minmax(min(100%,20rem),1fr))}}
+#veh .vnav{max-width:100%;overflow-x:auto}
+</style>
+<style id="fire">
+.fire{display:grid;gap:.6rem;min-width:0}.fire svg{width:100%;max-width:26rem;height:auto;display:block;margin-inline:auto;overflow:visible}
+#mBox .ftri{fill:none;stroke:var(--g-bd,#888);stroke-width:3;stroke-linejoin:round}
+#mBox .fg{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}#mBox .fg circle{fill:var(--g-fl,#fff);stroke:var(--c);stroke-width:3;transition:transform .2s,fill-opacity .2s;transform-box:fill-box;transform-origin:center}
+#mBox .fg text{fill:var(--g-tx,#111);pointer-events:none}
+#mBox .fg:hover circle{transform:scale(1.05)}#mBox .fg.on circle{fill:var(--c);fill-opacity:.28;stroke-width:6;transform:scale(1.08)}#mBox .fg:focus-visible circle{stroke:var(--g-tx,#111);stroke-width:5}
+#mBox .fbx{padding:.85rem 1rem;border:1px solid var(--g-bd);border-inline-start:6px solid var(--c);border-radius:14px;background:var(--g-fl);color:var(--g-tx)}#mBox .fbx h4{font-weight:800;font-size:1.1rem;margin-bottom:.3rem;color:var(--g-tx)}#mBox .fbx p{line-height:1.9;color:var(--g-tx)}#mBox .fbx b{color:var(--g-tx)}
 </style>
 </head>
 <body class="bg-slate-100 text-slate-800">
@@ -802,7 +876,7 @@ const parseDates = s => { const o = [];            // accepts YYYY-MM-DD and DD/
   return o.filter(d => !isNaN(d)); };
 
 const S = { cfg: {}, sort: "serial", f: 0, dept: "All", view: "home", tool: "", hf: "all", dev: false, ok: null, q: "", custom: [], workers: [], forms: [], alerts: [] };
-const VIEWS = ["home", "wdepts", "wlist"], TOOLS = ["hse", "injury", "refs", "expo"], NAV_KEY = "gcc.nav";   // remembers the last factory + department across refreshes
+const VIEWS = ["home", "wdepts", "wlist"], TOOLS = ["hse", "injury", "refs", "expo", "laws"], NAV_KEY = "gcc.nav";   // remembers the last factory + department across refreshes
 const recall = () => { try { return JSON.parse(localStorage.getItem(NAV_KEY)); } catch { return null; } };
 const remember = () => { try { localStorage.setItem(NAV_KEY, JSON.stringify({ f: S.f, dept: S.dept, v: S.view, t: S.tool })); } catch {} };
 const can = () => !S.dev && S.ok === S.f;   // developer mode never loads workers
@@ -816,7 +890,9 @@ const askPw = w => { return new Promise(res => { pwDone(false); pwRes = res; pwF
     openModal("Password required", `<form data-form="pw" class="grid gap-3"><div class="font-semibold">${esc(w.name)} · ${esc(w.code)}</div><div class="text-slate-500">Enter the password of this factory:</div><div class="font-bold">${esc(fname(FACTORIES[S.f]))}</div>
       <input name="pw" type="password" class="i" placeholder="Factory password" autocomplete="off" required><p class="err hidden text-sm text-red-700">Wrong password for this factory.</p><button class="b bp">Verify</button></form>`);
     $("[data-form=pw] [name=pw]").focus(); }); };
-const printDoc = (title, html) => { PD = { title, body: `<div dir="rtl" style="text-align:right"><h1 style="font-weight:700">${esc(S.cfg.sys?.appName || "Gas Cooker Complex")} — ${esc(FACTORIES[S.f].ar)} / ${esc(FACTORIES[S.f].en)}</h1><p style="margin-bottom:8px">${esc(title)} · ${new Date().toLocaleDateString("ar-EG")}</p>${html}</div>` }; $("#pdo").classList.remove("hidden"); };
+const mkPD = (title, html) => { PD = { title, body: `<div dir="rtl" style="text-align:right"><h1 style="font-weight:700">${esc(S.cfg.sys?.appName || "Gas Cooker Complex")} — ${esc(FACTORIES[S.f].ar)} / ${esc(FACTORIES[S.f].en)}</h1><p style="margin-bottom:8px">${esc(title)} · ${new Date().toLocaleDateString("ar-EG")}</p>${html}</div>` }; };
+const printDoc = (t, h) => { mkPD(t, h); $("#pdo").classList.remove("hidden"); };
+const previewDoc = (t, h) => { mkPD(t, h); openModal("معاينة قبل الطباعة", `<div class="pvbar"><button type="button" data-act="pvPrint" class="b bp">🖨 طباعة</button><button type="button" data-act="close" class="b">↩ رجوع</button></div><div class="pvsheet" dir="rtl">${roClean(PD.body)}</div>`, true); };
 
 /* ====================== 4) AUTH & REALTIME DATA ====================== */
 const loginForm = (i = 0) => `<form data-form="login" class="grid gap-3"><select name="fid" class="i">${FACTORIES.map((f, k) => `<option value="${k}" ${k === i ? "selected" : ""}>${esc(f.en)} — ${esc(f.ar)}</option>`).join("")}</select>
@@ -1160,7 +1236,8 @@ const uploadLogo = file => { if (!file) return; if (!file.type.startsWith("image
 /* ---- Factory icons + header icon list (built-in + custom, reorderable by the developer) ---- */
 const FIC = { small: "🧰", gas: "🔥", metals: "⚙️", atlantic: "🌊" };
 const BASE = [{ id: "hse", icon: "🦺", label: "HSE Forms", act: "hse" }, { id: "injury", icon: "🩹", label: "Injury Reports", act: "injury", sub: "تسجيل ومتابعة حوادث وإصابات العمل داخل المصنع" },
-  { id: "refs", icon: "📚", label: "Safety Guide", act: "refs" }, { id: "expo", icon: "🧮", label: "حدود التعرض", act: "expo" }];
+  { id: "refs", icon: "📚", label: "Safety Guide", act: "refs" }, { id: "expo", icon: "🧮", label: "حدود التعرض", act: "expo" },
+  { id: "laws", icon: "⚖️", label: "قوانين العمل والتأمينات والمعادلات", act: "laws", sub: "مرجع تفاعلي: العقود، الإجازات، التأمينات، المعاشات" }];
 const allItems = () => { const o = S.ui.order, all = [...BASE, ...S.custom.filter(c => c.type === "button").map(c => ({ id: "c:" + c.label, icon: c.icon || "⭐", label: c.label, act: "cust", data: c.label }))];
   return all.map(x => ({ ...x, ...S.ui.items[x.id] })).sort((a, b) => (o.indexOf(a.id) + 1 || 99) - (o.indexOf(b.id) + 1 || 99)); };
 const facIcon = (f, big) => { const o = S.ui.fac[f.id] || {};
@@ -1395,9 +1472,9 @@ const DUST = [["Particulates, respirable (no specific limit)", "أتربة قا�
 const LUX = [["ممرات وطرق داخلية", "100"], ["سلالم", "150"], ["مخازن عامة", "100"], ["مخازن فيها قراءة بيانات أو تداول", "200"], ["أرصفة التحميل والتفريغ", "150"], ["كافتيريا وأماكن الراحة", "200"], ["ورش الصيانة وتشغيل الماكينات (شغل خشن)", "300"],
   ["لحام", "300"], ["خطوط الإنتاج والتجميع العادي", "300 – 500"], ["المكاتب", "500"], ["غرف التحكم", "500"], ["غرفة الإسعافات الأولية", "500"], ["التجميع الدقيق", "750"], ["فحص وضبط الجودة", "750 – 1000"], ["ساحات وممرات خارجية", "20 – 50"]];
 const ri = (n, e, v = []) => `<div class="rfi" data-r><div class="n">${n}</div>${e ? `<div class="e" dir="ltr">${e}</div>` : ""}${v.length ? `<div class="rfv">${v.map(([l, x]) => `<span><small>${l}</small> <b dir="ltr">${x}</b></span>`).join("")}</div>` : ""}</div>`;
-const RF_NAV = [["rf-law", "⚖️ القوانين"], ["rf-emp", "🦺 الالتزامات"], ["rf-pel", "☣️ المواد الخطرة"], ["rf-noise", "🔊 الضوضاء"], ["rf-dust", "🌫️ الأتربة"], ["rf-lux", "💡 الإضاءة"]];
+const RF_NAV = [["rf-law", "⚖️ القوانين"], ["rf-emp", "🦺 الالتزامات"], ["rf-pel", "☣️ المواد الخطرة"], ["rf-noise", "🔊 الضوضاء"], ["rf-dust", "🌫️ الأتربة"], ["rf-lux", "💡 الإضاءة"], ["rf-tri", "🔺 مثلث الحريق"], ["rf-fire", "🧯 طفايات الحريق"], ["rf-aid", "🩹 الإسعافات الأولية"]];
 const rs = (id, t, body, note) => `<section id="${id}"><h3>${t}</h3>${body}${note ? `<p class="text-xs text-slate-500 mt-2">${note}</p>` : ""}</section>`;
-const REF = () => `<div class="rf" dir="rtl"><nav class="rfn" aria-label="أقسام الدليل">${RF_NAV.map(([i, l]) => `<button type="button" data-act="rfGo" data-id="${i}" class="b">${l}</button>`).join("")}</nav>
+const REF = () => `<div class="rf" dir="rtl"><button type="button" data-act="laws" class="b bp">⚖️ قوانين العمل والتأمينات والمعادلات</button><nav class="rfn" aria-label="أقسام الدليل">${RF_NAV.map(([i, l]) => `<button type="button" data-act="rfGo" data-id="${i}" class="b">${l}</button>`).join("")}</nav>
   ${rs("rf-law", "⚖️ القوانين واللوائح", `<div class="rfl">${ri("القانون القديم", "", [["", "قانون العمل 12 لسنة 2003 (الكتاب الخامس: السلامة والصحة المهنية وتأمين بيئة العمل)"]])}${ri("اتلغى", "", [["", "من 1 سبتمبر 2025"]])}${ri("القانون الجديد", "", [["", "قانون العمل 14 لسنة 2025"]])}${ri("التواريخ", "", [["", "اتنشر في 3 مايو 2025 وشغّال من 1 سبتمبر 2025، ومحاكم العمل المتخصصة من 1 أكتوبر 2025"]])}${ri("السلامة والصحة المهنية", "", [["", "راجع باب السلامة والصحة المهنية في القانون الساري وقرارات وزارة العمل التنفيذية."]])}</div>
     <ul class="list-disc mt-3 grid gap-1"><li>قانون البيئة 4 لسنة 1994 (المعدل بالقانون 9 لسنة 2009) ولائحته التنفيذية، قرار 338 لسنة 1995 المعدل بقرار 1095 لسنة 2011 — الملحق 8: حدود الملوثات في هواء أماكن العمل.</li>
     <li>قانون التأمينات الاجتماعية 148 لسنة 2019 — إصابات العمل والأمراض المهنية؛ لازم الإصابة تتبلّغ لمكتب التأمينات ومديرية العمل.</li></ul>`)}
@@ -1410,7 +1487,101 @@ const REF = () => `<div class="rf" dir="rtl"><nav class="rfn" aria-label="أقس
     <ul class="list-disc mt-3 grid gap-1 text-sm"><li>الجدول ده بقاعدة ACGIH (حد 85 ديسيبل لمدة 8 ساعات، وكل زيادة 3 ديسيبل تنصّف المدة). حد OSHA الأمريكي 90 ديسيبل لـ 8 ساعات.</li><li>أي صوت لحظي (نبضي) أعلى من 140 ديسيبل (C) ممنوع تتعرّض له الأذن من غير حماية.</li>
     <li>لازم سدادات أو سماعات أذن وبرنامج قياس وفحص سمع دوري لو التعرّض عدّى 85 ديسيبل.</li><li>الحد المنصوص عليه في اللائحة التنفيذية لقانون البيئة (حوالي 90 ديسيبل لـ 8 ساعات) — اتأكد منه من النص الرسمي.</li></ul>`)}
   ${rs("rf-dust", "🌫️ الأتربة", `<div class="rfl">${DUST.map(r => ri(r[1], r[0], [["TWA 8 ساعات", r[2]]])).join("")}</div>`, "قيم إرشادية (ACGIH / OSHA). استخدم شفط موضعي وتهوية، وكمامات مناسبة، وقياس دوري، وراجع الحد الرسمي في الملحق 8 من قرار 338 لسنة 1995 المعدل.")}
-  ${rs("rf-lux", "💡 شدة الإضاءة (لوكس)", `<div class="rfl">${LUX.map(r => ri(r[0], "", [["الحد الأدنى المقترح (لوكس)", r[1]]])).join("")}</div>`, "قيم إرشادية مبنية على المواصفة الأوروبية EN 12464-1. قيس الإضاءة بجهاز لوكس ميتر على مستوى سطح الشغل، وراجع الكود المصري لأعمال الإضاءة واشتراطات الجهات المختصة.")}</div>`;
+  ${rs("rf-lux", "💡 شدة الإضاءة (لوكس)", `<div class="rfl">${LUX.map(r => ri(r[0], "", [["الحد الأدنى المقترح (لوكس)", r[1]]])).join("")}</div>`, "قيم إرشادية مبنية على المواصفة الأوروبية EN 12464-1. قيس الإضاءة بجهاز لوكس ميتر على مستوى سطح الشغل، وراجع الكود المصري لأعمال الإضاءة واشتراطات الجهات المختصة.")}
+  ${rs("rf-tri", "🔺 مثلث الحريق وهرم الحريق", fireHtml("fuel"))}
+  ${rs("rf-fire", "🧯 طفايات الحريق", `<div class="grid gap-3">${FE.map(c => lwCard(c, false)).join("")}</div>`)}
+  ${rs("rf-aid", "🩹 الإسعافات الأولية", `<div class="grid gap-3">${FA.map(c => lwCard(c, false)).join("")}</div>`)}</div>`;
+
+/* ---- قوانين العمل والتأمينات والمعادلات: accordion cards (title + ▼/▲), formula blocks, quick calculators, print & copy ---- */
+const LAWS = [
+  { id: "lw1", t: "قانون العمل (مكتب العمل — قانون رقم 14 لسنة 2025)", s: [
+    ["عقود العمل وفترة الاختبار", "عقد عمل مكتوب بالعربية من 4 نسخ (صاحب العمل، العامل، التأمين الاجتماعي، الجهة الإدارية)؛ غير المكتوب أو غير محدد المدة يُعد غير محدد المدة؛ فترة الاختبار بحد أقصى 3 أشهر ولمرة واحدة لدى نفس صاحب العمل."],
+    ["ساعات العمل والراحة والإجازات", "بحد أقصى 48 ساعة أسبوعياً (و12 ساعة يومياً شاملاً الإضافي)، راحة يومية لا تقل عن ساعة بعد 5 ساعات عمل متواصلة، وراحة أسبوعية 24 ساعة متصلة مدفوعة الأجر. الإضافي لا يقل عن 35% نهاراً و70% ليلاً. الإجازة السنوية: 15 يوماً في السنة الأولى، 21 يوماً من الثانية، 30 يوماً لمن أمضى 10 سنوات أو تجاوز سن الخمسين، 45 يوماً لذوي الإعاقة والأقزام، و+7 أيام للأعمال الخطرة أو المناطق النائية؛ وإجازة الحج/القدس شهر مدفوع الأجر مرة واحدة بعد 5 سنوات متصلة."],
+    ["حماية المرأة والعمل المرن", "إجازة وضع 4 أشهر مدفوعة الأجر (بحد أقصى 3 مرات) وحظر الفصل بسبب الحمل أو الإجازة، وإجازة رعاية طفل حتى سنتين بدون أجر بالمنشآت ذات 50 عاملاً فأكثر، وتنظيم العمل المرن والجزئي وعن بُعد."],
+    ["الجزاءات، الاستقالة، وإنهاء الخدمة", "علاوة دورية سنوية لا تقل عن 3% من الأجر التأميني؛ لائحة تنظيم عمل وجزاءات إلزامية للمنشآت ذات 10 عمال فأكثر؛ الفصل من اختصاص المحكمة العمالية؛ الاستقالة مكتوبة ومعتمدة إدارياً خلال 10 أيام؛ الاحتفاظ بملف العامل 5 سنوات وتسليم شهادة الخبرة خلال 15 يوماً."]] },
+  { id: "lw2", t: "قانون التأمينات الاجتماعية وإصابات العمل (قانون رقم 148 لسنة 2019)", s: [
+    ["إلزامية التأمين", "إلزامي لدى الهيئة القومية للتأمين الاجتماعي ويغطي الشيخوخة والعجز والوفاة، **إصابات العمل**، المرض، والبطالة."],
+    ["إصابات العمل وأمراض المهنة", "تشمل الحادث أثناء العمل أو بسببه، وحادث الطريق (الذهاب للعمل أو العودة منه دون توقف أو تخلف أو انحراف عن الطريق الطبيعي)، والأمراض المهنية الواردة بجداول القانون، مع صرف التعويضات والمزايا المقررة قانوناً."]] },
+  { id: "lw3", t: "معادلة حساب الأجر التأميني وحصة الاشتراك", calc: 3, s: [
+    ["الحدود السارية (2026)", "الحد الأدنى **2,700 جنيه** والحد الأقصى **16,700 جنيه** شهرياً (ترتفع في يناير 2027 إلى 3,200 و19,300 جنيه)، ويُثبّت أجر الاشتراك بالقطاع الخاص على أجر شهر يناير."],
+    ["المعادلة", "", ["أجر الاشتراك المعتمد = min(max(الأجر الخاضع بعد البدلات المستبعدة [بحد أقصى 30%] , 2,700) , 16,700)", "إجمالي الاشتراك الشهري = أجر الاشتراك المعتمد × (11% حصة العامل + 18.75% حصة صاحب العمل بالقطاع الخاص)"]],
+    ["ملاحظات", "البدلات المستبعدة تُحتسب بحد أقصى **30%** من الأجر الإجمالي، وما زاد عنها يدخل في الأجر الخاضع. أجر الاشتراك بالقطاع الخاص يُثبّت على أجر شهر **يناير**."]] },
+  { id: "lw4", t: "معادلة حساب المعاش المبكر وضوابطه", calc: 4, s: [
+    ["المعادلة", "", ["المعاش الشهري = min(max((أجر التسوية × مدة الاشتراك بالسنوات) ÷ معامل السن [الجدول 5] , 50% من أجر التسوية , 65% من الحد الأدنى للأجر التأميني [1,755 ج]) , 80% من أجر التسوية)"]],
+    ["الشروط والحدود", "مدة اشتراك فعلية لا تقل عن **300 شهر (25 سنة)**، انتهاء الخدمة وعدم الخضوع لتأمين الشيخوخة والعجز والوفاة وقت الطلب (نموذج 20)، ألا يقل المعاش عن 50% من أجر التسوية ولا عن 65% من الحد الأدنى للأجر التأميني (1,755 جنيه في 2026)، وألا يتجاوز 80% من أجر التسوية. معامل السن يؤخذ من الجدول 5 الملحق بالقانون."]] }];
+const FE = [
+  { id: "fe1", t: "أنواع طفايات الحريق واستخدام كل نوع (Classes A, B, C, D, K)", s: [
+    ["طفاية البودرة الكيميائية الجافة (Dry Powder - ABC)", "متعددة الأغراض؛ تُستخدم لحرائق المواد الصلبة (خشب، ورق، كرتون - A)، السوائل القابلة للاشتعال (سولار، بنزين، زيوت، دهانات - B)، وحرائق الكهرباء والغازات (C). (ملاحظة: تترك بقايا بودرة قد تؤثر على اللوحات الإلكترونية الدقيقة)."],
+    ["طفاية ثاني أكسيد الكربون (CO₂)", "تُستخدم لحرائق الكهرباء واللوحات الإلكترونية والمحركات (C) والسوائل القابلة للاشتعال (B)؛ لا تترك أي أثر أو تلف للأجهزة. (تحذير: يُمسك الخرطوم من المقبض العازل فقط لتجنب حروق البرودة الشديدة، وتُستخدم بحذر في الأماكن المغلقة)."],
+    ["طفاية الرغوة (Foam - AFFF)", "تُستخدم لحرائق السوائل القابلة للاشتعال والزيوت (B) والمواد الصلبة (A) بعزل الأكسجين وتبريد السطح. (تحذير: ممنوعة نهائياً على حرائق الكهرباء لخطر الصعق)."],
+    ["طفاية الماء (Water)", "تُستخدم لحرائق المواد الصلبة العادية فقط مثل الخشب والورق والأقمشة (A). (تحذير: ممنوعة نهائياً على حرائق الكهرباء أو السوائل والزيوت)."],
+    ["طفاية البودرة الخاصة بالمعادن (Class D)", "مخصصة لحرائق المعادن القابلة للاشتعال (مثل المغنيسيوم والألمنيوم الناعم/البرادة)."],
+    ["طفاية المواد الكيميائية الرطبة (Wet Chemical - Class K/F)", "مخصصة لحرائق الزيوت والدهون النباتية والحيوانية في المطابخ."]] },
+  { id: "fe2", t: "طريقة استخدام طفاية الحريق (قاعدة PASS)", s: [
+    ["1. اسحب (Pull)", "اسحب تيلة الأمان المعدنية لكسر القفل البلاستيكي."],
+    ["2. وجّه (Aim)", "وجّه فوهة الخرطوم نحو **قاعدة اللهب** (أسفل النار وليس أعلاها) من مسافة آمنة (حوالي 2 إلى 3 أمتار) مع الوقوف مع اتجاه الريح."],
+    ["3. اضغط (Squeeze)", "اضغط على ذراع التشغيل ببطء وثبات لتفريغ مادة الإطفاء."],
+    ["4. حرّك (Sweep)", "حرّك الخرطوم يميناً ويساراً على قاعدة الحريق حتى ينطفئ تماماً، ولا تعطِ ظهرك لمكان الحريق تحسباً لاشتعاله مجدداً."]] },
+  { id: "fe3", t: "طريقة الفحص الدوري لطفاية الحريق (شهري / سنوي)", s: [
+    ["مكان الطفاية وسهولة الوصول", "التأكد أن الطفاية في مكانها المخصص، ظاهرة بوضوح، غير محجوبة بأي عوائق أو خامات، ومثبتة على الارتفاع المناسب."],
+    ["مؤشر الضغط (المانومتر)", "التأكد أن الإبرة في **المنطقة الخضراء** (في الطفايات المزودة بمؤشر)، أو فحص الوزن في طفايات CO₂."],
+    ["تيلة الأمان وختم الرصاص", "التأكد من سلامة تيلة الأمان ووجود الختم البلاستيكي/الرصاص سليم وغير مقطوع (دليل عدم الاستخدام المسبق)."],
+    ["جسم الطفاية والخرطوم", "فحص الأسطوانة من أي صدأ أو انبعاج أو تسريب، والتأكد من سلامة الخرطوم والفوهة من التشقق أو الانسداد."],
+    ["بطاقة الصيانة وتاريخ الصلاحية", "مراجعة بطاقة الفحص الشهري وتاريخ إعادة التعبئة والاختبار الهيدروستاتيكي المعتمد."]] }];
+/* ---- interactive fire triangle / tetrahedron: tap any element → simple explanation below the SVG ---- */
+const FIRE = {
+  fuel: ["الوقود", "🪵", "#f59e0b", "أي مادة بتتحرق؛ ممكن تكون صلبة (خشب، ورق، كرتون)، أو سائلة (سولار، بنزين، زيوت)، أو غازية.", "إبعاد المواد القابلة للاشتعال أو قفل المحابس ومنع تراكمها."],
+  heat: ["الحرارة", "🔥", "#ef4444", "مصدر الاشتعال أو السخونة اللي بتبدأ الحريق (شرر، لحام، احتكاك، كهرباء، أسطح ساخنة).", "التبريد (زي الماء) وضبط مصادر الحرارة والشرر."],
+  oxy: ["الأكسجين", "💨", "#38bdf8", "الهواء المحيط اللي بيساعد النار تكمل (حوالي 21% في الجو).", "كتم أو عزل الهواء (زي الرغوة أو غطاء الحريق أو CO₂)."],
+  chain: ["التفاعل الكيميائي المتسلسل", "⛓️", "#a855f7", "التفاعل المستمر جوه اللهب اللي بيخلي الحريقة تكمل وتنتشر (وده العنصر الرابع في هرم الحريق).", "كسر التفاعل الكيميائي باستخدام طفايات البودرة الجافة (ABC)."] };
+const fireBox = k => { const [t, , c, d, p] = FIRE[k]; return `<div class="fbx" style="--c:${c}"><h4>${esc(t)}</h4><p><b>إيه هو؟</b> ${esc(d)}</p><p><b>إطفاء / وقاية:</b> ${esc(p)}</p></div>`; };
+let FS = "fuel";
+const fireG = (k, x, y, r, lines, dash) => `<g class="fg${dash ? " ch" : ""}${k === FS ? " on" : ""}" role="button" tabindex="0" data-act="fireSel" data-id="${k}" aria-label="${FIRE[k][0]}" aria-pressed="${k === FS}" style="--c:${FIRE[k][2]}"><circle cx="${x}" cy="${y}" r="${r}"${dash ? ' stroke-dasharray="6 4"' : ""}/><text x="${x}" y="${y - (lines.length > 1 ? 10 : 0)}" font-size="${r > 40 ? 20 : 24}" text-anchor="middle">${FIRE[k][1]}</text>${lines.map((l, i) => `<text x="${x}" y="${y + (lines.length > 1 ? 8 : 20) + i * 14}" font-size="${lines.length > 1 ? 12 : 14}" font-weight="700" text-anchor="middle">${l}</text>`).join("")}</g>`;
+const fireHtml = sel => (FS = sel, `<div class="fire"><svg viewBox="0 0 360 310" role="group" aria-label="مثلث الحريق وهرم الحريق" xmlns="http://www.w3.org/2000/svg"><polygon class="ftri" points="180,56 66,248 294,248"/>${fireG("heat", 180, 56, 40, ["الحرارة"])}${fireG("fuel", 66, 248, 40, ["الوقود"])}${fireG("oxy", 294, 248, 40, ["الأكسجين"])}${fireG("chain", 180, 180, 46, ["التفاعل", "المتسلسل"], 1)}</svg>
+<p class="xn text-center">المثلث = الوقود + الحرارة + الأكسجين، والهرم الرباعي يضيف <b>التفاعل الكيميائي المتسلسل</b> في المنتصف. اضغط على أي عنصر لشرح مبسط.</p><div id="fireBox" aria-live="polite">${fireBox(sel)}</div></div>`);
+const fireMark = k => { $$q(".fg").forEach(g => { const on = g.dataset.id === k; g.classList.toggle("on", on); g.setAttribute("aria-pressed", on); }); };
+const $$q = s => [...document.querySelectorAll(s)];
+document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches?.(".fg")) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click", { bubbles: true })); } });
+const FA = [
+  { id: "fa1", t: "تأمين المكان وتقييم المصاب", s: [
+    ["التصرف الفوري", ["تأمين المكان أولاً (فصل الكهرباء أو إبعاد مصدر الخطر).", "فحص الوعي والتنفس.", "طلب الإسعاف أو الطبيب فوراً في الحالات الطارئة."]],
+    ["تنبيه", "الإسعافات الأولية خطوة أولية سريعة لحين تقييم المصاب طبياً، ولا تُغني عن الفحص الطبي المختص."]] },
+  { id: "fa2", t: "الحروق الحرارية والكيميائية وإصابات العين", s: [
+    ["الحروق الحرارية", ["تبريد فوري بماء جارٍ فاتر/بارد لمدة **10–20 دقيقة**.", "فك الإكسسوارات أو الملابس غير الملتصقة.", "تغطيتها بشاش معقم غير لاصق."]],
+    ["الحروق الكيميائية والعين", ["غسل غزير بماء جارٍ أو محلول معقم لمدة **15–20 دقيقة** على الأقل.", "إبعاد الملابس الملوثة بحذر.", "التوجه للطبيب فوراً."]],
+    ["يُمنع / تنبيهات", ["وضع الثلج مباشرة.", "فتح الفقاعات.", "دهن زيوت/زبدة/معجون.", "فرك العين."]]] },
+  { id: "fa3", t: "النزيف، الجروح، والكسور", s: [
+    ["الجروح والنزيف", ["ضغط مباشر وثابت بشاش أو قماش نظيف لإيقاف النزيف.", "رفع الجزء المصاب إذا لم يُشتبه في كسر.", "التضميد بعد استقرار النزيف."]],
+    ["الكسور والالتواءات", ["تثبيت الجزء المصاب في وضعه وعدم تحريكه.", "استخدام كمادات باردة ملفوفة لتقليل التورم."]],
+    ["يُمنع / تنبيهات", ["محاولة ردّ أو تعديل عظمة مكسورة.", "الضغط العشوائي على كسر ظاهر."]]] },
+  { id: "fa4", t: "الإغماء، الإجهاد الحراري، وصندوق الإسعافات", s: [
+    ["الإغماء والإجهاد الحراري", ["نقل المصاب لمكان جيد التهوية ومظلل.", "فك الملابس الضيقة.", "رفع القدمين قليلاً في الإغماء البسيط (دون اشتباه إصابة رأس/رقبة).", "تقديم سوائل فقط عند الوعي الكامل والقدرة على البلع."]],
+    ["صندوق الإسعافات الأولية", ["متابعة الشاش المعقم، الأربطة، اللاصق الطبي، المطهرات، القفازات الطبية.", "مراجعة تواريخ الصلاحية دورياً."]]] }];
+const lwB = x => esc(x).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+const lwSec = c => c.s.map(([h, p, f]) => { const w = /^(يُمنع|تنبيه)/.test(h); return `<div class="lws${w ? " warn" : ""}"><h4>${w ? "⚠ " : ""}${esc(h)}</h4>${Array.isArray(p) ? `<ul>${p.map(x => `<li>${lwB(x)}</li>`).join("")}</ul>` : p ? `<p>${lwB(p)}</p>` : ""}${(f || []).map(x => `<code class="fx">${esc(x)}</code>`).join("")}</div>`; }).join("");
+const lwIn = (id, l, ph = "") => `<label class="grid gap-1 text-sm">${l}<input id="${id}" type="number" inputmode="decimal" min="0" class="i" placeholder="${ph}"></label>`;
+const LWC = { 3: `${lwIn("c3w", "الأجر الإجمالي الشهري (جنيه)")}${lwIn("c3e", "البدلات المستبعدة (جنيه)")}`,
+  4: `${lwIn("c4w", "أجر التسوية (جنيه)")}<div class="grid gap-1 text-sm">مدة الاشتراك الفعلية<div class="flex gap-2"><input id="c4y" type="number" inputmode="decimal" min="0" class="i" aria-label="مدة الاشتراك"><select id="c4u" class="i !w-auto"><option value="y">سنوات</option><option value="m">شهور</option></select></div></div>${lwIn("c4f", "معامل السن (الجدول 5)", "من جدول القانون")}` };
+const lwCard = (c, o) => `<section class="lw" id="${c.id}" data-o="${o ? 1 : 0}"><h3><button type="button" class="lwh" data-act="lawTog" data-id="${c.id}" aria-expanded="${!!o}"><span>${esc(c.t)}</span><i aria-hidden="true">▼</i></button></h3><div class="lwb"><div><div class="lwi">${lwSec(c)}${c.calc ? `<div class="lwc"><b>🧮 حاسبة سريعة</b>${LWC[c.calc]}<div id="c${c.calc}o" class="lwo" aria-live="polite"><span class="xn">أدخل القيم لعرض النتيجة.</span></div></div>` : ""}</div></div></div></section>`;
+const LAWS_PRINT = () => LAWS.map(c => `<section><h3 style="margin:12px 0 4px;font-weight:700">${esc(c.t)}</h3>${lwSec(c)}</section>`).join("");
+const LAWS_TXT = () => LAWS.map(c => `${c.t}\n${c.s.map(([h, p, f]) => `- ${h}: ${[p.replace(/\*\*/g, ""), ...(f || [])].filter(Boolean).join("\n  ")}`).join("\n")}`).join("\n\n");
+SNAP.laws = () => ({ title: "قوانين العمل والتأمينات والمعادلات", html: LAWS_PRINT(), parts: [] });
+const LAWS_VIEW = () => `<div class="rf" dir="rtl"><nav class="rfn" aria-label="أدوات"><span class="hbar"><button type="button" data-act="xPrint" data-id="laws" class="b !py-0.5 text-xs">🖨 طباعة</button><button type="button" data-act="lawCopy" class="b !py-0.5 text-xs">📋 نسخ</button><button type="button" data-act="lawAll" class="b !py-0.5 text-xs">▼ فتح / طي الكل</button></span></nav>${LAWS.map(c => lwCard(c, false)).join("")}<p class="text-xs text-slate-500">للاسترشاد فقط — راجع النص الرسمي للقوانين وقرارات الجهات المختصة.</p></div>`;
+const lwr = (l, v, c = "") => `<div class="lwr ${c}"><span>${l}</span><b>${v}</b></div>`, lwk = (ok, t) => `<div class="lwk ${ok ? "xok" : "xbad"}">${ok ? "✔" : "⚠"} ${t}</div>`;
+const lawLive = k => { const o = $("#c" + k + "o"); if (!o) return;
+  if (k === 3) { const g = lv("c3w"), e = lv("c3e"); if (!g) return o.innerHTML = '<span class="xn">أدخل الأجر الإجمالي لعرض النتيجة.</span>';
+    const cap = g * .3, ex = Math.min(e, cap), sub = g - ex, ap = Math.min(Math.max(sub, 2700), 16700);
+    o.innerHTML = (e > cap ? lwk(0, `البدلات المستبعدة تجاوزت 30% من الأجر — احتُسب منها ${nf(cap)} ج فقط.`) : "") + lwr("الأجر الخاضع بعد البدلات المستبعدة", nf(sub) + " ج") + (sub < 2700 ? lwk(0, "الأجر أقل من الحد الأدنى — رُفع إلى 2,700 ج.") : sub > 16700 ? lwk(0, "الأجر أعلى من الحد الأقصى — خُفّض إلى 16,700 ج.") : "")
+      + lwr("أجر الاشتراك المعتمد", nf(ap) + " ج", "big") + lwr("حصة العامل (11%)", nf(ap * .11) + " ج") + lwr("حصة صاحب العمل (18.75%)", nf(ap * .1875) + " ج") + lwr("إجمالي الاشتراك الشهري", nf(ap * .2975) + " ج", "big"); }
+  else { const w = lv("c4w"), v = lv("c4y"), f = lv("c4f"), m = $("#c4u").value === "m", yrs = m ? v / 12 : v, mo = m ? v : v * 12; if (!w || !v || !f) return o.innerHTML = '<span class="xn">أدخل أجر التسوية والمدة ومعامل السن لعرض النتيجة.</span>';
+    const raw = w * yrs / f, f1 = w * .5, f2 = 1755, top = w * .8, base = Math.max(raw, f1, f2), fin = Math.min(base, top);
+    o.innerHTML = lwk(mo >= 300, mo >= 300 ? `مدة الاشتراك ${nf(mo)} شهر (${nf(yrs)} سنة) — مستوفاة (300 شهر / 25 سنة).` : `مدة الاشتراك ${nf(mo)} شهر (${nf(yrs)} سنة) — أقل من 300 شهر / 25 سنة، الشرط غير مستوفى.`)
+      + lwr("المعاش الخام (أجر التسوية × المدة ÷ المعامل)", nf(raw) + " ج") + lwr("50% من أجر التسوية", nf(f1) + " ج") + lwr("65% من الحد الأدنى (1,755 ج)", nf(f2) + " ج") + lwr("80% من أجر التسوية (الحد الأقصى)", nf(top) + " ج")
+      + lwk(1, base > top ? "طُبّق الحد الأقصى 80% من أجر التسوية." : raw >= Math.max(f1, f2) ? "المعادلة نفسها — لا حد أدنى ولا أقصى مطبّق." : f1 >= f2 ? "طُبّق الحد الأدنى 50% من أجر التسوية." : "طُبّق الحد الأدنى 65% من الحد الأدنى للأجر التأميني (1,755 ج).")
+      + lwr("المعاش الشهري التقديري", nf(fin) + " ج", "big") + '<div class="xn">تقديري استرشادي — المرجع النهائي حساب الهيئة القومية للتأمين الاجتماعي.</div>'; } };
+document.addEventListener("input", e => { const c = e.target.closest?.("#mBox .lwc"); if (c) lawLive(+c.querySelector(".lwo").id[1]); });
+document.addEventListener("change", e => { const c = e.target.closest?.("#mBox .lwc"); if (c) lawLive(+c.querySelector(".lwo").id[1]); });
+const nf = n => (+n).toLocaleString("ar-EG", { maximumFractionDigits: 2 }), lv = id => parseFloat($("#" + id)?.value) || 0;
 
 window.addEventListener("popstate", () => { if (location.hash !== "#ai") $("#chat").classList.add("hidden"); });
 
@@ -1453,6 +1624,11 @@ const go = (v, dept) => { S.view = v; S.dept = dept; S.hf = "all"; remember(); r
 const ACT = {
   regList: need(() => { openModal("قائمة العمال المسجلين", regHtml(), true, true); renderReg(); }),
   async regTog(id) { const w = S.workers.find(x => x.id === id); if (!w) return; await run("Saving…", w.listed === false ? "تم تفعيل العامل في القائمة العاملة ✓" : "تم إخفاء العامل من القائمة العاملة.", () => updateDoc(doc(col("workers"), id), { listed: w.listed === false })); },
+  laws: () => openModal("قوانين العمل والتأمينات والمعادلات", LAWS_VIEW(), true, true),
+  lawTog: id => { const c = document.getElementById(id), o = c.dataset.o !== "1"; c.dataset.o = o ? 1 : 0; c.querySelector(".lwh").setAttribute("aria-expanded", o); },
+  lawAll: () => { const L = [...document.querySelectorAll("#mBox .lw")], o = L.some(c => c.dataset.o !== "1"); L.forEach(c => { c.dataset.o = o ? 1 : 0; c.querySelector(".lwh").setAttribute("aria-expanded", o); }); },
+  lawCopy: async () => { try { await navigator.clipboard.writeText(LAWS_TXT()); toast("تم نسخ المحتوى ✓", 1); } catch { toast("تعذّر النسخ."); } },
+  fireSel: id => { if (!FIRE[id]) return; $("#fireBox").innerHTML = fireBox(id); fireMark(id); },
   rfGo: id => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }),
   refs: () => openModal("Safety Guide", REF(), true, true),
   expo: () => openModal("حدود التعرض", EXPO(), true, true),
@@ -1768,6 +1944,7 @@ async function vRender(force) {
   else if (M === "rep") { await vload(force);
     B.innerHTML = `<div class="${VCARD} grid gap-3"><label class="text-xs font-semibold">الشهر${vMonthSel()}</label><p class="text-sm text-slate-500">${CK} (${esc(V.month)}${V.contractor ? " · " + esc(V.contractor) : ""})</p>
       <div class="grid sm:grid-cols-2 gap-2">${vFeat("pdf") ? `<button data-act="vRep" data-id="all" class="b">كل المركبات حسب المقاول</button><button data-act="vRep" data-id="bad" class="b">المركبات غير المطابقة</button><button data-act="vRep" data-id="no" class="b">لم تُفحص هذا الشهر</button><button data-act="vRep" data-id="sum" class="b">الملخص الشهري</button>` : ""}${vFeat("excel") ? `<button data-act="vXls" class="b">تصدير Excel</button>` : ""}</div>
+      ${vFeat("pdf") ? `<div class="flex gap-2 items-end flex-wrap"><label class="text-xs font-semibold grow">التقرير المراد معاينته (حسب الشهر والمقاول المحددين، ولـ«المقاولين المحددين» أو «السجل» اختر أدناه)<select id="vPvK" class="i !mt-0"><option value="all">كل المركبات حسب المقاول</option><option value="bad">المركبات غير المطابقة</option><option value="no">لم تُفحص هذا الشهر</option><option value="sum">الملخص الشهري</option><option value="sel">تقرير المقاولين المحددين</option><option value="hist">سجل الفحوصات للسنة</option></select></label><button data-act="vPrev" class="b bp">👁 معاينة قبل الطباعة</button></div>` : ""}
       ${vFeat("pdf") ? `<div class="grid gap-2"><label class="text-xs font-semibold">مقاولون محددون (اضغط مطولًا/Ctrl لأكثر من واحد)<select id="vSel" multiple size="4" class="i">${V.con.filter(c => c.active !== false).map(c => `<option>${esc(c.name)}</option>`).join("")}</select></label><button data-act="vRep" data-id="sel" class="b">تقرير المقاولين المحددين</button></div>
       <div class="flex gap-2 items-end"><label class="text-xs font-semibold">السنة<input id="vYear" type="number" inputmode="numeric" value="${new Date().getFullYear()}" class="i !mt-0 w-28"></label><button data-act="vRep" data-id="hist" class="b grow">سجل الفحوصات للسنة</button></div>` : ""}</div>`; }
   else if (M === "insps") { V.ins = await vget("inspectors", force);
@@ -1803,18 +1980,19 @@ const vDiagHtml = () => { const n = s => V.veh.filter(v => vst(v) === s).length;
 const vTbl = (head, rows) => `<table class="rt"><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</table>`;
 const vSum = L => { const st = L.map(vstate), ins = st.filter(s => s !== "no").length, bad = st.filter(s => s === "bad").length;     // ONE overall summary at the end (no per-contractor subtotals)
   return `<h3 style="margin-top:12px">الملخص العام</h3>` + vTbl(["إجمالي المركبات", "تم فحصها", "لم تُفحص", "مطابقة", "غير مطابقة", "نسبة الإنجاز"], [[L.length, ins, L.length - ins, ins - bad, bad, (L.length ? Math.round(ins / L.length * 100) : 0) + "%"]]); };
-async function vReport(kind) {
+async function vReport(kind, pv) {
+  const out = pv ? previewDoc : printDoc;
   const H = t => `<div dir="rtl" style="text-align:right"><h2 style="font-weight:700">${t}</h2><p>المصنع: ${esc(vFacName(V.fid))} · الفترة: ${esc(V.month)}${V.contractor ? " · المقاول: " + esc(V.contractor) : ""}</p>`;
   if (kind === "hist") { const y = $("#vYear").value || new Date().getFullYear();
     const R = (await getDocs(query(vcol("inspections"), where("month", ">=", `${y}-01`), where("month", "<=", `${y}-12`)))).docs.map(d => d.data()).filter(r => !V.contractor || r.contractor === V.contractor).sort((a, b) => a.code.localeCompare(b.code, "ar", { numeric: true }) || a.month.localeCompare(b.month));
-    return printDoc(`سجل الفحوصات ${y}`, H(`سجل فحوصات المركبات — ${y}`).replace(esc(V.month), y) + vTbl(["الكود", "المقاول", "الشهر", "النتيجة", "المفتش", "ملاحظات"], R.map(r => [r.code, r.contractor, r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, r.notes])) + `<h3 style="margin-top:12px">الملخص العام</h3><p>عدد الفحوصات: ${R.length} · غير المطابقة: ${R.filter(r => !r.ok).length}</p></div>`); }
+    return out(`سجل الفحوصات ${y}`, H(`سجل فحوصات المركبات — ${y}`).replace(esc(V.month), y) + vTbl(["الكود", "المقاول", "الشهر", "النتيجة", "المفتش", "ملاحظات"], R.map(r => [r.code, r.contractor, r.month, r.ok ? "مطابقة" : "غير مطابقة", r.inspector, r.notes])) + `<h3 style="margin-top:12px">الملخص العام</h3><p>عدد الفحوصات: ${R.length} · غير المطابقة: ${R.filter(r => !r.ok).length}</p></div>`); }
   const sel = kind === "sel" ? [...$("#vSel").selectedOptions].map(o => o.value) : null; if (sel && !sel.length) throw new Error("اختر مقاولًا واحدًا على الأقل.");
   const A = vAll().filter(v => !sel || sel.includes(v.contractor)), L = A.filter(v => kind === "bad" ? vstate(v) === "bad" : kind === "no" ? vstate(v) === "no" : kind !== "sum"), G = {};
   L.forEach(v => (G[v.contractor || "بدون مقاول"] ??= []).push(v));
   const body = Object.keys(G).sort((a, b) => a.localeCompare(b, "ar")).map(c => `<h3 style="margin-top:10px">${esc(c)}</h3>` + vTbl(["الكود", "الاسم", "اللوحة", "الحالة", "البنود غير المطابقة"],
     G[c].sort((a, b) => a.code.localeCompare(b.code, "ar", { numeric: true })).map(v => { const i = V.insp.find(x => x.vehicleId === v.id); return [vcode(v), v.name, v.plate, VB[vstate(v)][0], vBad(i)]; }))).join("");
   const T = { all: "تقرير المركبات حسب المقاول", bad: "المركبات غير المطابقة", no: "مركبات لم تُفحص", sel: "تقرير المقاولين المحددين: " + (sel || []).join("، "), sum: "الملخص الشهري" }[kind];
-  printDoc(T, H(esc(T)) + (kind === "sum" ? "" : body || "<p>لا توجد بيانات</p>") + vSum(A) + "</div>"); }
+  out(T, H(esc(T)) + (kind === "sum" ? "" : body || "<p>لا توجد بيانات</p>") + vSum(A) + "</div>"); }
 function vVehForm(v) {
   const cons = V.con.filter(c => c.active !== false || c.name === v.contractor), L = (l, i) => `<label class="text-sm font-semibold">${l}${i}</label>`;
   openModal("تعديل مركبة", `<form data-form="vvehsave" dir="rtl" class="grid gap-2"><input type="hidden" name="id" value="${v.id}">
@@ -1927,6 +2105,8 @@ const VACT = {
   vLookS: () => vLookup("status"), vLookR: () => vLookup("report"), vStartInsp(id) { const v = V.veh.find(x => x.id === id); if (v) { $("#vOut").innerHTML = ""; return vOpenInsp(v); } },
   vAddVeh: code => vOpenInsp(null, code),                // unknown code: the inspector adds the vehicle together with its first inspection
   vRep: id => vReport(id),
+  vPrev: () => vReport($("#vPvK").value, true),
+  pvPrint: () => { $("#printArea").innerHTML = PD.body; window.print(); },
   vXls() { const L = vlist(); if (!L.length) return toast("لا توجد بيانات للتصدير."); const st = L.map(vstate), ins = st.filter(x => x !== "no").length, bad = st.filter(x => x === "bad").length;
     const rows = [["الكود", "الاسم", "اللوحة", "المقاول", "الحالة"], ...L.map(v => [vcode(v), v.name, v.plate, v.contractor, VB[vstate(v)][0]]), [], ["الملخص العام"], ["إجمالي المركبات", L.length], ["تم فحصها", ins], ["لم تُفحص", L.length - ins], ["مطابقة", ins - bad], ["غير مطابقة", bad], ["نسبة الإنجاز", Math.round(ins / L.length * 100) + "%"]];
     const a = document.createElement("a"); a.href = URL.createObjectURL(xlsx(rows)); a.download = `vehicles-${V.fid}-${V.month}.xlsx`; a.click(); URL.revokeObjectURL(a.href); },
